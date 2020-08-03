@@ -23,16 +23,16 @@ RUN python3.7 -m pip install pip
 RUN pip3 install setuptools 
 	
 WORKDIR /
-COPY . /ASTExporter 
+COPY . /tourniquet 
 
-WORKDIR /ASTExporter
+WORKDIR /tourniquet
 
 #RUN rm -rf build && mkdir -p build 
 
-#WORKDIR /ASTExporter/build
+#WORKDIR /tourniquet/build
 
 #RUN cmake -DCMAKE_C_COMPILER=clang-9 -DCMAKE_CXX_COMPILER=clang++-9 \
 #-DLLVM_DYLIB_COMPONENTS=all .. && make -j5
 
 #Python test 
-RUN python3.7 setup.py install
+#RUN pip3 install -e .
