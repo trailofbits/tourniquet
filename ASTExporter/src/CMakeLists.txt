@@ -48,10 +48,18 @@ set(LIBRARY_LIST
     )
 add_definitions(-D__STDC_LIMIT_MACROS -D__STDC_CONSTANT_MACROS)
 
-add_executable(
+add_library(
   ${PROJECT_NAME}
+	SHARED
 	ASTExporter.cpp
+	patcher.cpp
   )
+set_target_properties(
+	${PROJECT_NAME}
+	PROPERTIES
+		PREFIX ""
+)
+
 if (MACOSX)
 	target_link_libraries(${PROJECT_NAME} ${LIBRARY_LIST})
 else()

@@ -11,22 +11,28 @@ RUN apt install -y \
 	git \
 	zlib1g-dev \
 	build-essential \
-	python3-dev \
 	python3.7-dev \
+	python3-pip \
 	libboost-all-dev \
 	autoconf \
 	libzmqpp-dev \
 	automake \
 	llvm 
+
+RUN python3.7 -m pip install pip
+RUN pip3 install setuptools 
 	
 WORKDIR /
 COPY . /ASTExporter 
 
 WORKDIR /ASTExporter
 
-RUN rm -rf build && mkdir -p build 
+#RUN rm -rf build && mkdir -p build 
 
-WORKDIR /ASTExporter/build
+#WORKDIR /ASTExporter/build
 
 #RUN cmake -DCMAKE_C_COMPILER=clang-9 -DCMAKE_CXX_COMPILER=clang++-9 \
 #-DLLVM_DYLIB_COMPONENTS=all .. && make -j5
+
+#Python test 
+RUN python3.7 setup.py install

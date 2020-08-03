@@ -16,7 +16,7 @@
 #include "clang/Frontend/CompilerInstance.h"
 #include "clang/AST/RecursiveASTVisitor.h"
 #include <iostream>
-#include <Python.h>
+
 
 using namespace llvm::json;
 using namespace clang::tooling;
@@ -113,6 +113,10 @@ private:
 	JObject& tree_info;
 };
 
+
+
+
+/*
 int main(int argc, const char * argv[]) {
 	//TODO accept this from the binding the filename that is.
 	CommonOptionsParser options_parser(argc, argv, ASTExporterOptions ,nullptr);
@@ -124,3 +128,4 @@ int main(int argc, const char * argv[]) {
 	tool.run(&factory);
 	return 0;
 }
+*/
