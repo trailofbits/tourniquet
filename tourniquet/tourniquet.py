@@ -1,4 +1,7 @@
 import example
+import argparse
+import sys
+
 
 def main():
     parser = argparse.ArgumentParser(
@@ -15,3 +18,8 @@ def main():
     parser.add_argument("--outfile", type=str, default=None, help="Specify outfile JSON path/name")
 
     args = parser.parse_args(sys.argv[1:])
+
+
+if __name__ == "__main__":
+    print("we did it reddit")
+    main()

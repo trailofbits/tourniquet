@@ -7,6 +7,7 @@ import sysconfig
 
 module_name = "example"
 
+
 def get_ext_filename_without_platform_suffix(filename):
     name, ext = os.path.splitext(filename)
     ext_suffix = sysconfig.get_config_var('EXT_SUFFIX')
@@ -24,10 +25,10 @@ def get_ext_filename_without_platform_suffix(filename):
 
 
 """
-Cmake has all the magic for building the actual clang tool
-Locating appropriate LLVM headers/linking libraries etc 
-These classes create a build_ext that uses cmake to build the tool
+This class defines a setup.py extension that stores the directory
+of the root CMake file
 """
+
 
 class CMakeExtension(Extension):
     def __init__(self, name, cmake_lists_dir='.', **kwargs):
@@ -35,69 +36,34 @@ class CMakeExtension(Extension):
         self.sourcedir = os.path.abspath(cmake_lists_dir)
 
 
+"""
+This class defines a build extension
+get_ext_filename determines the expected output name of the library 
+build_extension sets the appropriate cmake flags and invokes cmake to build the extension
+"""
+
+
 class CMakeBuild(build_ext):
     def get_ext_filename(self, ext_name):
         filename = super().get_ext_filename(ext_name)
-        name = get_ext_filename_without_platform_suffix(filename)
-        print("NAME IS: ", name)
-        return name
+        return get_ext_filename_without_platform_suffix(filename)
 
     def build_extension(self, ext):
         extdir = os.path.abspath(
             os.path.dirname(self.get_ext_fullpath(ext.name)))
         cmake_args = ['-DCMAKE_LIBRARY_OUTPUT_DIRECTORY=' + extdir,
                       '-DPYTHON_EXECUTABLE=' + sys.executable]
-        print("EXECUTABLE ", sys.executable)
-        print(extdir)
-
-        cfg = 'Debug' if self.debug else 'Release'
-        build_args = ['--config', cfg]
-        #ext_suffix = sysconfig.get_config_var('EXT_SUFFIX')
-        # Strip the last two trailing characters
-        # Find the .so suffix
-        #ext_suffix = ext_suffix[:len(ext_suffix)-3]
-        #print("MOD NAME: ", module_name + ext_suffix)
-        #cmake_args += ["-DPYTHON_MODULE_NAME=" + module_name + ext_suffix]
         cmake_args += ["-DPYTHON_MODULE_NAME=" + module_name]
-        cmake_args += ['-DCMAKE_BUILD_TYPE=' + cfg]
-        build_args += ['--', '-j2']
-        print("EXT NAME ", ext.name)
-        print(ext.library_dirs)
-
         env = os.environ.copy()
-        env['CXXFLAGS'] = '{} -DVERSION_INFO=\\"{}\\"'.format(
-            env.get('CXXFLAGS', ''),
-            self.distribution.get_version())
         if not os.path.exists(self.build_temp):
             os.makedirs(self.build_temp)
         subprocess.check_call(['cmake', ext.sourcedir] + cmake_args,
                               cwd=self.build_temp, env=env)
-        subprocess.check_call(['cmake', '--build', '.'] + build_args,
+        subprocess.check_call(['cmake', '--build', '.'],
                               cwd=self.build_temp)
-        print()  # Add an empty line for cleaner output
-        """
-        try:
-            subprocess.check_output(['cmake', '--version'])
-        except OSError:
-            raise RuntimeError("Error: Cannot find cmake, is it on $PATH?")
-
-        for ext in self.extensions:
-            extdir = os.path.abspath(os.path.dirname(self.get_ext_fullpath(ext.name)))
-            build_type = '-DCMAKE_BUILD_TYPE=Release'
-            lib_output = '-DCMAKE_LIBRARY_OUTPUT_DIRECTORY=' + extdir
-            args = [build_type, lib_output]
-
-            if not os.path.exists(self.build_temp):
-                os.makedirs(self.build_temp)
-
-            # Config and build the extension
-            subprocess.check_call(['cmake', ext.cmake_lists_dir] + args, cwd=self.build_temp)
-            subprocess.check_call(['cmake', '--build', '.', '--config', build_type], cwd=self.build_temp)
-    """
 
 
-
-setup(name='testme',
+setup(name='tourniquet',
       author="Carson Harmon",
       author_email="carson.harmon@trailofbits.com",
       packages=find_packages(),
