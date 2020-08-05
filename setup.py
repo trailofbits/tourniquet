@@ -24,13 +24,13 @@ def get_ext_filename_without_platform_suffix(filename):
         return name[:idx] + ext
 
 
-"""
-This class defines a setup.py extension that stores the directory
-of the root CMake file
-"""
-
-
 class CMakeExtension(Extension):
+    """
+    This class defines a setup.py extension that stores the directory
+    of the root CMake file
+
+    """
+
     def __init__(self, name, cmake_lists_dir=None, **kwargs):
         Extension.__init__(self, name, sources=[], **kwargs)
         if cmake_lists_dir is None:
@@ -39,14 +39,14 @@ class CMakeExtension(Extension):
             self.sourcedir = os.path.dirname(os.path.abspath(cmake_lists_dir))
 
 
-"""
-This class defines a build extension
-get_ext_filename determines the expected output name of the library 
-build_extension sets the appropriate cmake flags and invokes cmake to build the extension
-"""
-
-
 class CMakeBuild(build_ext):
+    """
+    This class defines a build extension
+    get_ext_filename determines the expected output name of the library
+    build_extension sets the appropriate cmake flags and invokes cmake to build the extension
+
+    """
+
     def get_ext_filename(self, ext_name):
         filename = super().get_ext_filename(ext_name)
         return get_ext_filename_without_platform_suffix(filename)
