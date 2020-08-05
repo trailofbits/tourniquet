@@ -54,11 +54,10 @@ class CMakeBuild(build_ext):
     def build_extension(self, ext):
         extdir = os.path.abspath(
             os.path.dirname(self.get_ext_fullpath(ext.name)))
-        cmake_args = ['-DCMAKE_LIBRARY_OUTPUT_DIRECTORY=' + extdir,
-                      '-DPYTHON_EXECUTABLE=' + sys.executable]
-        cmake_args += ["-DPYTHON_MODULE_NAME=" + module_name]
+        cmake_args = [f"-DCMAKE_LIBRARY_OUTPUT_DIRECTORY={extdir}",
+                      f"-DPYTHON_EXECUTABLE={sys.executable}"]
+        cmake_args += [f"-DPYTHON_MODULE_NAME={module_name}"]
         env = os.environ.copy()
-        print(self.build_temp)
         if not os.path.exists(self.build_temp):
             os.makedirs(self.build_temp)
         subprocess.check_call(['cmake', ext.sourcedir] + cmake_args,
