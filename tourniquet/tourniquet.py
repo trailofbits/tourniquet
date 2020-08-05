@@ -18,6 +18,8 @@ def main():
     parser.add_argument("--outfile", type=str, default=None, help="Specify outfile JSON path/name")
 
     args = parser.parse_args(sys.argv[1:])
+    print(args)
+
 
 
 if __name__ == "__main__":

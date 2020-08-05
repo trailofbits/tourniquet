@@ -31,9 +31,12 @@ of the root CMake file
 
 
 class CMakeExtension(Extension):
-    def __init__(self, name, cmake_lists_dir='.', **kwargs):
+    def __init__(self, name, cmake_lists_dir=None, **kwargs):
         Extension.__init__(self, name, sources=[], **kwargs)
-        self.sourcedir = os.path.abspath(cmake_lists_dir)
+        if cmake_lists_dir is None:
+            self.sourcedir = os.path.dirname(os.path.abspath(__file__))
+        else:
+            self.sourcedir = os.path.dirname(os.path.abspath(cmake_lists_dir))
 
 
 """
@@ -55,6 +58,7 @@ class CMakeBuild(build_ext):
                       '-DPYTHON_EXECUTABLE=' + sys.executable]
         cmake_args += ["-DPYTHON_MODULE_NAME=" + module_name]
         env = os.environ.copy()
+        print(self.build_temp)
         if not os.path.exists(self.build_temp):
             os.makedirs(self.build_temp)
         subprocess.check_call(['cmake', ext.sourcedir] + cmake_args,
