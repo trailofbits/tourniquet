@@ -10,7 +10,7 @@ endif()
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_BUILD_TYPE Debug)
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fvisibility=hidden -fno-rtti -std=c++17")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
 find_package(PythonLibs REQUIRED)
 include_directories(${PYTHON_INCLUDE_DIRS})
 
@@ -57,7 +57,7 @@ add_library(
 	${PROJECT_NAME}
 	SHARED
 	${SOURCE_DIR}/ASTExporter.cpp
-	${SOURCE_DIR}/patcher.c
+	${SOURCE_DIR}/extractor.cpp
   )
 set_target_properties(
 	${PROJECT_NAME}

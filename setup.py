@@ -5,7 +5,7 @@ import subprocess
 import sys
 import sysconfig
 
-module_name = "example"
+module_name = "extractor"
 
 
 def get_ext_filename_without_platform_suffix(filename):
@@ -56,6 +56,7 @@ class CMakeBuild(build_ext):
             os.path.dirname(self.get_ext_fullpath(ext.name)))
         cmake_args = [f"-DCMAKE_LIBRARY_OUTPUT_DIRECTORY={extdir}",
                       f"-DPYTHON_EXECUTABLE={sys.executable}"]
+        print(sys.executable)
         cmake_args += [f"-DPYTHON_MODULE_NAME={module_name}"]
         env = os.environ.copy()
         if not os.path.exists(self.build_temp):

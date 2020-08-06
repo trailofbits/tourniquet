@@ -1,4 +1,4 @@
-import example
+import extractor
 import argparse
 import sys
 
@@ -21,7 +21,5 @@ def main():
     print(args)
 
 
-
 if __name__ == "__main__":
-    print("we did it reddit")
     main()

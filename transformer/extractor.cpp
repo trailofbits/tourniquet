@@ -55,7 +55,7 @@ PyInit_patcher(void) {
 }
 */
 
-static PyObject *pants(PyObject *self, PyObject *args) {
+extern "C" PyObject *pants(PyObject *self, PyObject *args) {
   int input;
   if (!PyArg_ParseTuple(args, "i", &input)) {
     return NULL;
@@ -64,12 +64,12 @@ static PyObject *pants(PyObject *self, PyObject *args) {
   return PyLong_FromLong((long)input * (long)input);
 }
 
-static PyMethodDef example_methods[] = {
+PyMethodDef example_methods[] = {
     {"pants", pants, METH_VARARGS, "Returns a square of an integer"},
     {NULL, NULL, 0, NULL},
 };
 
-static struct PyModuleDef example_definition = {
+struct PyModuleDef example_definition = {
     PyModuleDef_HEAD_INIT,
     "example",
     "example module containing pants() function",
@@ -77,12 +77,13 @@ static struct PyModuleDef example_definition = {
     example_methods,
 };
 
-PyMODINIT_FUNC PyInit_example(void) {
+extern "C" PyMODINIT_FUNC PyInit_extractor(void) {
   Py_Initialize();
   PyObject *m = PyModule_Create(&example_definition);
 
   return m;
 }
+
 //#ifdef __cplusplus
 //}
 //#endif

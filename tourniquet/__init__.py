@@ -1,1 +1,1 @@
-from .tourniquet import *
+from .__main__ import *
