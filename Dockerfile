@@ -20,7 +20,7 @@ RUN apt install -y \
 	llvm 
 
 RUN python3.7 -m pip install pip
-RUN pip3 install setuptools 
+RUN pip3 install setuptools ipython
 	
 WORKDIR /
 COPY . /tourniquet 
@@ -35,4 +35,4 @@ WORKDIR /tourniquet
 #-DLLVM_DYLIB_COMPONENTS=all .. && make -j5
 
 #Python test 
-#RUN pip3 install -e .
+RUN pip3 install .
