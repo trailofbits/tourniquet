@@ -1,131 +1,134 @@
-/*
- * ASTExporter.cpp
- *
- *  Created on: Jul 16, 2020
- *      Author: carson
- */
-#include <clang/Tooling/CommonOptionsParser.h>
-#include <clang/ASTMatchers/ASTMatchFinder.h>
-#include <clang/Tooling/Tooling.h>
-#include <llvm/ADT/SmallString.h>
-#include <llvm/ADT/StringRef.h>
-#include <llvm/Support/CommandLine.h>
-#include <llvm/Support/FileSystem.h>
-#include <llvm/Support/raw_ostream.h>
-#include "llvm/Support/JSON.h"
-#include "clang/Frontend/CompilerInstance.h"
-#include "clang/AST/RecursiveASTVisitor.h"
-#include <iostream>
+#include "ASTExporter.h"
+ASTExporterVisitor::ASTExporterVisitor(ASTContext *Context, PyObject* info)
+: Context(Context), tree_info(info), current_func(nullptr) {}
 
-
-using namespace llvm::json;
-using namespace clang::tooling;
-using JObject = llvm::json::Object;
-using namespace clang;
-
-
-//This is just here to build the options parser
-//I could not find a way to just get the options parser to parse command line opts without
-//also looking for a custom options category. :/
-static llvm::cl::OptionCategory ASTExporterOptions("Export options");
-
-
-/*
- * This is a simpler AST visitor that collects some information from nodes it vists
- * and records some information about the nodes. For search based repair, we are
- * not doing deep analysis of individual statements. Instead, we want to be able to access
- * functions, parameters, local/global variables, statements, and arguments passed to call exprs.
- * There might be some more info we need when dealing with templates etc.
- *
- * All information is just stored into a json object right now
- */
-class ASTExporterVisitor : public clang::RecursiveASTVisitor<ASTExporterVisitor> {
-	public:
-	  explicit ASTExporterVisitor(ASTContext *Context, JObject& info)
-	    : Context(Context), tree_info(info) {}
-
-	  bool VisitStmt(Stmt * stmt) {
-		  std::cout << "VISITED SOME STMT" << std::endl;
-		  return true;
-	  }
-
-	  bool VisitVarDecl(VarDecl * vdecl) {
-		  std::cout << "VISITED SOME VAR DECL" << std::endl;
-		  return true;
-	  }
-
-	  bool VisitCallExpr(CallExpr * call_expr) {
-		  std::cout << "VISITED SOME CALL EXPR" << std::endl;
-		  return true;
-	  }
-
-	  bool VisitFunctionDecl(FunctionDecl * func_decl) {
-		  std::cout << "VISITED SOME FUNCTION DECL" << std::endl;
-		  return true;
-	  }
-
-	private:
-	  ASTContext *Context;
-	  JObject& tree_info;
-};
-
-/*
- * The Consumer/FrontendAction/Factory are all clang boilerplate
- * which allow us to trigger an action on the AST and pass variables up/down
- * the class hiearchy.
- */
-
-class ASTExporterConsumer : public clang::ASTConsumer {
-public:
-  explicit ASTExporterConsumer(clang::ASTContext *Context, JObject& info)
-    : Visitor(Context, info) {}
-
-  virtual void HandleTranslationUnit(clang::ASTContext &Context) {
-    Visitor.TraverseDecl(Context.getTranslationUnitDecl());
-  }
-private:
-  ASTExporterVisitor Visitor;
-};
-
-
-class ASTExporterFrontendAction : public clang::ASTFrontendAction {
-public:
-	ASTExporterFrontendAction(JObject& json_info) : tree_info(json_info) {}
-	std::unique_ptr<clang::ASTConsumer> CreateASTConsumer(
-			clang::CompilerInstance &Compiler, llvm::StringRef InFile) {
-		std::cout << "Creating AST Consumer!" << std::endl;
-		return std::unique_ptr<clang::ASTConsumer>(
-				new ASTExporterConsumer(&Compiler.getASTContext(), tree_info));
+//TODO How to handle these types of errors in visitor and extension?
+void ASTExporterVisitor::PyListAppendString(PyObject * list, std::string str) {
+	PyObject* name_bytes = PyBytes_FromString(str.c_str());
+	if (name_bytes == nullptr) {
+		std::cout << "Failed to create PyString from StringName" << std::endl;
 	}
-
-private:
-	JObject& tree_info;
-};
-
-class ASTExporterActionFactory : public FrontendActionFactory {
-public:
-	ASTExporterActionFactory(JObject& json_info) : tree_info(json_info) {}
-	FrontendAction *create() {
-		return new ASTExporterFrontendAction(tree_info);
+	int ret = PyList_Append(list, name_bytes);
+	if (ret == -1) {
+		std::cout << "Failed to append StringName" << std::endl;
 	}
-
-private:
-	JObject& tree_info;
-};
-
-
-
-
-/*
-int main(int argc, const char * argv[]) {
-	//TODO accept this from the binding the filename that is.
-	CommonOptionsParser options_parser(argc, argv, ASTExporterOptions ,nullptr);
-	//clang::tooling::runToolOnCode(&ASTExporterFrontend(), argv[1]);
-	JObject tree_info;
-	ClangTool tool(
-			options_parser.getCompilations(), options_parser.getSourcePathList());
-	ASTExporterActionFactory factory(tree_info);
-	tool.run(&factory);
-	return 0;
 }
-*/
+
+void ASTExporterVisitor::PyDictUpdateEntry(PyObject * dict, PyObject * key, PyObject * new_item) {
+	if (auto old_item = PyDict_GetItem(dict, key)) {
+		if (PyList_Append(old_item, new_item) == -1) {
+			std::cout << "Failed to update array entry!" << std::endl;
+		}
+	}
+	else {
+		//Always init to be [item]
+		PyObject * arr = PyList_New(0);
+		if (PyList_Append(arr, new_item) == -1) {
+			std::cout << "Failed to append new_item to arr!" << std::endl;
+		}
+		PyDict_SetItem(dict, key, arr);
+	}
+}
+
+bool ASTExporterVisitor::VisitDeclStmt(Stmt * stmt) {
+	std::string expr = getText(*stmt, *Context);
+	PyObject * func_key = PyBytes_FromString(current_func->getNameAsString().c_str());
+	if (func_key == nullptr) {
+		std::cout << "Failed to create PyString from FunctionName" << std::endl;
+		return true;
+	}
+	PyObject * new_arr = PyList_New(0);
+	if (new_arr == nullptr) {
+		std::cout << "Failed to allocate PyList!" << std::endl;
+		return true;
+	}
+	PyListAppendString(new_arr, expr);
+	PyListAppendString(new_arr, "stmt_type");
+	PyDictUpdateEntry(tree_info, func_key, new_arr);
+	return true;
+}
+
+//Current func, var name, var type, qual types, string
+//Down cast to other types of param decl?
+//TODO test non canonical types
+bool ASTExporterVisitor::VisitVarDecl(VarDecl * vdecl) {
+	//Ignore externs, and parameter declarations.
+	if (vdecl->getStorageClass() == SC_Extern || vdecl->isLocalVarDecl() == 0) {
+		return true;
+	}
+	std::string fname = "global";
+	auto parent_func = vdecl->getParentFunctionOrMethod();
+	if (parent_func != nullptr) {
+		FunctionDecl * fdecl = llvm::dyn_cast<FunctionDecl>(parent_func);
+		fname = fdecl->getNameAsString();
+	}
+	PyObject * func_key = PyBytes_FromString(fname.c_str());
+	if (func_key == nullptr) {
+		std::cout << "Failed to create PyString from FunctionName" << std::endl;
+		return true;
+	}
+	//Function name --> (var_name, type, is_arr, size)
+	PyObject * new_arr = PyList_New(0);
+	if (new_arr == nullptr) {
+		std::cout << "Failed to allocate PyList!" << std::endl;
+		return true;
+	}
+	PyListAppendString(new_arr, vdecl->getNameAsString());
+	auto qt = vdecl->getType();
+	if (auto arr_type = llvm::dyn_cast<ConstantArrayType>(qt.getTypePtr())) {
+		auto size = arr_type->getSize().getSExtValue();
+		std::string type = arr_type->getElementType().getAsString();
+		PyListAppendString(new_arr, type);
+		PyListAppendString(new_arr, "1");
+		PyListAppendString(new_arr, std::to_string(size));
+	}
+	else {
+		PyListAppendString(new_arr, qt.getAsString());
+		PyListAppendString(new_arr, "0");
+		auto type_info = Context->getTypeInfo(qt);
+		PyListAppendString(new_arr, std::to_string(type_info.Width/8));
+	}
+	PyListAppendString(new_arr, "var_type");
+	PyDictUpdateEntry(tree_info, func_key, new_arr);
+	return true;
+}
+
+//Current func, Callee, args, arg types, string
+bool ASTExporterVisitor::VisitCallExpr(CallExpr * call_expr) {
+	std::string expr = getText(*call_expr, *Context);
+	PyObject * func_key = PyBytes_FromString(current_func->getNameAsString().c_str());
+	if (func_key == nullptr) {
+		std::cout << "Failed to create PyString from FunctionName" << std::endl;
+		return true;
+	}
+	PyObject * new_arr = PyList_New(0);
+	if (new_arr == nullptr) {
+		std::cout << "Failed to allocate PyList!" << std::endl;
+		return true;
+	}
+	auto test = call_expr->getCallee();
+	FunctionDecl *func = call_expr->getDirectCallee();
+	std::string callee = func->getNameInfo().getName().getAsString();
+	PyListAppendString(new_arr, callee);
+	for (auto arg : call_expr->arguments()) {
+		std::string arg_str = getText(*arg, *Context);
+		PyListAppendString(new_arr, arg_str);
+		PyListAppendString(new_arr, arg->getType().getAsString());
+	}
+	PyListAppendString(new_arr, "call_type");
+	PyDictUpdateEntry(tree_info, func_key, new_arr);
+	return true;
+}
+
+//Name, Parameters, Parameter Types?
+bool ASTExporterVisitor::VisitFunctionDecl(FunctionDecl * func_decl) {
+	if (func_decl->getStorageClass() == SC_Extern) {
+		return true;
+	}
+	current_func = func_decl;
+	std::string expr = getText(*func_decl, *Context);
+	//std::cout << "FuncDecl: " << func_decl->getNameAsString() << std::endl;
+	//For each param, iterate through and have a visitor for that.
+	//func_decl->getNumParams();
+	return true;
+}
