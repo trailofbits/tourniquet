@@ -19,9 +19,9 @@ jobs:
           python -m pip install --upgrade pip
           python -m pip install setuptools mypy black
       - name: PyLint 
-        uses: black --check tourniquet tests --line-length=127
+        run: black --check tourniquet tests --line-length=127
       - name: TypeCheck 
-        uses: mypy --ignore-missing-imports tourniquet tests 
+        run: mypy --python-version ${{ matrix.python-version }} --ignore-missing-imports tourniquet tests 
       - name: Build the base image
         run: docker build . --file Dockerfile -t tourniquet --no-cache
       - name: Run tourniquet tests
