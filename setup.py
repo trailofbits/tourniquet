@@ -75,4 +75,4 @@ setup(name='tourniquet',
       description='Syntax Guided Repair/Transformation Package',
       ext_modules=[CMakeExtension(module_name)],
       cmdclass={'build_ext': CMakeBuild},
-      zip_safe=False)
+      zip_safe=False, install_requires=['pytest'])
