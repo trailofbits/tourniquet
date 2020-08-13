@@ -53,13 +53,18 @@ bool ASTExporterVisitor::VisitDeclStmt(Stmt * stmt) {
 //TODO test non canonical types
 bool ASTExporterVisitor::VisitVarDecl(VarDecl * vdecl) {
 	//Ignore externs, and parameter declarations.
-	if (vdecl->getStorageClass() == SC_Extern || vdecl->isLocalVarDecl() == 0) {
+	if (vdecl->getStorageClass() == SC_Extern) {
+		std::cout << "1 IGNORING " << vdecl->getNameAsString() << std::endl;
 		return true;
 	}
 	std::string fname = "global";
 	auto parent_func = vdecl->getParentFunctionOrMethod();
 	if (parent_func != nullptr) {
 		FunctionDecl * fdecl = llvm::dyn_cast<FunctionDecl>(parent_func);
+		if (fdecl->isFileContext()) {
+			std::cout << "2 IGNORING " << vdecl->getNameAsString() << std::endl;
+			return true;
+		}
 		fname = fdecl->getNameAsString();
 	}
 	PyObject * func_key = PyBytes_FromString(fname.c_str());
