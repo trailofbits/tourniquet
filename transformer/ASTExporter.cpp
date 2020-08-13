@@ -54,7 +54,6 @@ bool ASTExporterVisitor::VisitDeclStmt(Stmt * stmt) {
 bool ASTExporterVisitor::VisitVarDecl(VarDecl * vdecl) {
 	//Ignore externs, and parameter declarations.
 	if (vdecl->getStorageClass() == SC_Extern) {
-		std::cout << "1 IGNORING " << vdecl->getNameAsString() << std::endl;
 		return true;
 	}
 	std::string fname = "global";
@@ -62,7 +61,6 @@ bool ASTExporterVisitor::VisitVarDecl(VarDecl * vdecl) {
 	if (parent_func != nullptr) {
 		FunctionDecl * fdecl = llvm::dyn_cast<FunctionDecl>(parent_func);
 		if (fdecl->isFileContext()) {
-			std::cout << "2 IGNORING " << vdecl->getNameAsString() << std::endl;
 			return true;
 		}
 		fname = fdecl->getNameAsString();
