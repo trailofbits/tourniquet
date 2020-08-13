@@ -21,7 +21,7 @@ jobs:
       - name: PyLint 
         uses: black --check tourniquet tests --line-length=127
       - name: TypeCheck 
-        uses: mypy --python-version ${{ matrix.python-version }} --ignore-missing-imports tourniquet tests 
+        uses: mypy --ignore-missing-imports tourniquet tests 
       - name: Build the base image
         run: docker build . --file Dockerfile -t tourniquet --no-cache
       - name: Run tourniquet tests
