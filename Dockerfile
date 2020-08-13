@@ -20,7 +20,7 @@ RUN apt install -y \
 	llvm 
 
 RUN python3.7 -m pip install pip
-RUN pip3 install setuptools ipython
+RUN pip3 install setuptools ipython pytest
 	
 WORKDIR /
 COPY . /tourniquet 
