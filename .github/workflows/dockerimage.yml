@@ -1,0 +1,28 @@
+name: Build Tourniquet Image & Pytest
+
+on: push
+
+jobs:
+  test_image:
+    runs-on: ubuntu-latest
+    strategy: 
+      matrix:
+        python-version: [3.7, 3.8]
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v1
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install black and pytest 
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install setuptools mypy black
+      - name: PyLint 
+        run: black --check tourniquet tests --line-length=127
+      - name: TypeCheck 
+        run: mypy --python-version ${{ matrix.python-version }} --ignore-missing-imports tourniquet tests 
+      - name: Build the base image
+        run: docker build . --file Dockerfile -t tourniquet --no-cache
+      - name: Run tourniquet tests
+        run: docker run --rm tourniquet pytest
