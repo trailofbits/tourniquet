@@ -1,12 +1,13 @@
-from typing import Dict, List
+from typing import Dict, List, Tuple
 import os
 import extractor
 import sqlite3
 from sqlite3 import Error
 import logging
 import json
+from .patch_lang import PatchTemplate, StatementList, FixPattern
 
-
+# TODO Make DB class to pass around instead of connection.
 class Tourniquet:
     SQL_CREATE_MODULES_TABLE = """ 
         CREATE TABLE IF NOT EXISTS '{}' (
@@ -22,11 +23,28 @@ class Tourniquet:
             CREATE TABLE IF NOT EXISTS '{}' (
             id INTEGER PRIMARY KEY, 
             entry_type nvarchar NOT NULL,
-            data json NOT NULL
+            data json NOT NULL, 
+            line int NOT NULL, 
+            col int NOT NULL
         );
     """
+    # This table is to easily map line,col --> func_table
+    SQL_CREATE_LINE_MAP_TABLE = """
+        CREATE TABLE IF NOT EXISTS '{}' (
+        id INTEGER PRIMARY KEY, 
+        line int NOT NULL, 
+        col int NOT NULL, 
+        nvarchar func_name
+        );
+    """
+    SQL_INSERT_LINE_MAP_TABLE = """
+        INSERT INTO '{}' (line, col, func_name) VALUES ('{}', '{}', '{}')
+    """
+    SQL_QUERY_LINE_MAP = """
+        SELECT func_name FROM '{}' WHERE line={} AND col={};
+    """
     SQL_INSERT_FUNC_ENTRY = """
-        INSERT INTO '{}' (entry_type, data) VALUES ( '{}', '{}' )
+        INSERT INTO '{}' (entry_type, data, line, col) VALUES ( '{}', '{}', '{}', '{}')
     """
 
     def __init__(self, database_name: str):
@@ -34,6 +52,7 @@ class Tourniquet:
         self.db_conn = None
         self.logger = logging.getLogger("tourniquet")
         self.create_db(self.db_name)
+        self.patch_templates: List[PatchTemplate] = []
 
     def create_db(self, db_name: str) -> None:
         # Connect to DB
@@ -70,9 +89,19 @@ class Tourniquet:
     # The way to relate to this table is via a string
     def create_global_table(self, module_name) -> str:
         cursor = self.db_conn.cursor()
-        cursor.execute(self.SQL_CREATE_FUNC_TABLE.format(module_name + "_globals"))
+        global_query = self.SQL_CREATE_FUNC_TABLE.format(module_name + "_globals")
+        print(global_query)
+        cursor.execute(global_query)
         self.db_conn.commit()
         return module_name + "_globals"
+
+    def create_line_map_table(self, module_name) -> str:
+        cursor = self.db_conn.cursor()
+        map_query = self.SQL_CREATE_FUNC_TABLE.format(module_name + "_line_map")
+        print(map_query)
+        cursor.execute(map_query)
+        self.db_conn.commit()
+        return module_name + "_line_map"
 
     def create_function_table(self, table_name: str, table_entries) -> None:
         cursor = self.db_conn.cursor()
@@ -83,18 +112,22 @@ class Tourniquet:
             print("ENTRY IS ", entry)
             print("TABLE ENTRY IS", table_entries)
             entry_type = entry[len(entry) - 1]
+            start_line = entry[0]
+            start_col = entry[1]
             print(entry_type)
-            query = self.SQL_INSERT_FUNC_ENTRY.format(table_name, entry_type, json.dumps(entry))
+            query = self.SQL_INSERT_FUNC_ENTRY.format(table_name, entry_type, json.dumps(entry), start_line, start_col)
             print(query)
             cursor.execute(query)
         self.db_conn.commit()
 
     def store_ast(self, ast_info: Dict[str, List[List[str]]]) -> None:
         # Create module table
+        # TODO take module name from extractor
         module_name = "test_name"
         self.create_module_table(module_name)
         # create global table
         global_table = self.create_global_table(module_name)
+        line_map_table = self.create_line_map_table(module_name)
         # Table for each function (maybe some symbol issues)
         cursor = self.db_conn.cursor()
         for func_key in ast_info:
@@ -104,5 +137,30 @@ class Tourniquet:
             mod_insert_query = self.SQL_INSERT_MOD_TABLE.format(module_name, func_key)
             print(mod_insert_query)
             cursor.execute(mod_insert_query)
+            entry_info = ast_info[func_key]
+            start_line = entry_info[0]
+            start_col = entry_info[1]
+            line_map_query = self.SQL_INSERT_LINE_MAP_TABLE.format(line_map_table, start_line, start_col)
+            cursor.execute(line_map_query)
             self.db_conn.commit()
-        return
+
+    def add_new_template(self, template: PatchTemplate):
+        self.patch_templates.append(template)
+
+    def print_template_names(self):
+        for template in self.patch_templates:
+            print(template.template_name)
+
+    def view_template(self, module_name, template_name, line: int, col: int):
+        for template in self.patch_templates:
+            if template.template_name == template_name:
+                print("="*10, template_name, "="*10)
+                print(template.view(line, col, self.db_conn, module_name))
+                print("="*10, "END", "="*10)
+    #TODO add view with context
+    #TODO add matching
+    #TODO add concretizing
+    #def create_new_template(self, matcher_func, statement_list: StatementList):
+    #    new_fix_pattern = FixPattern(statement_list)
+    #    patch_t = PatchTemplate(matcher_func, new_fix_pattern)
+    #    self.patch_templates.append((template_name, patch_t))

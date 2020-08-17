@@ -42,6 +42,10 @@ bool ASTExporterVisitor::VisitDeclStmt(Stmt * stmt) {
 		std::cout << "Failed to allocate PyList!" << std::endl;
 		return true;
 	}
+	unsigned int start_line = Context->getSourceManager().getExpansionLineNumber(stmt->getBeginLoc());
+	unsigned int start_col = Context->getSourceManager().getExpansionColumnNumber(stmt->getBeginLoc());
+	PyListAppendString(new_arr, std::to_string(start_line));
+	PyListAppendString(new_arr, std::to_string(start_col));
 	PyListAppendString(new_arr, expr);
 	PyListAppendString(new_arr, "stmt_type");
 	PyDictUpdateEntry(tree_info, func_key, new_arr);
@@ -76,6 +80,10 @@ bool ASTExporterVisitor::VisitVarDecl(VarDecl * vdecl) {
 		std::cout << "Failed to allocate PyList!" << std::endl;
 		return true;
 	}
+	unsigned int start_line = Context->getSourceManager().getExpansionLineNumber(vdecl->getBeginLoc());
+	unsigned int start_col = Context->getSourceManager().getExpansionColumnNumber(vdecl->getBeginLoc());
+	PyListAppendString(new_arr, std::to_string(start_line));
+	PyListAppendString(new_arr, std::to_string(start_col));
 	PyListAppendString(new_arr, vdecl->getNameAsString());
 	auto qt = vdecl->getType();
 	if (auto arr_type = llvm::dyn_cast<ConstantArrayType>(qt.getTypePtr())) {
@@ -112,6 +120,10 @@ bool ASTExporterVisitor::VisitCallExpr(CallExpr * call_expr) {
 	auto test = call_expr->getCallee();
 	FunctionDecl *func = call_expr->getDirectCallee();
 	std::string callee = func->getNameInfo().getName().getAsString();
+	unsigned int start_line = Context->getSourceManager().getExpansionLineNumber(call_expr->getBeginLoc());
+	unsigned int start_col = Context->getSourceManager().getExpansionColumnNumber(call_expr->getBeginLoc());
+	PyListAppendString(new_arr, std::to_string(start_line));
+	PyListAppendString(new_arr, std::to_string(start_col));
 	PyListAppendString(new_arr, callee);
 	for (auto arg : call_expr->arguments()) {
 		std::string arg_str = getText(*arg, *Context);
@@ -129,9 +141,5 @@ bool ASTExporterVisitor::VisitFunctionDecl(FunctionDecl * func_decl) {
 		return true;
 	}
 	current_func = func_decl;
-	std::string expr = getText(*func_decl, *Context);
-	//std::cout << "FuncDecl: " << func_decl->getNameAsString() << std::endl;
-	//For each param, iterate through and have a visitor for that.
-	//func_decl->getNumParams();
 	return true;
 }
