@@ -1,11 +1,11 @@
-from typing import Dict, List, Tuple, Optional
+from typing import Dict, List, Optional
 import os
 import extractor
 import sqlite3
 from sqlite3 import Error
 import logging
 import json
-from .patch_lang import PatchTemplate, StatementList, FixPattern
+from .patch_lang import PatchTemplate
 
 # TODO Make DB class to pass around instead of connection.
 class Tourniquet:
