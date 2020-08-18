@@ -44,8 +44,12 @@ bool ASTExporterVisitor::VisitDeclStmt(Stmt * stmt) {
 	}
 	unsigned int start_line = Context->getSourceManager().getExpansionLineNumber(stmt->getBeginLoc());
 	unsigned int start_col = Context->getSourceManager().getExpansionColumnNumber(stmt->getBeginLoc());
+	unsigned int end_line = Context->getSourceManager().getExpansionLineNumber(stmt->getEndLoc());
+	unsigned int end_col = Context->getSourceManager().getExpansionColumnNumber(stmt->getEndLoc());
 	PyListAppendString(new_arr, std::to_string(start_line));
 	PyListAppendString(new_arr, std::to_string(start_col));
+	PyListAppendString(new_arr, std::to_string(end_line));
+	PyListAppendString(new_arr, std::to_string(end_col));
 	PyListAppendString(new_arr, expr);
 	PyListAppendString(new_arr, "stmt_type");
 	PyDictUpdateEntry(tree_info, func_key, new_arr);
@@ -82,8 +86,12 @@ bool ASTExporterVisitor::VisitVarDecl(VarDecl * vdecl) {
 	}
 	unsigned int start_line = Context->getSourceManager().getExpansionLineNumber(vdecl->getBeginLoc());
 	unsigned int start_col = Context->getSourceManager().getExpansionColumnNumber(vdecl->getBeginLoc());
+	unsigned int end_line = Context->getSourceManager().getExpansionLineNumber(vdecl->getEndLoc());
+	unsigned int end_col = Context->getSourceManager().getExpansionColumnNumber(vdecl->getEndLoc());
 	PyListAppendString(new_arr, std::to_string(start_line));
 	PyListAppendString(new_arr, std::to_string(start_col));
+	PyListAppendString(new_arr, std::to_string(end_line));
+	PyListAppendString(new_arr, std::to_string(end_col));
 	PyListAppendString(new_arr, vdecl->getNameAsString());
 	auto qt = vdecl->getType();
 	if (auto arr_type = llvm::dyn_cast<ConstantArrayType>(qt.getTypePtr())) {
@@ -122,8 +130,14 @@ bool ASTExporterVisitor::VisitCallExpr(CallExpr * call_expr) {
 	std::string callee = func->getNameInfo().getName().getAsString();
 	unsigned int start_line = Context->getSourceManager().getExpansionLineNumber(call_expr->getBeginLoc());
 	unsigned int start_col = Context->getSourceManager().getExpansionColumnNumber(call_expr->getBeginLoc());
+	unsigned int end_line = Context->getSourceManager().getExpansionLineNumber(call_expr->getEndLoc());
+	unsigned int end_col = Context->getSourceManager().getExpansionColumnNumber(call_expr->getEndLoc());
 	PyListAppendString(new_arr, std::to_string(start_line));
 	PyListAppendString(new_arr, std::to_string(start_col));
+	PyListAppendString(new_arr, std::to_string(end_line));
+	// +1 here to catch the semi colon :)
+	PyListAppendString(new_arr, std::to_string(end_col));
+	PyListAppendString(new_arr, expr);
 	PyListAppendString(new_arr, callee);
 	for (auto arg : call_expr->arguments()) {
 		std::string arg_str = getText(*arg, *Context);
