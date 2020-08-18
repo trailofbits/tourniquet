@@ -117,16 +117,17 @@ class Tourniquet:
             start_col = entry[1]
             end_line = entry[2]
             end_col = entry[3]
-            query = self.SQL_INSERT_FUNC_ENTRY.format(table_name, entry_type, json.dumps(entry), start_line, start_col, end_line, end_col)
+            query = self.SQL_INSERT_FUNC_ENTRY.format(
+                table_name, entry_type, json.dumps(entry), start_line, start_col, end_line, end_col
+            )
             cursor.execute(query)
         self.db_conn.commit()
 
     # Create module table
     # TODO take module name from extractor
     def store_ast(self, ast_info: Dict[str, List[List[str]]]) -> None:
-        module_name = ast_info["module_name"]
-        print(module_name)
-        module_name = module_name[0][0]
+        module_info = ast_info["module_name"]
+        module_name = module_info[0][0]
         self.create_module_table(module_name)
         # create global table
         global_table = self.create_global_table(module_name)
@@ -172,12 +173,12 @@ class Tourniquet:
         return None
 
     # TODO Should take a target
-    def concretize_template(self, module_name, template_name, line, col) -> Optional[List[str]]:
+    def concretize_template(self, module_name, template_name, line, col) -> List[str]:
         for template in self.patch_templates:
             if template.template_name == template_name:
                 view_str = template.concretize(line, col, self.db_conn, module_name)
                 return view_str
-        return None
+        return []
 
     # TODO Should take a target
     def patch(self, file_path, replacement: str, line: int, col: int) -> bool:

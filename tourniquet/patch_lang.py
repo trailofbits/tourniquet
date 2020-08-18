@@ -325,10 +325,10 @@ class NodeStmt(Statement):
         # The DB stored the array as a string
         # Convert back into an array
         arr_string = entry_info[0][1]
-        arr_string = arr_string[1:len(arr_string)-1]
+        arr_string = arr_string[1 : len(arr_string) - 1]
         # TODO really need a parser for this.
-        source_list = [x.strip().replace("\"", "") for x in arr_string.split("\",")]
-        #source_list = arr_string[1 : len(arr_string) - 1].split(",")
+        source_list = [x.strip().replace('"', "") for x in arr_string.split('",')]
+        # source_list = arr_string[1 : len(arr_string) - 1].split(",")
         # Todo have a parser for these types of things
         ret_str = source_list[4] + ";"
         return ret_str
