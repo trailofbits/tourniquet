@@ -52,19 +52,19 @@ class Tourniquet:
 
     def __init__(self, database_name: str):
         self.db_name = database_name
-        self.db_conn = None
         self.logger = logging.getLogger("tourniquet")
-        self.create_db(self.db_name)
+        self.db_conn = self.create_db(self.db_name)
         self.patch_templates: List[PatchTemplate] = []
 
-    def create_db(self, db_name: str) -> None:
+    def create_db(self, db_name: str):
         # Connect to DB
         try:
-            self.db_conn = sqlite3.connect(db_name)
+            db_conn = sqlite3.connect(db_name)
         # Raise exception if can't get the DB
         except Error:
             self.logger.error(self, f"Error! Could not connect to database: {db_name}")
             raise
+        return db_conn
 
     def extract_ast(self, filepath: str) -> Dict[str, List[List[str]]]:
         # Assert file path exists
@@ -107,17 +107,17 @@ class Tourniquet:
     def create_function_table(self, table_name: str, table_entries) -> None:
         cursor = self.db_conn.cursor()
         table_create_query = self.SQL_CREATE_FUNC_TABLE.format(table_name)
-        #print(table_create_query)
+        # print(table_create_query)
         cursor.execute(table_create_query)
         for entry in table_entries:
-            #print("ENTRY IS ", entry)
-            #print("TABLE ENTRY IS", table_entries)
+            # print("ENTRY IS ", entry)
+            # print("TABLE ENTRY IS", table_entries)
             entry_type = entry[len(entry) - 1]
             start_line = entry[0]
             start_col = entry[1]
-            #print(entry_type)
+            # print(entry_type)
             query = self.SQL_INSERT_FUNC_ENTRY.format(table_name, entry_type, json.dumps(entry), start_line, start_col)
-            #print(query)
+            # print(query)
             cursor.execute(query)
         self.db_conn.commit()
 
@@ -136,7 +136,7 @@ class Tourniquet:
                 continue
             self.create_function_table(func_key, ast_info[func_key])
             mod_insert_query = self.SQL_INSERT_MOD_TABLE.format(module_name, func_key)
-            #print(mod_insert_query)
+            # print(mod_insert_query)
             cursor.execute(mod_insert_query)
             entry_info = ast_info[func_key]
             for entry in entry_info:
@@ -160,10 +160,10 @@ class Tourniquet:
     def view_template(self, module_name, template_name, line: int, col: int) -> Optional[str]:
         for template in self.patch_templates:
             if template.template_name == template_name:
-                print("="*10, template_name, "="*10)
+                print("=" * 10, template_name, "=" * 10)
                 view_str = template.view(line, col, self.db_conn, module_name)
                 print(view_str)
-                print("="*10, "END", "="*10)
+                print("=" * 10, "END", "=" * 10)
                 return view_str
         return None
 
@@ -173,14 +173,15 @@ class Tourniquet:
                 view_str = template.concretize(line, col, self.db_conn, module_name)
                 return view_str
         return None
-    #TODO add view with context
-    #TODO add matching
-    #TODO add concretizing
-    #TODO Add source string for vardecls too :)
-    #TODO add module info for items too :)
+
+    # TODO add view with context
+    # TODO add matching
+    # TODO add concretizing
+    # TODO Add source string for vardecls too :)
+    # TODO add module info for items too :)
     # TODO PatchLang tests
     # TODO DB Tests
-    #def create_new_template(self, matcher_func, statement_list: StatementList):
+    # def create_new_template(self, matcher_func, statement_list: StatementList):
     #    new_fix_pattern = FixPattern(statement_list)
     #    patch_t = PatchTemplate(matcher_func, new_fix_pattern)
     #    self.patch_templates.append((template_name, patch_t))

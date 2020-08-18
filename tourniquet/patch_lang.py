@@ -21,8 +21,7 @@ class Variable(Expression):
                 SELECT func_name FROM '{}' WHERE line={} AND col={};
             """
         # TODO Have this be inside the new DB class later
-        fetch_query = SQL_QUERY_LINE_MAP.format(
-            module_name + "_line_map", line, col)
+        fetch_query = SQL_QUERY_LINE_MAP.format(module_name + "_line_map", line, col)
         cursor.execute(fetch_query)
         function_info = cursor.fetchall()
         # Could be more than once match
@@ -40,8 +39,8 @@ class Variable(Expression):
             # TODO Really should make a parser for this later
             # This is ugly
             test = entry[0]
-            test = test[1:len(test) - 1]
-            source_list = [x.replace("\"", "").strip() for x in test.split(',')]
+            test = test[1 : len(test) - 1]
+            source_list = [x.replace('"', "").strip() for x in test.split(",")]
             # Just append all variable names
             ret_list.append(f"{source_list[2]}")
         return ret_list
@@ -62,8 +61,7 @@ class StaticBufferSize(Expression):
                 SELECT func_name FROM '{}' WHERE line={} AND col={};
             """
         # TODO Have this be inside the new DB class later
-        fetch_query = SQL_QUERY_LINE_MAP.format(
-            module_name + "_line_map", line, col)
+        fetch_query = SQL_QUERY_LINE_MAP.format(module_name + "_line_map", line, col)
         cursor.execute(fetch_query)
         function_info = cursor.fetchall()
         # Could be more than once match
@@ -81,8 +79,8 @@ class StaticBufferSize(Expression):
             # TODO Really should make a parser for this later
             # This is ugly
             test = entry[0]
-            test = test[1:len(test) - 1]
-            source_list = [x.replace("\"", "").strip() for x in test.split(',')]
+            test = test[1 : len(test) - 1]
+            source_list = [x.replace('"', "").strip() for x in test.split(",")]
             # This checks the flag to confirm its an array type
             if int(source_list[4]) == 1:
                 ret_list.append(f"sizeof({source_list[2]})")
@@ -127,8 +125,13 @@ class BinaryMathOperator(Expression):
         return ret_list
 
     def view(self, line: int, col: int, db_context, module_name) -> str:
-        return "BinaryOperator(" + self.lhs.view(line, col, db_context, module_name) \
-               + "," + self.rhs.view(line, col, db_context, module_name) + ")"
+        return (
+            "BinaryOperator("
+            + self.lhs.view(line, col, db_context, module_name)
+            + ","
+            + self.rhs.view(line, col, db_context, module_name)
+            + ")"
+        )
 
 
 class BinaryBoolOperator(Expression):
@@ -153,8 +156,13 @@ class BinaryBoolOperator(Expression):
         return ret_list
 
     def view(self, line: int, col: int, db_context, module_name) -> str:
-        return "BinaryBoolOperator(" + self.lhs.view(line, col, db_context, module_name) \
-               + "," + self.rhs.view(line, col, db_context, module_name) + ")"
+        return (
+            "BinaryBoolOperator("
+            + self.lhs.view(line, col, db_context, module_name)
+            + ","
+            + self.rhs.view(line, col, db_context, module_name)
+            + ")"
+        )
 
 
 class LessThanExpr(Expression):
@@ -204,8 +212,7 @@ class StatementList:
          second
          [c1d1, c1d2, c1d3]
         """
-        #ret_list = []
-        temp_list = []
+        temp_list: List[str] = []
         for stmt in self.statements:
             temp_result = stmt.concretize(line, col, db_context, module_name)
             # if temp_list is empty
@@ -230,9 +237,9 @@ class StatementList:
 
 
 class IfStmt(Statement):
-    def __init__(self, cond_expr: Expression, statement_list: StatementList):
+    def __init__(self, cond_expr: Expression, *args):
         self.cond_expr = cond_expr
-        self.statement_list = statement_list
+        self.statement_list = StatementList(args)
 
     def concretize(self, line: int, col: int, db_context, module_name) -> List[str]:
         ret_list = []
@@ -241,20 +248,19 @@ class IfStmt(Statement):
         for cond in cond_list:
             for stmt in stmt_list:
                 cand_str = "if (" + cond + ") {\n" + stmt + "}\n"
-                cand_str.append(ret_list)
+                ret_list.append(cand_str)
         return ret_list
 
     def view(self, line: int, col: int, db_context, module_name) -> str:
         if_str = "if (" + self.cond_expr.view(line, col, db_context, module_name) + ") {\n"
-        if_str += self.statement_list.concretize(line, col, db_context, module_name)
+        if_str += self.statement_list.view(line, col, db_context, module_name)
         if_str += "}\n"
         return if_str
 
 
-# TODO Same here, make these take a *args
 class ElseStmt(Statement):
-    def __init__(self, statement_list: StatementList):
-        self.statement_list = statement_list
+    def __init__(self, *args):
+        self.statement_list = StatementList(args)
 
     def concretize(self, line: int, col: int, db_context, module_name) -> List[str]:
         ret_list = []
@@ -304,8 +310,7 @@ class NodeStmt(Statement):
             SELECT func_name FROM '{}' WHERE line={} AND col={};
         """
         # TODO Have this be inside the new DB class later
-        fetch_query = SQL_QUERY_LINE_MAP.format(
-            module_name + "_line_map", line, col)
+        fetch_query = SQL_QUERY_LINE_MAP.format(module_name + "_line_map", line, col)
         cursor.execute(fetch_query)
         function_info = cursor.fetchall()
         # Could be more than once match
@@ -320,7 +325,7 @@ class NodeStmt(Statement):
         # The DB stored the array as a string
         # Convert back into an array
         arr_string = entry_info[0][1]
-        source_list = arr_string[1:len(arr_string) - 1].split(",")
+        source_list = arr_string[1 : len(arr_string) - 1].split(",")
         # Todo have a parser for these types of things
         return source_list[2]
 
