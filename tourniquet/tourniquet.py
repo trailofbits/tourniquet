@@ -93,7 +93,6 @@ class Tourniquet:
     def create_global_table(self, module_name) -> str:
         cursor = self.db_conn.cursor()
         global_query = self.SQL_CREATE_FUNC_TABLE.format(module_name + "_globals")
-        #print(global_query)
         cursor.execute(global_query)
         self.db_conn.commit()
         return module_name + "_globals"
@@ -101,7 +100,6 @@ class Tourniquet:
     def create_line_map_table(self, module_name) -> str:
         cursor = self.db_conn.cursor()
         map_query = self.SQL_CREATE_LINE_MAP_TABLE.format(module_name + "_line_map")
-        print(map_query)
         cursor.execute(map_query)
         self.db_conn.commit()
         return module_name + "_line_map"
@@ -145,7 +143,6 @@ class Tourniquet:
                 start_line = entry[0]
                 start_col = entry[1]
                 line_map_query = self.SQL_INSERT_LINE_MAP_TABLE.format(line_map_table, start_line, start_col, func_key)
-                print(line_map_query)
                 cursor.execute(line_map_query)
             self.db_conn.commit()
 
@@ -167,6 +164,13 @@ class Tourniquet:
                 view_str = template.view(line, col, self.db_conn, module_name)
                 print(view_str)
                 print("="*10, "END", "="*10)
+                return view_str
+        return None
+
+    def concretize_template(self, module_name, template_name, line, col) -> Optional[List[str]]:
+        for template in self.patch_templates:
+            if template.template_name == template_name:
+                view_str = template.concretize(line, col, self.db_conn, module_name)
                 return view_str
         return None
     #TODO add view with context
