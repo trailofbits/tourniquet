@@ -1,4 +1,5 @@
 from tourniquet import Tourniquet
+from tourniquet.patch_lang import *
 import os
 import logging
 import pytest
@@ -16,7 +17,7 @@ def test_tourniquet_extract_simple():
     logger.info("Testing extraction of simple types")
 
     # No DB name for now
-    test_extractor = Tourniquet("")
+    test_extractor = Tourniquet("test.db")
     test_file = os.path.join(TEST_FILE_DIR, "patch_test.c")
     extraction_results: dict = test_extractor.extract_ast(test_file)
     # Look for the four variables
@@ -41,9 +42,18 @@ def test_tourniquet_extract_simple():
 
 def test_tourniquet_extract_badfile():
     logger.info("Testing extract error handling")
-    test_extractor = Tourniquet("")
+    test_extractor = Tourniquet("test.db")
     test_file = os.path.join(TEST_FILE_DIR, "")
     with pytest.raises(FileNotFoundError):
         test_extractor.extract_ast(test_file)
     with pytest.raises(FileNotFoundError):
         test_extractor.extract_ast("")
+
+
+def test_new_template():
+    test_extractor = Tourniquet("test.db")
+    test_file = os.path.join(TEST_FILE_DIR, "patch_test.c")
+    new_template = PatchTemplate("testme", lambda x, y: True, FixPattern(NodeStmt()))
+    test_extractor.add_new_template(new_template)
+    assert len(test_extractor.patch_templates) == 1
+    # view_str = test_extractor.view_template()

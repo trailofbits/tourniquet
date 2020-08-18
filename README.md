@@ -1,5 +1,5 @@
 # Tourniquet
-A Python library for easy C/C++ syntax guided program transformation/repair
+A Python library for easy C/C++ syntax guided program transformation/repair. This is still very early in development. 
 
 # Quickstart 
 
