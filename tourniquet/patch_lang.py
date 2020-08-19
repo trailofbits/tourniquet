@@ -196,8 +196,8 @@ class StatementList:
     def __init__(self, *args):
         self.statements = []
         for arg in args:
-            print(arg)
             self.statements.append(arg)
+        print(self.statements)
 
     def concretize(self, line: int, col: int, db_context, module_name) -> List[str]:
         """
@@ -213,6 +213,7 @@ class StatementList:
         """
         temp_list: List[str] = []
         for stmt in self.statements:
+            print(stmt)
             temp_result = stmt.concretize(line, col, db_context, module_name)
             # if temp_list is empty
             if len(temp_list) == 0:
