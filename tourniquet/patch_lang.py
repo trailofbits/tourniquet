@@ -194,9 +194,11 @@ class Statement(ABC):
 # TODO return List of Strings from concretize.
 class StatementList:
     def __init__(self, *args):
-        self.statements = []
+        self.statements: List[Statement] = []
+        print(args)
         for arg in args:
-            self.statements.append(arg)
+            for i in arg:
+                self.statements.append(arg)
         print(self.statements)
 
     def concretize(self, line: int, col: int, db_context, module_name) -> List[str]:
