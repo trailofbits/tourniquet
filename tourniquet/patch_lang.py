@@ -197,7 +197,7 @@ class StatementList:
         self.statements = []
         for arg in args:
             print(arg)
-            self.statements.append(*arg)
+            self.statements.append(arg)
 
     def concretize(self, line: int, col: int, db_context, module_name) -> List[str]:
         """
