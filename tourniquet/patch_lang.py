@@ -195,11 +195,9 @@ class Statement(ABC):
 class StatementList:
     def __init__(self, *args):
         self.statements: List[Statement] = []
-        print(args)
         for arg in args:
             for i in arg:
                 self.statements.append(i)
-        print(self.statements)
 
     def concretize(self, line: int, col: int, db_context, module_name) -> List[str]:
         """
@@ -215,7 +213,6 @@ class StatementList:
         """
         temp_list: List[str] = []
         for stmt in self.statements:
-            print(stmt)
             temp_result = stmt.concretize(line, col, db_context, module_name)
             # if temp_list is empty
             if len(temp_list) == 0:
@@ -315,8 +312,6 @@ class NodeStmt(Statement):
         fetch_query = SQL_QUERY_LINE_MAP.format(module_name + "_line_map", line, col)
         cursor.execute(fetch_query)
         function_info = cursor.fetchall()
-        print(fetch_query)
-        print(function_info)
         # Could be more than once match
         func_name = function_info[0][0]
         SQL_QUERY_FUNC_ENTRY = """
