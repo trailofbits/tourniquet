@@ -14,4 +14,5 @@ Enter an `ipython` instance and `import tourniquet`
 
 # Contributors 
 Carson Harmon (carson.harmon@trailofbits.com)
+
 Evan Sultanik (evan.sultanik@trailofbits.com)
