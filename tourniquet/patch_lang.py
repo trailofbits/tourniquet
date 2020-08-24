@@ -194,9 +194,10 @@ class Statement(ABC):
 # TODO return List of Strings from concretize.
 class StatementList:
     def __init__(self, *args):
-        self.statements = []
+        self.statements: List[Statement] = []
         for arg in args:
-            self.statements.append(*arg)
+            for i in arg:
+                self.statements.append(i)
 
     def concretize(self, line: int, col: int, db_context, module_name) -> List[str]:
         """
@@ -311,8 +312,6 @@ class NodeStmt(Statement):
         fetch_query = SQL_QUERY_LINE_MAP.format(module_name + "_line_map", line, col)
         cursor.execute(fetch_query)
         function_info = cursor.fetchall()
-        print(fetch_query)
-        print(function_info)
         # Could be more than once match
         func_name = function_info[0][0]
         SQL_QUERY_FUNC_ENTRY = """
