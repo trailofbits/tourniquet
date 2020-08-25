@@ -1,12 +1,12 @@
-FROM ubuntu:18.04 as base 
+FROM ubuntu:18.04 as base
 
-MAINTAINER Carson Harmon <carson.harmon@trailofbits.com> 
+MAINTAINER Carson Harmon <carson.harmon@trailofbits.com>
 
 RUN apt-get update -y
 
 RUN apt install -y \
 	clang-9 \
-	clang++-9 \ 
+	clang++-9 \
 	cmake \
 	git \
 	zlib1g-dev \
@@ -17,22 +17,14 @@ RUN apt install -y \
 	autoconf \
 	libzmqpp-dev \
 	automake \
-	llvm 
+	llvm
 
 RUN python3.7 -m pip install pip
 RUN pip3 install setuptools ipython pytest
-	
+
 WORKDIR /
-COPY . /tourniquet 
+COPY . /tourniquet
 
 WORKDIR /tourniquet
 
-#RUN rm -rf build && mkdir -p build 
-
-#WORKDIR /tourniquet/build
-
-#RUN cmake -DCMAKE_C_COMPILER=clang-9 -DCMAKE_CXX_COMPILER=clang++-9 \
-#-DLLVM_DYLIB_COMPONENTS=all .. && make -j5
-
-#Python test 
-RUN pip3 install .
+RUN pip3 install -e .[dev]

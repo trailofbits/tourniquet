@@ -78,5 +78,14 @@ setup(
     ext_modules=[CMakeExtension(module_name)],
     cmdclass={"build_ext": CMakeBuild},
     zip_safe=False,
-    install_requires=["pytest"],
+    extras_require={
+        "dev": [
+            "ipython",
+            "pytest",
+            "flake8",
+            "black",
+            "mypy",
+            "isort",
+        ]
+    }
 )

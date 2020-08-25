@@ -1,18 +1,20 @@
 # Tourniquet
-A Python library for easy C/C++ syntax guided program transformation/repair. This is still very early in development. 
 
-# Quickstart 
+A Python library for easy C/C++ syntax guided program transformation/repair.
+This is still very early in development.
+
+# Quickstart
 
 Build the library with docker
+
+```bash
+$ docker build -t trailofbits/tourniquet .
+$ docker run -it trailofbits/tourniquet
 ```
-docker build -t trailofbits/tourniquet .
-docker run -it trailofbits/tourniquet  
-```
 
-Enter an `ipython` instance and `import tourniquet` 
+Enter an `ipython` instance and `import tourniquet`
 
+# Contributors
 
-# Contributors 
-Carson Harmon (carson.harmon@trailofbits.com)
-
-Evan Sultanik (evan.sultanik@trailofbits.com)
+* Carson Harmon (carson.harmon@trailofbits.com)
+* Evan Sultanik (evan.sultanik@trailofbits.com)
