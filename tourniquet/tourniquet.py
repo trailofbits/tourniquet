@@ -4,7 +4,7 @@ import os
 import sqlite3
 import subprocess
 from sqlite3 import Error
-from typing import Dict, List, Optional
+from typing import Dict, Iterator, List, Optional
 
 import extractor
 
@@ -179,12 +179,11 @@ class Tourniquet:
         return None
 
     # TODO Should take a target
-    def concretize_template(self, module_name, template_name, line, col) -> List[str]:
+    def concretize_template(self, module_name, template_name, line, col) -> Iterator[str]:
         for template in self.patch_templates:
             if template.template_name == template_name:
-                view_str = template.concretize(line, col, self.db_conn, module_name)
-                return view_str
-        return []
+                yield from template.concretize(line, col, self.db_conn, module_name)
+        yield from ()
 
     # TODO Should take a target
     def patch(self, file_path, replacement: str, line: int, col: int) -> bool:
