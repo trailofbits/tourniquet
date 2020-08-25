@@ -180,7 +180,9 @@ class LessThanExpr(Expression):
         return ret_list
 
     def view(self, line: int, col: int, db_context, module_name):
-        self.lhs.view(line, col, db_context, module_name) + " < " + self.rhs.view(line, col, db_context, module_name)
+        self.lhs.view(line, col, db_context, module_name) + " < " + self.rhs.view(
+            line, col, db_context, module_name
+        )
 
 
 class Statement(ABC):

@@ -1,8 +1,10 @@
+import logging
+import os
+
+import pytest
+
 from tourniquet import Tourniquet
 from tourniquet.patch_lang import *
-import os
-import logging
-import pytest
 
 logger = logging.getLogger("tourniquet_test:")
 TEST_DIR = os.path.realpath(os.path.dirname(__file__))

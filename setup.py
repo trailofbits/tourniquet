@@ -1,9 +1,10 @@
-from setuptools import setup, Extension, find_packages
-from setuptools.command.build_ext import build_ext
 import os
 import subprocess
 import sys
 import sysconfig
+
+from setuptools import Extension, find_packages, setup
+from setuptools.command.build_ext import build_ext
 
 module_name = "extractor"
 
@@ -62,9 +63,7 @@ class CMakeBuild(build_ext):
         env = os.environ.copy()
         if not os.path.exists(self.build_temp):
             os.makedirs(self.build_temp)
-        subprocess.check_call(
-            ["cmake", ext.sourcedir] + cmake_args, cwd=self.build_temp, env=env
-        )
+        subprocess.check_call(["cmake", ext.sourcedir] + cmake_args, cwd=self.build_temp, env=env)
         subprocess.check_call(["cmake", "--build", "."], cwd=self.build_temp)
 
 
@@ -78,14 +77,5 @@ setup(
     ext_modules=[CMakeExtension(module_name)],
     cmdclass={"build_ext": CMakeBuild},
     zip_safe=False,
-    extras_require={
-        "dev": [
-            "ipython",
-            "pytest",
-            "flake8",
-            "black",
-            "mypy",
-            "isort",
-        ]
-    }
+    extras_require={"dev": ["ipython", "pytest", "flake8", "black", "mypy", "isort",]},
 )

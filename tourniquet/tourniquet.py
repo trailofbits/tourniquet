@@ -1,12 +1,15 @@
-import subprocess
-from typing import Dict, List, Optional
-import os
-import extractor
-import sqlite3
-from sqlite3 import Error
-import logging
 import json
+import logging
+import os
+import sqlite3
+import subprocess
+from sqlite3 import Error
+from typing import Dict, List, Optional
+
+import extractor
+
 from .patch_lang import PatchTemplate
+
 
 # TODO Make DB class to pass around instead of connection.
 class Tourniquet:
@@ -145,7 +148,9 @@ class Tourniquet:
             for entry in entry_info:
                 start_line = entry[0]
                 start_col = entry[1]
-                line_map_query = self.SQL_INSERT_LINE_MAP_TABLE.format(line_map_table, start_line, start_col, func_key)
+                line_map_query = self.SQL_INSERT_LINE_MAP_TABLE.format(
+                    line_map_table, start_line, start_col, func_key
+                )
                 cursor.execute(line_map_query)
             self.db_conn.commit()
 
