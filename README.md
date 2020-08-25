@@ -18,3 +18,4 @@ Enter an `ipython` instance and `import tourniquet`
 
 * Carson Harmon (carson.harmon@trailofbits.com)
 * Evan Sultanik (evan.sultanik@trailofbits.com)
+* William Woodruff (william@trailofbits.com)
