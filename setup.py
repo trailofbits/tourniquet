@@ -1,21 +1,22 @@
-from setuptools import setup, Extension, find_packages
-from setuptools.command.build_ext import build_ext
 import os
 import subprocess
 import sys
 import sysconfig
+
+from setuptools import Extension, find_packages, setup
+from setuptools.command.build_ext import build_ext
 
 module_name = "extractor"
 
 
 def get_ext_filename_without_platform_suffix(filename):
     name, ext = os.path.splitext(filename)
-    ext_suffix = sysconfig.get_config_var('EXT_SUFFIX')
+    ext_suffix = sysconfig.get_config_var("EXT_SUFFIX")
 
     if ext_suffix == ext:
         return filename
 
-    ext_suffix = ext_suffix.replace(ext, '')
+    ext_suffix = ext_suffix.replace(ext, "")
     idx = name.find(ext_suffix)
 
     if idx == -1:
@@ -52,27 +53,29 @@ class CMakeBuild(build_ext):
         return get_ext_filename_without_platform_suffix(filename)
 
     def build_extension(self, ext):
-        extdir = os.path.abspath(
-            os.path.dirname(self.get_ext_fullpath(ext.name)))
-        cmake_args = [f"-DCMAKE_LIBRARY_OUTPUT_DIRECTORY={extdir}",
-                      f"-DPYTHON_EXECUTABLE={sys.executable}"]
+        extdir = os.path.abspath(os.path.dirname(self.get_ext_fullpath(ext.name)))
+        cmake_args = [
+            f"-DCMAKE_LIBRARY_OUTPUT_DIRECTORY={extdir}",
+            f"-DPYTHON_EXECUTABLE={sys.executable}",
+        ]
         print(sys.executable)
         cmake_args += [f"-DPYTHON_MODULE_NAME={module_name}"]
         env = os.environ.copy()
         if not os.path.exists(self.build_temp):
             os.makedirs(self.build_temp)
-        subprocess.check_call(['cmake', ext.sourcedir] + cmake_args,
-                              cwd=self.build_temp, env=env)
-        subprocess.check_call(['cmake', '--build', '.'],
-                              cwd=self.build_temp)
+        subprocess.check_call(["cmake", ext.sourcedir] + cmake_args, cwd=self.build_temp, env=env)
+        subprocess.check_call(["cmake", "--build", "."], cwd=self.build_temp)
 
 
-setup(name='tourniquet',
-      author="Carson Harmon",
-      author_email="carson.harmon@trailofbits.com",
-      packages=find_packages(),
-      version='1.0',
-      description='Syntax Guided Repair/Transformation Package',
-      ext_modules=[CMakeExtension(module_name)],
-      cmdclass={'build_ext': CMakeBuild},
-      zip_safe=False, install_requires=['pytest'])
+setup(
+    name="tourniquet",
+    author="Carson Harmon",
+    author_email="carson.harmon@trailofbits.com",
+    packages=find_packages(),
+    version="1.0",
+    description="Syntax Guided Repair/Transformation Package",
+    ext_modules=[CMakeExtension(module_name)],
+    cmdclass={"build_ext": CMakeBuild},
+    zip_safe=False,
+    extras_require={"dev": ["ipython", "pytest", "flake8", "black", "mypy", "isort"]},
+)

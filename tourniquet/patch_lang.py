@@ -1,10 +1,12 @@
-from abc import ABC
-from typing import List, Optional
+import itertools
+from abc import ABC, abstractmethod
+from typing import Iterator, List
 
 
 class Expression(ABC):
-    def concretize(self, line: int, col: int, db_context, module_name) -> List[str]:
-        pass
+    @abstractmethod
+    def concretize(self, line: int, col: int, db_context, module_name) -> Iterator[str]:
+        yield from ()
 
     def view(self, line: int, col: int, db_context, module_name) -> str:
         return "Expression()"
@@ -14,8 +16,7 @@ class Expression(ABC):
 # by querying the DB or having some preset
 class Variable(Expression):
     # Query DB for all variables within scope at the line number.
-    def concretize(self, line: int, col: int, db_context, module_name) -> List[str]:
-        ret_list = []
+    def concretize(self, line: int, col: int, db_context, module_name) -> Iterator[str]:
         cursor = db_context.cursor()
         SQL_QUERY_LINE_MAP = """
                 SELECT func_name FROM '{}' WHERE line={} AND col={};
@@ -42,8 +43,8 @@ class Variable(Expression):
             test = test[1 : len(test) - 1]
             source_list = [x.replace('"', "").strip() for x in test.split(",")]
             # Just append all variable names
-            ret_list.append(f"{source_list[4]}")
-        return ret_list
+
+            yield str(source_list[4])
 
     def view(self, line: int, col: int, db_context, module_name) -> str:
         return "Variable()"
@@ -54,8 +55,7 @@ class StaticBufferSize(Expression):
         return
 
     # Query for all static array types and return list of sizeof()..
-    def concretize(self, line: int, col: int, db_context, module_name) -> List[str]:
-        ret_list = []
+    def concretize(self, line: int, col: int, db_context, module_name) -> Iterator[str]:
         cursor = db_context.cursor()
         SQL_QUERY_LINE_MAP = """
                 SELECT func_name FROM '{}' WHERE line={} AND col={};
@@ -83,8 +83,7 @@ class StaticBufferSize(Expression):
             source_list = [x.replace('"', "").strip() for x in test.split(",")]
             # This checks the flag to confirm its an array type
             if int(source_list[6]) == 1:
-                ret_list.append(f"sizeof({source_list[4]})")
-        return ret_list
+                yield f"sizeof({source_list[4]})"
 
     def view(self, line: int, col: int, db_context, module_name) -> str:
         return "StaticBufferSize()"
@@ -96,7 +95,7 @@ class StaticBufferSize(Expression):
 class ErrorReturn(Expression):
     # Trigger the error analysis or just look for returns
     # State that it cannot be found, will have to ask.
-    def concretize(self, line: int, col: int, db_context, module_name) -> List[str]:
+    def concretize(self, line: int, col: int, db_context, module_name) -> Iterator[str]:
         # return "ErrorReturn()"
         pass
 
@@ -111,26 +110,20 @@ class BinaryMathOperator(Expression):
         self.lhs = lhs
         self.rhs = rhs
 
-    def concretize(self, line: int, col: int, db_context, module_name) -> List[str]:
+    def concretize(self, line: int, col: int, db_context, module_name) -> Iterator[str]:
         lhs_exprs = self.lhs.concretize(line, col, db_context, module_name)
         rhs_exprs = self.rhs.concretize(line, col, db_context, module_name)
-        ret_list = []
-        for lhs in lhs_exprs:
-            for rhs in rhs_exprs:
-                ret_list.append(f"{lhs} + {rhs}")
-                ret_list.append(f"{lhs} - {rhs}")
-                ret_list.append(f"{lhs} / {rhs}")
-                ret_list.append(f"{lhs} * {rhs}")
-                ret_list.append(f"{lhs} << {rhs}")
-        return ret_list
+        for (lhs, rhs) in itertools.product(lhs_exprs, rhs_exprs):
+            yield f"{lhs} + {rhs}"
+            yield f"{lhs} - {rhs}"
+            yield f"{lhs} / {rhs}"
+            yield f"{lhs} * {rhs}"
+            yield f"{lhs} << {rhs}"
 
     def view(self, line: int, col: int, db_context, module_name) -> str:
         return (
-            "BinaryOperator("
-            + self.lhs.view(line, col, db_context, module_name)
-            + ","
-            + self.rhs.view(line, col, db_context, module_name)
-            + ")"
+            f"BinaryMathOperator({self.lhs.view(line, col, db_context, module_name)}, "
+            f"{self.lhs.view(line, col, db_context, module_name)})"
         )
 
 
@@ -140,28 +133,21 @@ class BinaryBoolOperator(Expression):
         self.lhs = lhs
         self.rhs = rhs
 
-    def concretize(self, line: int, col: int, db_context, module_name) -> List[str]:
+    def concretize(self, line: int, col: int, db_context, module_name) -> Iterator[str]:
         lhs_exprs = self.lhs.concretize(line, col, db_context, module_name)
         rhs_exprs = self.rhs.concretize(line, col, db_context, module_name)
-        ret_list = []
-        for lhs in lhs_exprs:
-            for rhs in rhs_exprs:
-                ret_list.append(f"{lhs} == {rhs}")
-                ret_list.append(f"{lhs} != {rhs}")
-                ret_list.append(f"{lhs} <= {rhs}")
-                ret_list.append(f"{lhs} < {rhs}")
-                ret_list.append(f"{lhs} >= {rhs}")
-                ret_list.append(f"{lhs} > {rhs}")
-
-        return ret_list
+        for (lhs, rhs) in itertools.product(lhs_exprs, rhs_exprs):
+            yield f"{lhs} == {rhs}"
+            yield f"{lhs} != {rhs}"
+            yield f"{lhs} <= {rhs}"
+            yield f"{lhs} < {rhs}"
+            yield f"{lhs} >= {rhs}"
+            yield f"{lhs} > {rhs}"
 
     def view(self, line: int, col: int, db_context, module_name) -> str:
         return (
-            "BinaryBoolOperator("
-            + self.lhs.view(line, col, db_context, module_name)
-            + ","
-            + self.rhs.view(line, col, db_context, module_name)
-            + ")"
+            f"BinaryBoolOperator({self.lhs.view(line, col, db_context, module_name)}, "
+            f"{self.rhs.view(line, col, db_context, module_name)})"
         )
 
 
@@ -170,28 +156,26 @@ class LessThanExpr(Expression):
         self.lhs = lhs
         self.rhs = rhs
 
-    def concretize(self, line: int, col: int, db_context, module_name) -> List[str]:
+    def concretize(self, line: int, col: int, db_context, module_name) -> Iterator[str]:
         lhs_exprs = self.lhs.concretize(line, col, db_context, module_name)
         rhs_exprs = self.rhs.concretize(line, col, db_context, module_name)
-        ret_list = []
-        for lhs in lhs_exprs:
-            for rhs in rhs_exprs:
-                ret_list.append(f"{lhs} < {rhs}")
-        return ret_list
+        for (lhs, rhs) in itertools.product(lhs_exprs, rhs_exprs):
+            yield f"{lhs} < {rhs}"
 
     def view(self, line: int, col: int, db_context, module_name):
-        self.lhs.view(line, col, db_context, module_name) + " < " + self.rhs.view(line, col, db_context, module_name)
+        self.lhs.view(line, col, db_context, module_name) + " < " + self.rhs.view(
+            line, col, db_context, module_name
+        )
 
 
 class Statement(ABC):
-    def concretize(self, line: int, col: int, db_context, module_name) -> List[str]:
+    def concretize(self, line: int, col: int, db_context, module_name) -> Iterator[str]:
         pass
 
     def view(self, line: int, col: int, db_context, module_name):
         pass
 
 
-# TODO return List of Strings from concretize.
 class StatementList:
     def __init__(self, *args):
         self.statements: List[Statement] = []
@@ -199,7 +183,7 @@ class StatementList:
             for i in arg:
                 self.statements.append(i)
 
-    def concretize(self, line: int, col: int, db_context, module_name) -> List[str]:
+    def concretize(self, line: int, col: int, db_context, module_name) -> Iterator[str]:
         """
          ifStmt(), elseStmt()
          ifStmt().concretize = List[]..
@@ -218,15 +202,16 @@ class StatementList:
             if len(temp_list) == 0:
                 for x in temp_result:
                     temp_list.append(x)
+                    yield x
             # if there is stuff in it, we must make permutations
             else:
                 new_list = []
                 for item in temp_list:
                     for new in temp_result:
                         new_list.append(f"{item}\n{new}")
+                        yield f"{item}\n{new}"
                 # Update list
                 temp_list = new_list
-        return temp_list
 
     def view(self, line: int, col: int, db_context, module_name) -> str:
         final_str = ""
@@ -240,15 +225,12 @@ class IfStmt(Statement):
         self.cond_expr = cond_expr
         self.statement_list = StatementList(args)
 
-    def concretize(self, line: int, col: int, db_context, module_name) -> List[str]:
-        ret_list = []
+    def concretize(self, line: int, col: int, db_context, module_name) -> Iterator[str]:
         cond_list = self.cond_expr.concretize(line, col, db_context, module_name)
         stmt_list = self.statement_list.concretize(line, col, db_context, module_name)
-        for cond in cond_list:
-            for stmt in stmt_list:
-                cand_str = "if (" + cond + ") {\n" + stmt + "\n}\n"
-                ret_list.append(cand_str)
-        return ret_list
+        for (cond, stmt) in itertools.product(cond_list, stmt_list):
+            cand_str = "if (" + cond + ") {\n" + stmt + "\n}\n"
+            yield cand_str
 
     def view(self, line: int, col: int, db_context, module_name) -> str:
         if_str = "if (" + self.cond_expr.view(line, col, db_context, module_name) + ") {\n"
@@ -261,13 +243,11 @@ class ElseStmt(Statement):
     def __init__(self, *args):
         self.statement_list = StatementList(args)
 
-    def concretize(self, line: int, col: int, db_context, module_name) -> List[str]:
-        ret_list = []
+    def concretize(self, line: int, col: int, db_context, module_name) -> Iterator[str]:
         stmt_list = self.statement_list.concretize(line, col, db_context, module_name)
         for stmt in stmt_list:
             cand_str = "else {\n" + stmt + "\n}\n"
-            ret_list.append(cand_str)
-        return ret_list
+            yield cand_str
 
     def view(self, line: int, col: int, db_context, module_name) -> str:
         return "else {\n" + self.statement_list.view(line, col, db_context, module_name) + "\n}\n"
@@ -277,13 +257,11 @@ class ReturnStmt(Statement):
     def __init__(self, expr: Expression):
         self.expr = expr
 
-    def concretize(self, line: int, col: int, db_context, module_name) -> List[str]:
-        ret_list = []
+    def concretize(self, line: int, col: int, db_context, module_name) -> Iterator[str]:
         expr_list = self.expr.concretize(line, col, db_context, module_name)
         for exp in expr_list:
             candidate_str = f"return {exp};"
-            ret_list.append(candidate_str)
-        return ret_list
+            yield candidate_str
 
     def view(self, line: int, col: int, db_context, module_name):
         return f"return  {self.expr.view(line, col, db_context, module_name)};"
@@ -294,9 +272,9 @@ class NodeStmt(Statement):
     def __init__(self):
         return
 
-    def concretize(self, line: int, col: int, db_context, module_name) -> List[str]:
+    def concretize(self, line: int, col: int, db_context, module_name) -> Iterator[str]:
         source_info = self.fetch_node(line, col, db_context, module_name)
-        return [source_info]
+        yield source_info
 
     def view(self, line, col, db_context, module_name) -> str:
         # Fetch and create a node.
@@ -339,8 +317,8 @@ class FixPattern:
     def __init__(self, *args):
         self.statement_list = StatementList(args)
 
-    def concretize(self, line: int, col: int, db_context, module_name) -> List[str]:
-        return self.statement_list.concretize(line, col, db_context, module_name)
+    def concretize(self, line: int, col: int, db_context, module_name) -> Iterator[str]:
+        yield from self.statement_list.concretize(line, col, db_context, module_name)
 
     def view(self, line: int, col: int, db_context, module_name) -> str:
         return self.statement_list.view(line, col, db_context, module_name)
@@ -357,8 +335,8 @@ class PatchTemplate:
         matches: bool = self.matcher_func(line, col)
         return matches
 
-    def concretize(self, line: int, col: int, db_context, module_name) -> List[str]:
-        return self.fix_pattern.concretize(line, col, db_context, module_name)
+    def concretize(self, line: int, col: int, db_context, module_name) -> Iterator[str]:
+        yield from self.fix_pattern.concretize(line, col, db_context, module_name)
 
     def view(self, line: int, col: int, db_context, module_name) -> str:
         return self.fix_pattern.view(line, col, db_context, module_name)

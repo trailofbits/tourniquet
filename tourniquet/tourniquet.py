@@ -1,20 +1,23 @@
-import subprocess
-from typing import Dict, List, Optional
-import os
-import extractor
-import sqlite3
-from sqlite3 import Error
-import logging
 import json
+import logging
+import os
+import sqlite3
+import subprocess
+from sqlite3 import Error
+from typing import Dict, Iterator, List, Optional
+
+import extractor
+
 from .patch_lang import PatchTemplate
+
 
 # TODO Make DB class to pass around instead of connection.
 class Tourniquet:
-    SQL_CREATE_MODULES_TABLE = """ 
+    SQL_CREATE_MODULES_TABLE = """
         CREATE TABLE IF NOT EXISTS '{}' (
             id INTEGER PRIMARY KEY,
             function_name nvarchar NOT NULL
-        ); 
+        );
     """
     SQL_INSERT_MOD_TABLE = """
         INSERT INTO '{}' (function_name) VALUES ('{}')
@@ -22,11 +25,11 @@ class Tourniquet:
 
     SQL_CREATE_FUNC_TABLE = """
             CREATE TABLE IF NOT EXISTS '{}' (
-            id INTEGER PRIMARY KEY, 
+            id INTEGER PRIMARY KEY,
             entry_type nvarchar NOT NULL,
-            data json NOT NULL, 
-            line int NOT NULL, 
-            col int NOT NULL, 
+            data json NOT NULL,
+            line int NOT NULL,
+            col int NOT NULL,
             end_line int NOT NULL,
             end_col int NOT NULL
         );
@@ -34,9 +37,9 @@ class Tourniquet:
     # This table is to easily map line,col --> func_table
     SQL_CREATE_LINE_MAP_TABLE = """
         CREATE TABLE IF NOT EXISTS '{}' (
-        id INTEGER PRIMARY KEY, 
-        line int NOT NULL, 
-        col int NOT NULL, 
+        id INTEGER PRIMARY KEY,
+        line int NOT NULL,
+        col int NOT NULL,
         func_name nvarchar NOT NULL
         );
     """
@@ -50,7 +53,8 @@ class Tourniquet:
         SELECT (entry_type, data) FROM '{}' WHERE line={} and col={};
     """
     SQL_INSERT_FUNC_ENTRY = """
-        INSERT INTO '{}' (entry_type, data, line, col, end_line, end_col) VALUES ( '{}', '{}', '{}', '{}', '{}', '{}')
+        INSERT INTO '{}' (entry_type, data, line, col, end_line, end_col)
+        VALUES ( '{}', '{}', '{}', '{}', '{}', '{}')
     """
 
     def __init__(self, database_name: str):
@@ -130,7 +134,7 @@ class Tourniquet:
         module_name = module_info[0][0]
         self.create_module_table(module_name)
         # create global table
-        global_table = self.create_global_table(module_name)
+        self.create_global_table(module_name)
         line_map_table = self.create_line_map_table(module_name)
         # Table for each function (maybe some symbol issues)
         cursor = self.db_conn.cursor()
@@ -145,7 +149,9 @@ class Tourniquet:
             for entry in entry_info:
                 start_line = entry[0]
                 start_col = entry[1]
-                line_map_query = self.SQL_INSERT_LINE_MAP_TABLE.format(line_map_table, start_line, start_col, func_key)
+                line_map_query = self.SQL_INSERT_LINE_MAP_TABLE.format(
+                    line_map_table, start_line, start_col, func_key
+                )
                 cursor.execute(line_map_query)
             self.db_conn.commit()
 
@@ -173,12 +179,11 @@ class Tourniquet:
         return None
 
     # TODO Should take a target
-    def concretize_template(self, module_name, template_name, line, col) -> List[str]:
+    def concretize_template(self, module_name, template_name, line, col) -> Iterator[str]:
         for template in self.patch_templates:
             if template.template_name == template_name:
-                view_str = template.concretize(line, col, self.db_conn, module_name)
-                return view_str
-        return []
+                yield from template.concretize(line, col, self.db_conn, module_name)
+        yield from ()
 
     # TODO Should take a target
     def patch(self, file_path, replacement: str, line: int, col: int) -> bool:

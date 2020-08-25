@@ -1,0 +1,5 @@
+pip-wheel-metadata/
+*.egg-info/
+build/
+env/
+.mypy_cache/
