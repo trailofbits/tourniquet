@@ -4,7 +4,7 @@ import os
 import pytest
 
 from tourniquet import Tourniquet
-from tourniquet.patch_lang import *
+from tourniquet.patch_lang import FixPattern, NodeStmt, PatchTemplate
 
 logger = logging.getLogger("tourniquet_test:")
 TEST_DIR = os.path.realpath(os.path.dirname(__file__))
@@ -54,7 +54,7 @@ def test_tourniquet_extract_badfile():
 
 def test_new_template():
     test_extractor = Tourniquet("test.db")
-    test_file = os.path.join(TEST_FILE_DIR, "patch_test.c")
+    os.path.join(TEST_FILE_DIR, "patch_test.c")
     new_template = PatchTemplate("testme", lambda x, y: True, FixPattern(NodeStmt()))
     test_extractor.add_new_template(new_template)
     assert len(test_extractor.patch_templates) == 1

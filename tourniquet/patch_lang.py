@@ -1,5 +1,5 @@
 from abc import ABC
-from typing import List, Optional
+from typing import List
 
 
 class Expression(ABC):
@@ -126,11 +126,8 @@ class BinaryMathOperator(Expression):
 
     def view(self, line: int, col: int, db_context, module_name) -> str:
         return (
-            "BinaryOperator("
-            + self.lhs.view(line, col, db_context, module_name)
-            + ","
-            + self.rhs.view(line, col, db_context, module_name)
-            + ")"
+            f"BinaryMathOperator({self.lhs.view(line, col, db_context, module_name)}, "
+            f"{self.lhs.view(line, col, db_context, module_name)})"
         )
 
 
@@ -157,11 +154,8 @@ class BinaryBoolOperator(Expression):
 
     def view(self, line: int, col: int, db_context, module_name) -> str:
         return (
-            "BinaryBoolOperator("
-            + self.lhs.view(line, col, db_context, module_name)
-            + ","
-            + self.rhs.view(line, col, db_context, module_name)
-            + ")"
+            f"BinaryBoolOperator({self.lhs.view(line, col, db_context, module_name)}, "
+            f"{self.rhs.view(line, col, db_context, module_name)})"
         )
 
 
