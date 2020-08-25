@@ -18,8 +18,13 @@ lint:
 	black $(ALL_PY_SRCS)
 	isort $(ALL_PY_SRCS)
 	flake8 $(ALL_PY_SRCS)
-	mypy tourniquet
 	git diff --exit-code
+
+.PHONY: typecheck
+.ONESHELL:
+typecheck:
+	. env/bin/activate
+	mypy tourniquet
 
 .PHONY: test
 .ONESHELL:
