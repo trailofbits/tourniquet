@@ -25,7 +25,7 @@ lint:
 .ONESHELL:
 test:
 	. env/bin/activate
-	pytest test/
+	pytest tests/
 
 .PHONY: doc
 .ONESHELL:

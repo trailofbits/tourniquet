@@ -1,0 +1,41 @@
+name: CI
+
+on: push
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: [3.7, 3.8]
+    steps:
+      - uses: actions/checkout@v2
+
+      - uses: actions/setup-python@v1
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: system deps
+        run: |
+          sudo apt-get update -y
+          sudo apt install -y \
+            clang-9 \
+            clang++-9 \
+            cmake \
+            git \
+            zlib1g-dev \
+            build-essential \
+            libboost-all-dev \
+            autoconf \
+            libzmqpp-dev \
+            automake \
+            llvm
+
+      - name: python deps
+        run: make dev
+
+      - name: lint
+        run: make lint
+
+      - name: test
+        run: make test
