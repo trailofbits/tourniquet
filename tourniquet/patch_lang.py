@@ -1,3 +1,4 @@
+import itertools
 from abc import ABC, abstractmethod
 from typing import Iterator, List
 
@@ -112,13 +113,12 @@ class BinaryMathOperator(Expression):
     def concretize(self, line: int, col: int, db_context, module_name) -> Iterator[str]:
         lhs_exprs = self.lhs.concretize(line, col, db_context, module_name)
         rhs_exprs = self.rhs.concretize(line, col, db_context, module_name)
-        for lhs in lhs_exprs:
-            for rhs in rhs_exprs:
-                yield f"{lhs} + {rhs}"
-                yield f"{lhs} - {rhs}"
-                yield f"{lhs} / {rhs}"
-                yield f"{lhs} * {rhs}"
-                yield f"{lhs} << {rhs}"
+        for (lhs, rhs) in itertools.product(lhs_exprs, rhs_exprs):
+            yield f"{lhs} + {rhs}"
+            yield f"{lhs} - {rhs}"
+            yield f"{lhs} / {rhs}"
+            yield f"{lhs} * {rhs}"
+            yield f"{lhs} << {rhs}"
 
     def view(self, line: int, col: int, db_context, module_name) -> str:
         return (
@@ -136,14 +136,13 @@ class BinaryBoolOperator(Expression):
     def concretize(self, line: int, col: int, db_context, module_name) -> Iterator[str]:
         lhs_exprs = self.lhs.concretize(line, col, db_context, module_name)
         rhs_exprs = self.rhs.concretize(line, col, db_context, module_name)
-        for lhs in lhs_exprs:
-            for rhs in rhs_exprs:
-                yield f"{lhs} == {rhs}"
-                yield f"{lhs} != {rhs}"
-                yield f"{lhs} <= {rhs}"
-                yield f"{lhs} < {rhs}"
-                yield f"{lhs} >= {rhs}"
-                yield f"{lhs} > {rhs}"
+        for (lhs, rhs) in itertools.product(lhs_exprs, rhs_exprs):
+            yield f"{lhs} == {rhs}"
+            yield f"{lhs} != {rhs}"
+            yield f"{lhs} <= {rhs}"
+            yield f"{lhs} < {rhs}"
+            yield f"{lhs} >= {rhs}"
+            yield f"{lhs} > {rhs}"
 
     def view(self, line: int, col: int, db_context, module_name) -> str:
         return (
@@ -160,9 +159,8 @@ class LessThanExpr(Expression):
     def concretize(self, line: int, col: int, db_context, module_name) -> Iterator[str]:
         lhs_exprs = self.lhs.concretize(line, col, db_context, module_name)
         rhs_exprs = self.rhs.concretize(line, col, db_context, module_name)
-        for lhs in lhs_exprs:
-            for rhs in rhs_exprs:
-                yield f"{lhs} < {rhs}"
+        for (lhs, rhs) in itertools.product(lhs_exprs, rhs_exprs):
+            yield f"{lhs} < {rhs}"
 
     def view(self, line: int, col: int, db_context, module_name):
         self.lhs.view(line, col, db_context, module_name) + " < " + self.rhs.view(
@@ -232,10 +230,9 @@ class IfStmt(Statement):
     def concretize(self, line: int, col: int, db_context, module_name) -> Iterator[str]:
         cond_list = self.cond_expr.concretize(line, col, db_context, module_name)
         stmt_list = self.statement_list.concretize(line, col, db_context, module_name)
-        for cond in cond_list:
-            for stmt in stmt_list:
-                cand_str = "if (" + cond + ") {\n" + stmt + "\n}\n"
-                yield cand_str
+        for (cond, stmt) in itertools.product(cond_list, stmt_list):
+            cand_str = "if (" + cond + ") {\n" + stmt + "\n}\n"
+            yield cand_str
 
     def view(self, line: int, col: int, db_context, module_name) -> str:
         if_str = "if (" + self.cond_expr.view(line, col, db_context, module_name) + ") {\n"
