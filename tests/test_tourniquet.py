@@ -38,8 +38,8 @@ def test_tourniquet_extract_simple():
     assert "argc" in var_list
     assert "argv" in var_list
     # The global should be there too :)
-    globals = extraction_results["global"]
-    global_var_list = [item for entry in globals for item in entry]
+    globals_ = extraction_results["global"]
+    global_var_list = [item for entry in globals_ for item in entry]
     assert "pass" in global_var_list
 
 
