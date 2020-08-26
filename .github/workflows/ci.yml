@@ -19,6 +19,7 @@ jobs:
         run: |
           sudo apt-get update -y
           sudo apt install -y \
+            clang-format \
             clang-9 \
             clang++-9 \
             cmake \

@@ -82,12 +82,9 @@ class Tourniquet:
 
         result: Dict = extractor.extract_ast(filepath)
         clean_result: Dict[str, List[List[str]]] = {}
-        for key in result:
-            entries = result[key]
-            decoded_key = key.decode("utf-8")
-            clean_result[decoded_key] = []
-            for entry in entries:
-                clean_result[decoded_key].append(list(map(lambda x: x.decode("utf-8"), entry)))
+        for key, entries in result.items():
+            decoded_key = key.decode()
+            clean_result[decoded_key] = [[x.decode() for x in e] for e in entries]
         return clean_result
 
     def create_module_table(self, table_name: str) -> int:

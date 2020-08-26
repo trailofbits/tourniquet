@@ -6,7 +6,8 @@ import pytest
 from tourniquet import Tourniquet
 from tourniquet.patch_lang import FixPattern, NodeStmt, PatchTemplate
 
-logger = logging.getLogger("tourniquet_test:")
+logger = logging.getLogger(__name__)
+
 TEST_DIR = os.path.realpath(os.path.dirname(__file__))
 TEST_FILE_DIR = os.path.realpath(os.path.join(os.path.dirname(__file__), "test_files"))
 
@@ -37,8 +38,8 @@ def test_tourniquet_extract_simple():
     assert "argc" in var_list
     assert "argv" in var_list
     # The global should be there too :)
-    globals = extraction_results["global"]
-    global_var_list = [item for entry in globals for item in entry]
+    globals_ = extraction_results["global"]
+    global_var_list = [item for entry in globals_ for item in entry]
     assert "pass" in global_var_list
 
 

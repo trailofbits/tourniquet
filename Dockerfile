@@ -19,8 +19,7 @@ RUN apt install -y \
 	automake \
 	llvm
 
-RUN python3.7 -m pip install pip
-RUN pip3 install setuptools ipython pytest
+RUN python3.7 -m pip install --upgrade pip
 
 WORKDIR /
 COPY . /tourniquet

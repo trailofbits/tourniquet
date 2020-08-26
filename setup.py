@@ -58,12 +58,10 @@ class CMakeBuild(build_ext):
             f"-DCMAKE_LIBRARY_OUTPUT_DIRECTORY={extdir}",
             f"-DPYTHON_EXECUTABLE={sys.executable}",
         ]
-        print(sys.executable)
         cmake_args += [f"-DPYTHON_MODULE_NAME={module_name}"]
-        env = os.environ.copy()
         if not os.path.exists(self.build_temp):
             os.makedirs(self.build_temp)
-        subprocess.check_call(["cmake", ext.sourcedir] + cmake_args, cwd=self.build_temp, env=env)
+        subprocess.check_call(["cmake", ext.sourcedir] + cmake_args, cwd=self.build_temp)
         subprocess.check_call(["cmake", "--build", "."], cwd=self.build_temp)
 
 
