@@ -6,7 +6,8 @@ import pytest
 from tourniquet import Tourniquet
 from tourniquet.patch_lang import FixPattern, NodeStmt, PatchTemplate
 
-logger = logging.getLogger("tourniquet_test:")
+logger = logging.getLogger(__name__)
+
 TEST_DIR = os.path.realpath(os.path.dirname(__file__))
 TEST_FILE_DIR = os.path.realpath(os.path.join(os.path.dirname(__file__), "test_files"))
 
