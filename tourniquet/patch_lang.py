@@ -185,15 +185,15 @@ class StatementList:
 
     def concretize(self, line: int, col: int, db_context, module_name) -> Iterator[str]:
         """
-         ifStmt(), elseStmt()
-         ifStmt().concretize = List[]..
-         elseStmt().concretize = List[]..
+        ifStmt(), elseStmt()
+        ifStmt().concretize = List[]..
+        elseStmt().concretize = List[]..
 
-         [] <- empty list
-         read first list
-         [c1, c2, c3]
-         second
-         [c1d1, c1d2, c1d3]
+        [] <- empty list
+        read first list
+        [c1, c2, c3]
+        second
+        [c1d1, c1d2, c1d3]
         """
         temp_list: List[str] = []
         for stmt in self.statements:
