@@ -1,3 +1,5 @@
+ALL_CXX_SRCS := $(shell find transformer -name '*.cpp' -o -name '*.h')
+
 ALL_PY_SRCS := setup.py \
 	$(shell find tourniquet -name '*.py') \
 	$(shell find tests -name '*.py')
@@ -18,6 +20,7 @@ lint:
 	black $(ALL_PY_SRCS)
 	isort $(ALL_PY_SRCS)
 	flake8 $(ALL_PY_SRCS)
+	clang-format -i $(ALL_CXX_SRCS)
 	git diff --exit-code
 
 .PHONY: typecheck
