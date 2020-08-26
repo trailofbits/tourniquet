@@ -84,7 +84,7 @@ class Tourniquet:
         clean_result: Dict[str, List[List[str]]] = {}
         for key, entries in result.items():
             decoded_key = key.decode()
-            clean_result[decoded_key] = [e.decode() for e in entries]
+            clean_result[decoded_key] = [[x.decode() for x in e] for e in entries]
         return clean_result
 
     def create_module_table(self, table_name: str) -> int:
