@@ -43,8 +43,8 @@ static PyObject *extract_ast(PyObject *self, PyObject *args) {
     PyErr_SetString(PyExc_MemoryError, "Allocation failed for dict");
     Py_RETURN_NONE;
   }
-  PyDict_SetItem(extract_results, PyBytes_FromString("module_name"),
-                 PyBytes_FromString(filename));
+  PyDict_SetItem(extract_results, PyUnicode_FromString("module_name"),
+                 PyUnicode_FromString(filename));
   // Run tool on code, I believe that runToolOnCode owns/calls delete on the
   // FrontendAction Get double free when deleting manually
   runToolOnCode(new ASTExporterFrontendAction(), data);
