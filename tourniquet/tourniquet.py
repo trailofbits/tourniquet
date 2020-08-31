@@ -4,7 +4,7 @@ import os
 import sqlite3
 import subprocess
 from sqlite3 import Error
-from typing import Dict, Iterator, List, Optional
+from typing import Any, Dict, Iterator, List, Optional
 
 import extractor
 
@@ -121,8 +121,8 @@ class Tourniquet:
 
     # Create module table
     # TODO take module name from extractor
-    def store_ast(self, ast_info: Dict[str, List[List[str]]]) -> None:
-        module_name = ast_info["module_name"]
+    def store_ast(self, ast_info: Dict[str, Any]) -> None:
+        module_name: str = ast_info["module_name"]
         self.create_module_table(module_name)
         # create global table
         self.create_global_table(module_name)
