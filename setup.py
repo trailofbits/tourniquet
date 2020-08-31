@@ -75,5 +75,6 @@ setup(
     ext_modules=[CMakeExtension(module_name)],
     cmdclass={"build_ext": CMakeBuild},
     zip_safe=False,
+    install_requires=["sqlalchemy ~= 1.3"],
     extras_require={"dev": ["ipython", "pytest", "pytest-cov", "flake8", "black", "mypy", "isort"]},
 )

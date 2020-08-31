@@ -80,12 +80,7 @@ class Tourniquet:
         if not os.path.isfile(filepath):
             raise FileNotFoundError("Error! This is a directory and not a file")
 
-        result: Dict = extractor.extract_ast(filepath)
-        clean_result: Dict[str, List[List[str]]] = {}
-        for key, entries in result.items():
-            decoded_key = key.decode()
-            clean_result[decoded_key] = [[x.decode() for x in e] for e in entries]
-        return clean_result
+        return extractor.extract_ast(filepath)
 
     def create_module_table(self, table_name: str) -> int:
         cursor = self.db_conn.cursor()
@@ -127,8 +122,7 @@ class Tourniquet:
     # Create module table
     # TODO take module name from extractor
     def store_ast(self, ast_info: Dict[str, List[List[str]]]) -> None:
-        module_info = ast_info["module_name"]
-        module_name = module_info[0][0]
+        module_name = ast_info["module_name"]
         self.create_module_table(module_name)
         # create global table
         self.create_global_table(module_name)

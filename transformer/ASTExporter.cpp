@@ -4,11 +4,11 @@ ASTExporterVisitor::ASTExporterVisitor(ASTContext *Context, PyObject *info)
 
 // TODO How to handle these types of errors in visitor and extension?
 void ASTExporterVisitor::PyListAppendString(PyObject *list, std::string str) {
-  PyObject *name_bytes = PyBytes_FromString(str.c_str());
+  PyObject *name_bytes = PyUnicode_FromString(str.c_str());
   if (name_bytes == nullptr) {
     // TODO(ww): ValueError or MemoryError here?
     PyErr_SetString(PyExc_ValueError,
-                    "Failed to create bytes object from function name");
+                    "Failed to create str object from function name");
     return;
   }
   PyList_Append(list, name_bytes);
@@ -29,11 +29,11 @@ void ASTExporterVisitor::PyDictUpdateEntry(PyObject *dict, PyObject *key,
 bool ASTExporterVisitor::VisitDeclStmt(Stmt *stmt) {
   std::string expr = getText(*stmt, *Context);
   PyObject *func_key =
-      PyBytes_FromString(current_func->getNameAsString().c_str());
+      PyUnicode_FromString(current_func->getNameAsString().c_str());
   if (func_key == nullptr) {
     // TODO(ww): ValueError or MemoryError here?
     PyErr_SetString(PyExc_ValueError,
-                    "Failed to create bytes object from function name");
+                    "Failed to create str object from function name");
     return true;
   }
   PyObject *new_arr = PyList_New(0);
@@ -76,11 +76,11 @@ bool ASTExporterVisitor::VisitVarDecl(VarDecl *vdecl) {
     }
     fname = fdecl->getNameAsString();
   }
-  PyObject *func_key = PyBytes_FromString(fname.c_str());
+  PyObject *func_key = PyUnicode_FromString(fname.c_str());
   if (func_key == nullptr) {
     // TODO(ww): ValueError or MemoryError here?
     PyErr_SetString(PyExc_ValueError,
-                    "Failed to create bytes object from function name");
+                    "Failed to create str object from function name");
     return true;
   }
   // Function name --> (var_name, type, is_arr, size)
@@ -124,11 +124,11 @@ bool ASTExporterVisitor::VisitVarDecl(VarDecl *vdecl) {
 bool ASTExporterVisitor::VisitCallExpr(CallExpr *call_expr) {
   std::string expr = getText(*call_expr, *Context);
   PyObject *func_key =
-      PyBytes_FromString(current_func->getNameAsString().c_str());
+      PyUnicode_FromString(current_func->getNameAsString().c_str());
   if (func_key == nullptr) {
     // TODO(ww): ValueError or MemoryError here?
     PyErr_SetString(PyExc_ValueError,
-                    "Failed to create bytes object from function name");
+                    "Failed to create str object from function name");
     return true;
   }
   PyObject *new_arr = PyList_New(0);
