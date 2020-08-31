@@ -9,6 +9,7 @@ void ASTExporterVisitor::PyListAppendString(PyObject *list, std::string str) {
     // TODO(ww): ValueError or MemoryError here?
     PyErr_SetString(PyExc_ValueError,
                     "Failed to create bytes object from function name");
+    return;
   }
   PyList_Append(list, name_bytes);
 }
