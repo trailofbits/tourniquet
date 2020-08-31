@@ -6,26 +6,21 @@ ASTExporterVisitor::ASTExporterVisitor(ASTContext *Context, PyObject *info)
 void ASTExporterVisitor::PyListAppendString(PyObject *list, std::string str) {
   PyObject *name_bytes = PyBytes_FromString(str.c_str());
   if (name_bytes == nullptr) {
-    std::cout << "Failed to create PyString from StringName" << std::endl;
+    // TODO(ww): ValueError or MemoryError here?
+    PyErr_SetString(PyExc_ValueError,
+                    "Failed to create bytes object from function name");
   }
-  int ret = PyList_Append(list, name_bytes);
-  if (ret == -1) {
-    std::cout << "Failed to append StringName" << std::endl;
-  }
+  PyList_Append(list, name_bytes);
 }
 
 void ASTExporterVisitor::PyDictUpdateEntry(PyObject *dict, PyObject *key,
                                            PyObject *new_item) {
   if (auto old_item = PyDict_GetItem(dict, key)) {
-    if (PyList_Append(old_item, new_item) == -1) {
-      std::cout << "Failed to update array entry!" << std::endl;
-    }
+    PyList_Append(old_item, new_item);
   } else {
     // Always init to be [item]
     PyObject *arr = PyList_New(0);
-    if (PyList_Append(arr, new_item) == -1) {
-      std::cout << "Failed to append new_item to arr!" << std::endl;
-    }
+    PyList_Append(arr, new_item);
     PyDict_SetItem(dict, key, arr);
   }
 }
@@ -35,12 +30,14 @@ bool ASTExporterVisitor::VisitDeclStmt(Stmt *stmt) {
   PyObject *func_key =
       PyBytes_FromString(current_func->getNameAsString().c_str());
   if (func_key == nullptr) {
-    std::cout << "Failed to create PyString from FunctionName" << std::endl;
+    // TODO(ww): ValueError or MemoryError here?
+    PyErr_SetString(PyExc_ValueError,
+                    "Failed to create bytes object from function name");
     return true;
   }
   PyObject *new_arr = PyList_New(0);
   if (new_arr == nullptr) {
-    std::cout << "Failed to allocate PyList!" << std::endl;
+    PyErr_SetString(PyExc_MemoryError, "Allocation failed for list");
     return true;
   }
   unsigned int start_line =
@@ -80,13 +77,15 @@ bool ASTExporterVisitor::VisitVarDecl(VarDecl *vdecl) {
   }
   PyObject *func_key = PyBytes_FromString(fname.c_str());
   if (func_key == nullptr) {
-    std::cout << "Failed to create PyString from FunctionName" << std::endl;
+    // TODO(ww): ValueError or MemoryError here?
+    PyErr_SetString(PyExc_ValueError,
+                    "Failed to create bytes object from function name");
     return true;
   }
   // Function name --> (var_name, type, is_arr, size)
   PyObject *new_arr = PyList_New(0);
   if (new_arr == nullptr) {
-    std::cout << "Failed to allocate PyList!" << std::endl;
+    PyErr_SetString(PyExc_MemoryError, "Allocation failed for list");
     return true;
   }
   unsigned int start_line =
@@ -126,12 +125,14 @@ bool ASTExporterVisitor::VisitCallExpr(CallExpr *call_expr) {
   PyObject *func_key =
       PyBytes_FromString(current_func->getNameAsString().c_str());
   if (func_key == nullptr) {
-    std::cout << "Failed to create PyString from FunctionName" << std::endl;
+    // TODO(ww): ValueError or MemoryError here?
+    PyErr_SetString(PyExc_ValueError,
+                    "Failed to create bytes object from function name");
     return true;
   }
   PyObject *new_arr = PyList_New(0);
   if (new_arr == nullptr) {
-    std::cout << "Failed to allocate PyList!" << std::endl;
+    PyErr_SetString(PyExc_MemoryError, "Allocation failed for list");
     return true;
   }
   auto test = call_expr->getCallee();
