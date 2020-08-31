@@ -35,6 +35,12 @@ test:
 	. env/bin/activate
 	pytest tests/
 
+.PHONY: test-cov
+.ONESHELL:
+test-cov:
+	. env/bin/activate
+	pytest --cov=tourniquet/ tests/
+
 .PHONY: doc
 .ONESHELL:
 doc:
