@@ -4,36 +4,42 @@
 #include <fstream>
 #include <iostream>
 #include <memory>
+
 /*
  * TODO Remove global and pass to frontend action instead
  */
 PyObject *extract_results;
 
+static bool read_file_to_string(const char *filename, std::string &data) {
+  std::ifstream file(filename);
+  if (!file.is_open()) {
+    return false;
+  }
+
+  std::stringstream buf;
+  buf << file.rdbuf();
+  data = buf.str();
+
+  return true;
+}
+
 static PyObject *extract_ast(PyObject *self, PyObject *args) {
   const char *filename;
   if (!PyArg_ParseTuple(args, "s", &filename)) {
-    std::cout << "Failed to parse arguments to C extension" << std::endl;
+    PyErr_SetString(PyExc_TypeError, "Invalid arguments passed to extract_ast");
     Py_RETURN_NONE;
   }
 
-  std::ifstream file(filename);
-  if (!file.is_open()) {
-    std::cout << "Failed to find file!" << std::endl;
+  std::string data;
+  if (!read_file_to_string(filename, data)) {
+    PyErr_SetString(PyExc_IOError, "Failed to open file for extraction");
     Py_RETURN_NONE;
   }
-
-  // Parse code into a string
-  std::string data = "";
-  std::string curr_line;
-  while (getline(file, curr_line)) {
-    data += curr_line + '\n';
-  }
-  file.close();
 
   // Allocate dictionary to return to Python
   extract_results = PyDict_New();
   if (!extract_results) {
-    std::cout << "Error creating PyDict!" << std::endl;
+    PyErr_SetString(PyExc_MemoryError, "Allocation failed for dict");
     Py_RETURN_NONE;
   }
   PyDict_Clear(extract_results);
@@ -57,21 +63,16 @@ static PyObject *transform(PyObject *self, PyObject *args) {
   char *filename;
   if (!PyArg_ParseTuple(args, "s|s|i|i|i|i", &filename, &replacement,
                         &start_line, &start_col, &end_line, &end_col)) {
-    std::cout << "Failed to parse arguments to C extension" << std::endl;
+    PyErr_SetString(PyExc_TypeError, "Invalid arguments passed to transform");
     Py_RETURN_FALSE;
   }
-  std::ifstream file(filename);
-  if (!file.is_open()) {
-    std::cout << "Failed to find file!" << std::endl;
+
+  std::string data;
+  if (!read_file_to_string(filename, data)) {
+    PyErr_SetString(PyExc_IOError, "Failed to open file for patching");
     Py_RETURN_NONE;
   }
-  // Parse code into a string
-  std::string data = "";
-  std::string curr_line;
-  while (getline(file, curr_line)) {
-    data += curr_line + '\n';
-  }
-  file.close();
+
   runToolOnCode(new ASTPatchAction(start_line, start_col, end_line, end_col,
                                    std::string(replacement),
                                    std::string(filename)),
