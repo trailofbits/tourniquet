@@ -13,14 +13,23 @@ dev:
 	test -d env || python3 -m venv env
 	. env/bin/activate && pip install -e .[dev]
 
-.PHONY: lint
+
+.PHONY: py-lint
 .ONESHELL:
-lint:
+py-lint:
 	. env/bin/activate
 	black $(ALL_PY_SRCS)
 	isort $(ALL_PY_SRCS)
 	flake8 $(ALL_PY_SRCS)
+
+
+.PHONY: cxx-lint
+cxx-lint:
 	clang-format -i $(ALL_CXX_SRCS)
+
+.PHONY: lint
+.ONESHELL:
+lint: py-lint cxx-lint
 	git diff --exit-code
 
 .PHONY: typecheck
