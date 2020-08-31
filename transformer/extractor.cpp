@@ -6,11 +6,6 @@
 #include <memory>
 #include <sstream>
 
-/*
- * TODO Remove global and pass to frontend action instead
- */
-PyObject *extract_results;
-
 static bool read_file_to_string(const char *filename, std::string &data) {
   std::ifstream file(filename);
   if (!file.is_open()) {
@@ -38,7 +33,7 @@ static PyObject *extract_ast(PyObject *self, PyObject *args) {
   }
 
   // Allocate dictionary to return to Python
-  extract_results = PyDict_New();
+  PyObject *extract_results = PyDict_New();
   if (!extract_results) {
     PyErr_SetString(PyExc_MemoryError, "Allocation failed for dict");
     Py_RETURN_NONE;
@@ -47,7 +42,7 @@ static PyObject *extract_ast(PyObject *self, PyObject *args) {
                  PyUnicode_FromString(filename));
   // Run tool on code, I believe that runToolOnCode owns/calls delete on the
   // FrontendAction Get double free when deleting manually
-  runToolOnCode(new ASTExporterFrontendAction(), data);
+  runToolOnCode(new ASTExporterFrontendAction(extract_results), data);
   // Return the python dictionary back to the python code.
   return extract_results;
 }

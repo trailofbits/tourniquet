@@ -35,8 +35,6 @@ using namespace clang::tooling;
 using JObject = llvm::json::Object;
 using namespace clang;
 
-extern PyObject *extract_results;
-
 /*
  * This is a simpler AST visitor that collects some information from nodes it
  * vists and records some information about the nodes. For search based repair,
@@ -91,8 +89,14 @@ public:
   std::unique_ptr<clang::ASTConsumer>
   CreateASTConsumer(clang::CompilerInstance &Compiler, llvm::StringRef InFile) {
     return std::unique_ptr<clang::ASTConsumer>(
-        new ASTExporterConsumer(&Compiler.getASTContext(), extract_results));
+        new ASTExporterConsumer(&Compiler.getASTContext(), extract_results_));
   }
+
+  explicit ASTExporterFrontendAction(PyObject *extract_results)
+      : extract_results_{extract_results} {}
+
+private:
+  PyObject *extract_results_;
 };
 
 #endif /* TRANSFORMER_ASTEXPORTER_H_ */
