@@ -4,6 +4,7 @@
 #include <fstream>
 #include <iostream>
 #include <memory>
+#include <sstream>
 
 /*
  * TODO Remove global and pass to frontend action instead
