@@ -146,9 +146,7 @@ class Tourniquet:
             for entry in entry_info:
                 start_line = entry[0]
                 start_col = entry[1]
-                line_map_query = self.SQL_INSERT_LINE_MAP_TABLE.format(
-                    line_map_table, start_line, start_col, func_key
-                )
+                line_map_query = self.SQL_INSERT_LINE_MAP_TABLE.format(line_map_table, start_line, start_col, func_key)
                 cursor.execute(line_map_query)
             self.db_conn.commit()
 

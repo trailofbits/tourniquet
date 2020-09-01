@@ -12,13 +12,7 @@ class Target:
     We might be able to automatically get some info from blight
     """
 
-    def __init__(
-        self,
-        filepath: str,
-        tests: List[Tuple[str, int]],
-        build_cmd: List[str],
-        executable_path: str,
-    ):
+    def __init__(self, filepath: str, tests: List[Tuple[str, int]], build_cmd: List[str], executable_path: str):
         self.file_path = filepath
         if not os.path.exists(self.file_path):
             raise FileNotFoundError
