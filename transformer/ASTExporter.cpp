@@ -15,8 +15,19 @@ void ASTExporterVisitor::PyDictUpdateEntry(PyObject *dict, const char *key,
   }
 }
 
-void ASTExporterVisitor::AddGlobalVarDecl(PyObject *var_decl_list) {
-  PyDictUpdateEntry(tree_info, "globals", var_decl_list);
+void ASTExporterVisitor::AddGlobalEntry(PyObject *entry) {
+  PyDictUpdateEntry(tree_info, "globals", entry);
+}
+
+void ASTExporterVisitor::AddFunctionEntry(const char *func_name,
+                                          PyObject *entry) {
+  if (auto functions = PyDict_GetItemString(tree_info, "functions")) {
+    PyDictUpdateEntry(functions, func_name, entry);
+  } else {
+    functions = PyDict_New();
+    PyDict_SetItemString(tree_info, "functions", functions);
+    PyDictUpdateEntry(functions, func_name, entry);
+  }
 }
 
 bool ASTExporterVisitor::VisitDeclStmt(Stmt *stmt) {
@@ -35,14 +46,13 @@ bool ASTExporterVisitor::VisitDeclStmt(Stmt *stmt) {
   unsigned int end_col =
       Context->getSourceManager().getExpansionColumnNumber(stmt->getEndLoc());
 
+  PyList_Append(new_arr, PyUnicode_FromString("stmt_type"));
   PyList_Append(new_arr, PyLong_FromUnsignedLong(start_line));
   PyList_Append(new_arr, PyLong_FromUnsignedLong(start_col));
   PyList_Append(new_arr, PyLong_FromUnsignedLong(end_line));
   PyList_Append(new_arr, PyLong_FromUnsignedLong(end_col));
   PyList_Append(new_arr, PyUnicode_FromString(expr.c_str()));
-  PyList_Append(new_arr, PyUnicode_FromString("stmt_type"));
-  PyDictUpdateEntry(tree_info, current_func->getNameAsString().c_str(),
-                    new_arr);
+  AddFunctionEntry(current_func->getNameAsString().c_str(), new_arr);
   return true;
 }
 
@@ -55,17 +65,14 @@ bool ASTExporterVisitor::VisitVarDecl(VarDecl *vdecl) {
     return true;
   }
 
-  std::string fname = "global";
-  auto parent_func = vdecl->getParentFunctionOrMethod();
-  if (parent_func != nullptr) {
-    FunctionDecl *fdecl = llvm::dyn_cast<FunctionDecl>(parent_func);
-    if (fdecl->isFileContext()) {
-      return true;
-    }
-    fname = fdecl->getNameAsString();
-  }
-
-  // Function name --> (var_name, type, is_arr, size)
+  // This Python list object contains our variable declaration state,
+  // with the following layout:
+  // [
+  //   start_line, start_col, end_line, end_col,
+  //   var_name, var_type, is_array, size, "var_type"
+  // ]
+  // The variable declaration is either added to the list under the "globals"
+  // key or to its enclosing function, depending on whether it's in a function.
   PyObject *new_arr = PyList_New(0);
   if (new_arr == nullptr) {
     PyErr_SetString(PyExc_MemoryError, "Allocation failed for list");
@@ -81,6 +88,7 @@ bool ASTExporterVisitor::VisitVarDecl(VarDecl *vdecl) {
   unsigned int end_col =
       Context->getSourceManager().getExpansionColumnNumber(vdecl->getEndLoc());
 
+  PyList_Append(new_arr, PyUnicode_FromString("var_type"));
   PyList_Append(new_arr, PyLong_FromUnsignedLong(start_line));
   PyList_Append(new_arr, PyLong_FromUnsignedLong(start_col));
   PyList_Append(new_arr, PyLong_FromUnsignedLong(end_line));
@@ -101,8 +109,18 @@ bool ASTExporterVisitor::VisitVarDecl(VarDecl *vdecl) {
     auto type_info = Context->getTypeInfo(qt);
     PyList_Append(new_arr, PyLong_FromUnsignedLong(type_info.Width / 8));
   }
-  PyList_Append(new_arr, PyUnicode_FromString("var_type"));
-  PyDictUpdateEntry(tree_info, fname.c_str(), new_arr);
+
+  auto parent_func = vdecl->getParentFunctionOrMethod();
+  if (parent_func == nullptr) {
+    AddGlobalEntry(new_arr);
+  } else {
+    FunctionDecl *fdecl = llvm::dyn_cast<FunctionDecl>(parent_func);
+    if (fdecl->isFileContext()) {
+      return true;
+    }
+    AddFunctionEntry(fdecl->getNameAsString().c_str(), new_arr);
+  }
+
   return true;
 }
 
@@ -127,6 +145,7 @@ bool ASTExporterVisitor::VisitCallExpr(CallExpr *call_expr) {
   unsigned int end_col = Context->getSourceManager().getExpansionColumnNumber(
       call_expr->getEndLoc());
 
+  PyList_Append(new_arr, PyUnicode_FromString("call_type"));
   PyList_Append(new_arr, PyLong_FromUnsignedLong(start_line));
   PyList_Append(new_arr, PyLong_FromUnsignedLong(start_col));
   PyList_Append(new_arr, PyLong_FromUnsignedLong(end_line));
@@ -140,9 +159,7 @@ bool ASTExporterVisitor::VisitCallExpr(CallExpr *call_expr) {
     PyList_Append(new_arr,
                   PyUnicode_FromString(arg->getType().getAsString().c_str()));
   }
-  PyList_Append(new_arr, PyUnicode_FromString("call_type"));
-  PyDictUpdateEntry(tree_info, current_func->getNameAsString().c_str(),
-                    new_arr);
+  AddFunctionEntry(current_func->getNameAsString().c_str(), new_arr);
   return true;
 }
 
@@ -151,6 +168,7 @@ bool ASTExporterVisitor::VisitFunctionDecl(FunctionDecl *func_decl) {
   if (func_decl->getStorageClass() == SC_Extern) {
     return true;
   }
+
   current_func = func_decl;
   return true;
 }

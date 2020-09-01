@@ -3,3 +3,4 @@ pip-wheel-metadata/
 build/
 env/
 .mypy_cache/
+__pycache__/

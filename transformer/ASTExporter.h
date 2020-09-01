@@ -56,7 +56,8 @@ public:
 
 private:
   void PyDictUpdateEntry(PyObject *dict, const char *key, PyObject *new_item);
-  void AddGlobalVarDecl(PyObject *var_decl_list);
+  void AddGlobalEntry(PyObject *entry);
+  void AddFunctionEntry(const char *func_name, PyObject *entry);
 
   ASTContext *Context;
   PyObject *tree_info;

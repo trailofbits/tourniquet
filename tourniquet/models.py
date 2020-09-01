@@ -1,25 +1,31 @@
-from sqlalchemy import Boolean, Column, ForeignKey, Integer, String
+from threading import local
+
+from sqlalchemy import create_engine, Boolean, Column, ForeignKey, Integer, String
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import relationship, sessionmaker
 
 Base = declarative_base()
+Base.local = local()
 
 
 class Module(Base):
     __tablename__ = "modules"
 
     id = Column(Integer, primary_key=True)
-    name = Column(String)
+    name = Column(String, unique=True)
 
     functions = relationship("Function")
     global_variables = relationship("Global")
+
+    def __repr__(self):
+        return f"<Module {self.name}>"
 
 
 class Function(Base):
     __tablename__ = "functions"
 
     id = Column(Integer, primary_key=True)
-    module_id = Column(Integer, ForeignKey("modules.id"))
+    module_name = Column(Integer, ForeignKey("modules.name"))
     module = relationship("Module", back_populates="functions")
 
     name = Column(String)
@@ -30,13 +36,16 @@ class Function(Base):
     calls = relationship("Call")
     statements = relationship("Statement")
 
+    def __repr__(self):
+        return f"<Function {self.name}>"
+
 
 class Global(Base):
     __tablename__ = "globals"
 
     id = Column(Integer, primary_key=True)
-    module_id = Column(Integer, ForeignKey("modules.id"))
-    module = relationship("Module", back_populates="functions")
+    module_name = Column(Integer, ForeignKey("modules.name"))
+    module = relationship("Module", back_populates="global_variables")
 
     name = Column(String)
     type_ = Column(String)
@@ -46,6 +55,9 @@ class Global(Base):
     end_column = Column(Integer)
     is_array = Column(Boolean)
     size = Column(Integer)
+
+    def __repr__(self):
+        return f"<Global {self.name}>"
 
 
 class VarDecl(Base):
@@ -64,6 +76,9 @@ class VarDecl(Base):
     is_array = Column(Boolean)
     size = Column(Integer)
 
+    def __repr__(self):
+        return f"<VarDecl {self.type_} {self.name}>"
+
 
 class Call(Base):
     __tablename__ = "calls"
@@ -77,6 +92,9 @@ class Call(Base):
 
     arguments = relationship("Argument")
 
+    def __repr__(self):
+        return f"<Call {self.expr}>"
+
 
 class Argument(Base):
     __tablename__ = "call_arguments"
@@ -87,6 +105,9 @@ class Argument(Base):
 
     name = Column(String)
     type_ = Column(String)
+
+    def __repr__(self):
+        return f"<Argument {self.type_} {self.name}>"
 
 
 class Statement(Base):
@@ -101,3 +122,28 @@ class Statement(Base):
     end_line = Column(Integer)
     end_column = Column(Integer)
     expr = Column(String)
+
+    def __repr__(self):
+        return f"<Statement {self.expr}>"
+
+
+class DB:
+    @classmethod
+    def create(cls, db_path, echo=False):
+        engine = create_engine(
+            f"sqlite:///{db_path}",
+            echo=echo,
+        )
+
+        session = sessionmaker(bind=engine)()
+        Base.local.bind = engine
+        Base.metadata.create_all(engine)
+
+        return cls(session, db_path)
+
+    def __init__(self, session, db_path):
+        self.session = session
+        self.db_path = db_path
+
+    def query(self, *args, **kwargs):
+        return self.session.query(*args, **kwargs)
