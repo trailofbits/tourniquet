@@ -163,7 +163,9 @@ class LessThanExpr(Expression):
             yield f"{lhs} < {rhs}"
 
     def view(self, line: int, col: int, db_context, module_name):
-        self.lhs.view(line, col, db_context, module_name) + " < " + self.rhs.view(line, col, db_context, module_name)
+        self.lhs.view(line, col, db_context, module_name) + " < " + self.rhs.view(
+            line, col, db_context, module_name
+        )
 
 
 class Statement(ABC):
@@ -193,7 +195,9 @@ class StatementList:
         second
         [c1d1, c1d2, c1d3]
         """
-        concretized = [stmt.concretize(line, col, db_context, module_name) for stmt in self.statements]
+        concretized = [
+            stmt.concretize(line, col, db_context, module_name) for stmt in self.statements
+        ]
         for items in itertools.product(*concretized):
             yield "\n".join(items)
 
