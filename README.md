@@ -114,7 +114,7 @@ demo.auto_patch("demo_prog.c",
                 44, 3)
 ```
 
-Auto patch will return `True` of `False` depending on if you successfully found a patch to fix all testcases. Eventually
+Auto patch will return `True` or `False` depending on if you successfully found a patch to fix all testcases. Eventually
 we will support having a test case directory etc, this is still early in development. 
 
 # Development
