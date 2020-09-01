@@ -195,6 +195,7 @@ class StatementList:
         second
         [c1d1, c1d2, c1d3]
         """
+        """
         temp_list: List[str] = []
         for stmt in self.statements:
             temp_result = stmt.concretize(line, col, db_context, module_name)
@@ -212,6 +213,10 @@ class StatementList:
                 temp_list = new_list
         for item in temp_list:
             yield item
+        """
+        concretized = [stmt.concretize(line, col, db_context, module_name) for stmt in self.statements]
+        for items in itertools.product(*concretized):
+            yield '\n'.join(items)
 
     def view(self, line: int, col: int, db_context, module_name) -> str:
         final_str = ""
