@@ -74,6 +74,7 @@ to do a basic if/else statement where the else case returns some value. Return v
 returning some arbitrary integer isn't usually a good idea. This means you can use some program analysis technique to 
 infer what an appropriate return code might actually be, or simply ask a human to intervene. 
 
+# Using Tourniquet
 
 ```
 # Create a new Tourniquet instance 
