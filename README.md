@@ -54,22 +54,22 @@ demo_template = PatchTemplate("demo_template", # Location 1
                 )	
 ``` 
 
-Location 1 describes the name of the template you are creating. 
+*Location 1* describes the name of the template you are creating. 
 
-Location 2 is for a matcher function. The matcher function is a function that is supposed to take source line and column 
+*Location 2* is for a matcher function. The matcher function is a function that is supposed to take source line and column 
 information and return True or False if the FixPatern is applicable to that source location. The idea here is that we 
 couple specific types of fixes with specific types of bugs. We intend to use some other tools (such as manticore) to 
 help determine bug classes.   
 
-Location 3 is the beginning of the FixPattern. The FixPattern describes the overall shape of the repair. This means the
+*Location 3* is the beginning of the FixPattern. The FixPattern describes the overall shape of the repair. This means the
 human provides part of the syntax, and part of the semantics of the repair. 
 
-Location 4 shows some of the different types in the DSL. What this line is describing is a less than statement 
+*Location 4* shows some of the different types in the DSL. What this line is describing is a less than statement 
 with two variables, all the variable information is automatically extracted from the clang AST. 
 
-Location 5 is whatever source was matched by your matcher function, also extracted from the clang AST. 
+*Location 5* is whatever source was matched by your matcher function, also extracted from the clang AST. 
 
-Location 6 is an example of how you could integrate program analysis tools with Tourniquet. The FixPattern is trying
+*Location 6* is an example of how you could integrate program analysis tools with Tourniquet. The FixPattern is trying
 to do a basic if/else statement where the else case returns some value. Return values have semantic properties, 
 returning some arbitrary integer isn't usually a good idea. This means you can use some program analysis technique to 
 infer what an appropriate return code might actually be, or simply ask a human to intervene. 
