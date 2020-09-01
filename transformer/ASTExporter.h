@@ -53,10 +53,11 @@ public:
   bool VisitVarDecl(VarDecl *vdecl);
   bool VisitCallExpr(CallExpr *call_expr);
   bool VisitFunctionDecl(FunctionDecl *func_decl);
-  void PyListAppendString(PyObject *list, std::string str);
-  void PyDictUpdateEntry(PyObject *dict, PyObject *key, PyObject *new_item);
 
 private:
+  void PyDictUpdateEntry(PyObject *dict, const char *key, PyObject *new_item);
+  void AddGlobalVarDecl(PyObject *var_decl_list);
+
   ASTContext *Context;
   PyObject *tree_info;
   // Clang doesn't store parental relationships for statements (it does for
