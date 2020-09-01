@@ -202,16 +202,16 @@ class StatementList:
             if len(temp_list) == 0:
                 for x in temp_result:
                     temp_list.append(x)
-                    yield x
             # if there is stuff in it, we must make permutations
             else:
                 new_list = []
                 for item in temp_list:
                     for new in temp_result:
                         new_list.append(f"{item}\n{new}")
-                        yield f"{item}\n{new}"
                 # Update list
                 temp_list = new_list
+        for item in temp_list:
+            yield item
 
     def view(self, line: int, col: int, db_context, module_name) -> str:
         final_str = ""
