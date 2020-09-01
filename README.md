@@ -38,7 +38,7 @@ Rather than writing individual tree transform passes or other types of source ma
 describe part of the syntax and part of the semantics of a repair and lets the computer do the rest. Here is a simple 
 example template: 
 
-```
+```python
 demo_template = PatchTemplate("demo_template", # Location 1 
                   your_matcher_function # Location 2 
                   FixPattern( # Location 3
@@ -76,7 +76,7 @@ infer what an appropriate return code might actually be, or simply ask a human t
 
 # Using Tourniquet
 
-```
+```python
 # Create a new Tourniquet instance 
 demo = Tourniquet("test.db") 
 
@@ -95,7 +95,7 @@ demo_template = PatchTemplate("demo_template",
                     )
 
 #Add the template to the tourniquet instance 	
-demo.add_new_template(test_template)
+demo.add_new_template(demo_template)
 
 # Tell Tourniquet you want to see results from this program, with this template, matching against some location 
 samples = demo.concretize_template("demo_prog.c", "demo", 44, 3)
@@ -105,7 +105,7 @@ print(samples)
 
 # Attempt to automatically repair the program using that template
 # Specify the file, some testcases, and the location information again 
-test.auto_patch("demo_prog.c",
+demo.auto_patch("demo_prog.c",
                 [
                     ("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", 1),
                     ("password", 0)
@@ -114,7 +114,7 @@ test.auto_patch("demo_prog.c",
                 44, 3)
 ```
 
-Auto patch will return True of False depending on if you successfully found a patch to fix all testcases. Eventually
+Auto patch will return `True` of `False` depending on if you successfully found a patch to fix all testcases. Eventually
 we will support having a test case directory etc, this is still early in development. 
 
 # Development
