@@ -154,11 +154,17 @@ class Tourniquet:
             # NOTE(ww): We expected the first member of each function's list to be
             # a "func_decl" list, containing information about the function declaration
             # itself. We use this to construct the initial Function model.
+            # If a list doesn't begin with "func_decl," then it was external and we
+            # skip it.
+            # TODO(ww): Think more about the above.
+            exprs = iter(exprs)
             func_decl = next(exprs)
-            assert func_decl[0] == "func_decl", f"{func_decl[0]} != func_decl"
+            if func_decl[0] != "func_decl":
+                continue
 
             function = models.Function(
                 module=module,
+                name=func_name,
                 start_line=func_decl[1],
                 start_column=func_decl[2],
                 end_line=func_decl[3],
@@ -195,9 +201,24 @@ class Tourniquet:
                         end_column=expr[4],
                     )
                     self.db.session.add(call)
-                    # TODO(ww): Argument mdoels.
+
+                    for name, type_ in expr[7:]:
+                        argument = models.Argument(
+                            call=call,
+                            name=name,
+                            type_=type_,
+                        )
+                        self.db.session.add(argument)
                 elif expr[0] == "stmt_type":
-                    pass
+                    stmt = models.Statement(
+                        function=function,
+                        expr=expr[5],
+                        start_line=expr[1],
+                        start_column=expr[2],
+                        end_line=expr[3],
+                        end_column=expr[4],
+                    )
+                    self.db.session.add(stmt)
                 else:
                     assert False, expr[0]
 

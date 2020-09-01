@@ -32,11 +32,7 @@ void ASTExporterVisitor::AddFunctionEntry(const char *func_name,
 
 bool ASTExporterVisitor::VisitDeclStmt(Stmt *stmt) {
   std::string expr = getText(*stmt, *Context);
-  PyObject *new_arr = PyList_New(0);
-  if (new_arr == nullptr) {
-    PyErr_SetString(PyExc_MemoryError, "Allocation failed for list");
-    return true;
-  }
+
   unsigned int start_line =
       Context->getSourceManager().getExpansionLineNumber(stmt->getBeginLoc());
   unsigned int start_col =
@@ -46,6 +42,7 @@ bool ASTExporterVisitor::VisitDeclStmt(Stmt *stmt) {
   unsigned int end_col =
       Context->getSourceManager().getExpansionColumnNumber(stmt->getEndLoc());
 
+  PyObject *new_arr = PyList_New(0);
   PyList_Append(new_arr, PyUnicode_FromString("stmt_type"));
   PyList_Append(new_arr, PyLong_FromUnsignedLong(start_line));
   PyList_Append(new_arr, PyLong_FromUnsignedLong(start_col));
@@ -65,20 +62,6 @@ bool ASTExporterVisitor::VisitVarDecl(VarDecl *vdecl) {
     return true;
   }
 
-  // This Python list object contains our variable declaration state,
-  // with the following layout:
-  // [
-  //   start_line, start_col, end_line, end_col,
-  //   var_name, var_type, is_array, size, "var_type"
-  // ]
-  // The variable declaration is either added to the list under the "globals"
-  // key or to its enclosing function, depending on whether it's in a function.
-  PyObject *new_arr = PyList_New(0);
-  if (new_arr == nullptr) {
-    PyErr_SetString(PyExc_MemoryError, "Allocation failed for list");
-    return true;
-  }
-
   unsigned int start_line =
       Context->getSourceManager().getExpansionLineNumber(vdecl->getBeginLoc());
   unsigned int start_col = Context->getSourceManager().getExpansionColumnNumber(
@@ -88,6 +71,16 @@ bool ASTExporterVisitor::VisitVarDecl(VarDecl *vdecl) {
   unsigned int end_col =
       Context->getSourceManager().getExpansionColumnNumber(vdecl->getEndLoc());
 
+  // This Python list object contains our variable declaration state,
+  // with the following layout:
+  // [
+  //   "var_type", start_line, start_col, end_line, end_col,
+  //   var_name, var_type, is_array, size
+  // ]
+  // The variable declaration is either added to the list under the "globals"
+  // key or to its enclosing function, depending on whether it's in a function.
+
+  PyObject *new_arr = PyList_New(0);
   PyList_Append(new_arr, PyUnicode_FromString("var_type"));
   PyList_Append(new_arr, PyLong_FromUnsignedLong(start_line));
   PyList_Append(new_arr, PyLong_FromUnsignedLong(start_col));
@@ -128,12 +121,6 @@ bool ASTExporterVisitor::VisitVarDecl(VarDecl *vdecl) {
 bool ASTExporterVisitor::VisitCallExpr(CallExpr *call_expr) {
   std::string expr = getText(*call_expr, *Context);
 
-  PyObject *new_arr = PyList_New(0);
-  if (new_arr == nullptr) {
-    PyErr_SetString(PyExc_MemoryError, "Allocation failed for list");
-    return true;
-  }
-
   FunctionDecl *func = call_expr->getDirectCallee();
   std::string callee = func->getNameInfo().getName().getAsString();
   unsigned int start_line = Context->getSourceManager().getExpansionLineNumber(
@@ -145,6 +132,7 @@ bool ASTExporterVisitor::VisitCallExpr(CallExpr *call_expr) {
   unsigned int end_col = Context->getSourceManager().getExpansionColumnNumber(
       call_expr->getEndLoc());
 
+  PyObject *new_arr = PyList_New(0);
   PyList_Append(new_arr, PyUnicode_FromString("call_type"));
   PyList_Append(new_arr, PyLong_FromUnsignedLong(start_line));
   PyList_Append(new_arr, PyLong_FromUnsignedLong(start_col));
@@ -154,10 +142,12 @@ bool ASTExporterVisitor::VisitCallExpr(CallExpr *call_expr) {
   PyList_Append(new_arr, PyUnicode_FromString(callee.c_str()));
 
   for (auto arg : call_expr->arguments()) {
-    std::string arg_str = getText(*arg, *Context);
-    PyList_Append(new_arr, PyUnicode_FromString(arg_str.c_str()));
-    PyList_Append(new_arr,
+    auto arg_arr = PyList_New(0);
+    PyList_Append(arg_arr,
+                  PyUnicode_FromString(getText(*arg, *Context).str().c_str()));
+    PyList_Append(arg_arr,
                   PyUnicode_FromString(arg->getType().getAsString().c_str()));
+    PyList_Append(new_arr, arg_arr);
   }
   AddFunctionEntry(current_func->getNameAsString().c_str(), new_arr);
   return true;
@@ -166,12 +156,6 @@ bool ASTExporterVisitor::VisitCallExpr(CallExpr *call_expr) {
 // Name, Parameters, Parameter Types?
 bool ASTExporterVisitor::VisitFunctionDecl(FunctionDecl *func_decl) {
   if (func_decl->getStorageClass() == SC_Extern) {
-    return true;
-  }
-
-  PyObject *new_arr = PyList_New(0);
-  if (new_arr == nullptr) {
-    PyErr_SetString(PyExc_MemoryError, "Allocation failed for list");
     return true;
   }
 
@@ -184,6 +168,7 @@ bool ASTExporterVisitor::VisitFunctionDecl(FunctionDecl *func_decl) {
   unsigned int end_col = Context->getSourceManager().getExpansionColumnNumber(
       func_decl->getEndLoc());
 
+  PyObject *new_arr = PyList_New(0);
   PyList_Append(new_arr, PyUnicode_FromString("func_decl"));
   PyList_Append(new_arr, PyLong_FromUnsignedLong(start_line));
   PyList_Append(new_arr, PyLong_FromUnsignedLong(start_col));
