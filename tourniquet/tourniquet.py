@@ -149,8 +149,57 @@ class Tourniquet:
             )
             self.db.session.add(global_)
 
+        # Every subsequent member
         for func_name, exprs in ast_info["functions"].items():
-            pass
+            # NOTE(ww): We expected the first member of each function's list to be
+            # a "func_decl" list, containing information about the function declaration
+            # itself. We use this to construct the initial Function model.
+            func_decl = next(exprs)
+            assert func_decl[0] == "func_decl", f"{func_decl[0]} != func_decl"
+
+            function = models.Function(
+                module=module,
+                start_line=func_decl[1],
+                start_column=func_decl[2],
+                end_line=func_decl[3],
+                end_column=func_decl[4],
+            )
+            self.db.session.add(function)
+
+            for expr in exprs:
+                # From here, the exprs we know are "var_type" (models.VarDecl),
+                # "call_type" (models.Call), and "stmt_type" (models.Statement).
+                # "call_type" lists contain, in turn, a list of arguments,
+                # which we promote to models.Argument objects.
+                if expr[0] == "var_type":
+                    var_decl = models.VarDecl(
+                        function=function,
+                        name=expr[5],
+                        type_=expr[6],
+                        start_line=expr[1],
+                        start_column=expr[2],
+                        end_line=expr[3],
+                        end_column=expr[4],
+                        is_array=bool(expr[7]),
+                        size=expr[8],
+                    )
+                    self.db.session.add(var_decl)
+                elif expr[0] == "call_type":
+                    call = models.Call(
+                        function=function,
+                        expr=expr[5],
+                        name=expr[6],
+                        start_line=expr[1],
+                        start_column=expr[2],
+                        end_line=expr[3],
+                        end_column=expr[4],
+                    )
+                    self.db.session.add(call)
+                    # TODO(ww): Argument mdoels.
+                elif expr[0] == "stmt_type":
+                    pass
+                else:
+                    assert False, expr[0]
 
         self.db.session.commit()
 

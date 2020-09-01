@@ -169,6 +169,32 @@ bool ASTExporterVisitor::VisitFunctionDecl(FunctionDecl *func_decl) {
     return true;
   }
 
+  PyObject *new_arr = PyList_New(0);
+  if (new_arr == nullptr) {
+    PyErr_SetString(PyExc_MemoryError, "Allocation failed for list");
+    return true;
+  }
+
+  unsigned int start_line = Context->getSourceManager().getExpansionLineNumber(
+      func_decl->getBeginLoc());
+  unsigned int start_col = Context->getSourceManager().getExpansionColumnNumber(
+      func_decl->getBeginLoc());
+  unsigned int end_line = Context->getSourceManager().getExpansionLineNumber(
+      func_decl->getEndLoc());
+  unsigned int end_col = Context->getSourceManager().getExpansionColumnNumber(
+      func_decl->getEndLoc());
+
+  PyList_Append(new_arr, PyUnicode_FromString("func_decl"));
+  PyList_Append(new_arr, PyLong_FromUnsignedLong(start_line));
+  PyList_Append(new_arr, PyLong_FromUnsignedLong(start_col));
+  PyList_Append(new_arr, PyLong_FromUnsignedLong(end_line));
+  PyList_Append(new_arr, PyLong_FromUnsignedLong(end_col));
+
+  AddFunctionEntry(func_decl->getNameAsString().c_str(), new_arr);
+
+  // NOTE(ww) Subsequent visitor methods use this member to determine which
+  // function they're in.
   current_func = func_decl;
+
   return true;
 }

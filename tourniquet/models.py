@@ -31,6 +31,8 @@ class Function(Base):
     name = Column(String)
     start_line = Column(Integer)
     start_column = Column(Integer)
+    end_line = Column(Integer)
+    end_column = Column(Integer)
 
     var_decls = relationship("VarDecl")
     calls = relationship("Call")
@@ -89,6 +91,10 @@ class Call(Base):
 
     expr = Column(String)
     name = Column(String)
+    start_line = Column(Integer)
+    start_column = Column(Integer)
+    end_line = Column(Integer)
+    end_column = Column(Integer)
 
     arguments = relationship("Argument")
 
