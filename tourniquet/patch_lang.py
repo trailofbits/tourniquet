@@ -89,21 +89,6 @@ class StaticBufferSize(Expression):
         return "StaticBufferSize()"
 
 
-# This belongs in MATE, or just take user input
-# DB context could be a wrapper class?
-"""
-class ErrorReturn(Expression):
-    # Trigger the error analysis or just look for returns
-    # State that it cannot be found, will have to ask.
-    def concretize(self, line: int, col: int, db_context, module_name) -> Iterator[str]:
-        # return "ErrorReturn()"
-        pass
-
-    def view(self, line: int, col: int, db_context, module_name) -> str:
-        return "ErrorReturn()"
-"""
-
-
 class BinaryMathOperator(Expression):
     # Really return [+, -, /, *, <<]
     def __init__(self, lhs: Expression, rhs: Expression):
