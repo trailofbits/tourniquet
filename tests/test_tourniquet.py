@@ -1,19 +1,14 @@
-from pathlib import Path
-
 import pytest
 
 from tourniquet import Tourniquet
 from tourniquet.models import Function, Global, Module
 from tourniquet.patch_lang import FixPattern, NodeStmt, PatchTemplate
 
-TEST_DIR = Path(__file__).resolve().parent
-TEST_FILE_DIR = TEST_DIR / "test_files"
 
-
-def test_tourniquet_extract_ast(tmp_db):
+def test_tourniquet_extract_ast(test_files, tmp_db):
     # No DB name for now
     test_extractor = Tourniquet(tmp_db)
-    test_file = TEST_FILE_DIR / "patch_test.c"
+    test_file = test_files / "patch_test.c"
     ast_dict: dict = test_extractor._extract_ast(test_file)
 
     # The dictionary produced from the AST has three top-level keys:
@@ -40,9 +35,9 @@ def test_tourniquet_extract_ast(tmp_db):
     assert set(main_vars) == {"argc", "argv", "buff", "buff_len", "pov", "len"}
 
 
-def test_tourniquet_db(tmp_db):
+def test_tourniquet_db(test_files, tmp_db):
     tourniquet = Tourniquet(tmp_db)
-    test_file = TEST_FILE_DIR / "patch_test.c"
+    test_file = test_files / "patch_test.c"
     tourniquet.collect_info(test_file)
 
     module = tourniquet.db.query(Module).filter_by(name=str(test_file)).one()
@@ -68,10 +63,12 @@ def test_tourniquet_db(tmp_db):
     assert len(main.calls) == 4
     assert len(main.statements) == 4
 
+    # TODO(ww): Test main.{var_decls,calls,statements}
 
-def test_tourniquet_extract_ast_invalid_file(tmp_db):
+
+def test_tourniquet_extract_ast_invalid_file(test_files, tmp_db):
     test_extractor = Tourniquet(tmp_db)
-    test_file = TEST_FILE_DIR / "does-not-exist"
+    test_file = test_files / "does-not-exist"
     with pytest.raises(FileNotFoundError):
         test_extractor._extract_ast(test_file)
 
