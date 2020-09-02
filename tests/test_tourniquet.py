@@ -66,7 +66,7 @@ def test_tourniquet_db(tmp_db):
     assert main.end_column == 1
     assert len(main.var_decls) == 6
     assert len(main.calls) == 4
-    assert len(main.statements) == 10
+    assert len(main.statements) == 4
 
 
 def test_tourniquet_extract_ast_invalid_file(tmp_db):
