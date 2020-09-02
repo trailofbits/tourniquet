@@ -3,7 +3,7 @@
 A Python library for easy C/C++ syntax guided program transformation/repair.
 This is still very early in development.
 
-# Quickstart
+## Quickstart
 
 Build the library with docker
 
@@ -14,7 +14,7 @@ $ docker run -it trailofbits/tourniquet
 
 Enter an `ipython` instance and `import tourniquet`
 
-# Syntax Guided Program Repair TL;DR
+## Syntax Guided Program Repair TL;DR
 
 Fixing programs is hard, and one of the most popular techniques for automated repair is search. If you're familiar with
 fuzzing, it is basically the reverse. In fuzzing you are mutating inputs to cause a crash, but in search based program
@@ -25,14 +25,14 @@ are useless. The idea behind syntax guided program repair is to come up with som
 to use those from your search space. This means your search space is smaller (restricted by the syntax patterns) and
 you are focusing on patch candidates that might actually fix whatever bug is in front of you.
 
-# So What Even Is Tourniquet?
+## So What Even Is Tourniquet?
 
 Tourniquet is a library and domain specific language for syntax guided program repair. Current tools have
 hard coded fix patterns within them, making it hard for humans to interact and tweak them. The goal of Tourniquet is to
 make it quick and easy to create repair templates that can immediately be used to try and repair bugs. We plan on using
 Tourniquet alongside program analysis tools to allow humans to create fix patterns that have semantic meaning.
 
-# Domain Specific Language
+## Domain Specific Language
 
 Rather than writing individual tree transform passes or other types of source manipulation, Tourniquet makes it easy to
 describe part of the syntax and part of the semantics of a repair and lets the computer do the rest. Here is a simple
@@ -73,7 +73,7 @@ to do a basic if/else statement where the else case returns some value. Return v
 returning some arbitrary integer isn't usually a good idea. This means you can use some program analysis technique to
 infer what an appropriate return code might actually be, or simply ask a human to intervene.
 
-# Using Tourniquet
+## Using Tourniquet
 
 ```python
 # Create a new Tourniquet instance
@@ -116,7 +116,7 @@ demo.auto_patch("demo_prog.c",
 Auto patch will return `True` or `False` depending on if you successfully found a patch to fix all testcases. Eventually
 we will support having a test case directory etc, this is still early in development.
 
-# Development
+## Development
 
 Install venv to be able to run `make` commands
 
@@ -128,8 +128,9 @@ root@b9f3a28655b6:/tourniquet# python3 -m venv env
 root@b9f3a28655b6:/tourniquet# make test
 ```
 
-# Contributors
+## License and Acknowledgements
 
-* Carson Harmon (carson.harmon@trailofbits.com)
-* Evan Sultanik (evan.sultanik@trailofbits.com)
-* William Woodruff (william@trailofbits.com)
+This research was developed by Trail of Bits with partial funding from the
+Defense Advanced Research Projects Agency (DARPA) under the CHESS program as a subcontractor to
+Galois. It is licensed under the Apache 2 License. Contact us if
+you're looking for an exception to the terms. © 2020, Trail of Bits.
