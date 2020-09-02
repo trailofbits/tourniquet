@@ -41,11 +41,11 @@ def test_tourniquet_extract_ast():
 
     # There's a "main" function in the "functions" dictionary.
     assert "main" in ast_dict["functions"]
-    main = ast_dict["functions"]
+    main = ast_dict["functions"]["main"]
 
-    # There are 4 variables in "main".
+    # There are 4 variables in "main", plus "argc" and "argv".
     main_vars = [var_decl[5] for var_decl in main if var_decl[0] == "var_type"]
-    assert set(main_vars) == {"buff", "buff_len", "pov", "len"}
+    assert set(main_vars) == {"argc", "argv", "buff", "buff_len", "pov", "len"}
 
 
 def test_tourniquet_extract_badfile():
