@@ -48,14 +48,14 @@ def test_tourniquet_extract_ast():
     assert set(main_vars) == {"argc", "argv", "buff", "buff_len", "pov", "len"}
 
 
-def test_tourniquet_extract_badfile():
+def test_tourniquet_extract_ast_invalid_file():
     logger.info("Testing extract error handling")
     test_extractor = Tourniquet("test.db")
     test_file = os.path.join(TEST_FILE_DIR, "")
     with pytest.raises(FileNotFoundError):
-        test_extractor.extract_ast(test_file)
+        test_extractor._extract_ast(test_file)
     with pytest.raises(FileNotFoundError):
-        test_extractor.extract_ast("")
+        test_extractor._extract_ast("")
 
 
 def test_new_template():
