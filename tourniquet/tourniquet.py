@@ -1,6 +1,6 @@
 import subprocess
 from pathlib import Path
-from typing import Any, Dict, Iterator, List, Optional
+from typing import Any, Dict, Iterator, Optional
 
 import extractor
 
@@ -13,7 +13,7 @@ class Tourniquet:
     def __init__(self, database_name):
         self.db_name = database_name
         self.db = models.DB.create(database_name)
-        self.patch_templates: List[PatchTemplate] = []
+        self.patch_templates: Dict[str, PatchTemplate] = {}
 
     def _extract_ast(self, source_path: Path) -> Dict[str, Any]:
         if not source_path.is_file():
@@ -114,30 +114,32 @@ class Tourniquet:
         ast_info = self._extract_ast(source_path)
         self._store_ast(ast_info)
 
-    def add_new_template(self, template: PatchTemplate):
-        self.patch_templates.append(template)
-
-    def print_template_names(self):
-        for template in self.patch_templates:
-            print(template.template_name)
+    def register_template(self, name: str, template: PatchTemplate):
+        if name in self.patch_templates:
+            raise ValueError(f"a template has already been registered as {name}")
+        self.patch_templates[name] = template
 
     # TODO Should take  target
+    # TODO(ww): Consider rehoming this?
     def view_template(self, module_name, template_name, line: int, col: int) -> Optional[str]:
-        for template in self.patch_templates:
-            if template.template_name == template_name:
-                print("=" * 10, template_name, "=" * 10)
-                view_str = template.view(line, col, self.db, module_name)
-                print(view_str)
-                print("=" * 10, "END", "=" * 10)
-                return view_str
-        return None
+        template = self.patch_templates.get(template_name)
+        if template is None:
+            return None
+
+        print("=" * 10, template_name, "=" * 10)
+        view_str = template.view(line, col, self.db, module_name)
+        print(view_str)
+        print("=" * 10, "END", "=" * 10)
+        return view_str
 
     # TODO Should take a target
     def concretize_template(self, module_name, template_name, line, col) -> Iterator[str]:
-        for template in self.patch_templates:
-            if template.template_name == template_name:
-                yield from template.concretize(line, col, self.db, module_name)
-        yield from ()
+        template = self.patch_templates.get(template_name)
+        if template is None:
+            # TODO(ww): Custom error.
+            raise ValueError(f"no template registed with name {template_name}")
+
+        yield from template.concretize(line, col, self.db, module_name)
 
     # TODO Should take a target
     def patch(self, file_path, replacement: str, line: int, col: int) -> bool:

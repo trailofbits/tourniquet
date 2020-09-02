@@ -272,10 +272,9 @@ class FixPattern:
 
 class PatchTemplate:
     # TODO Think of better API
-    def __init__(self, name: str, matcher_func, fix_pattern: FixPattern):
+    def __init__(self, matcher_func, fix_pattern: FixPattern):
         self.matcher_func = matcher_func
         self.fix_pattern = fix_pattern
-        self.template_name = name
 
     def matches(self, line: int, col: int) -> bool:
         matches: bool = self.matcher_func(line, col)
