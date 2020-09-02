@@ -21,7 +21,7 @@ dev: env
 
 .PHONY: build
 build: env
-	. env/build/activate && \
+	. env/bin/activate && \
 		pip install .
 
 .PHONY: py-lint
