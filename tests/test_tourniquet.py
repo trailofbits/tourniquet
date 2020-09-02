@@ -1,27 +1,18 @@
-import logging
-import os
+from pathlib import Path
 
 import pytest
 
 from tourniquet import Tourniquet
 from tourniquet.patch_lang import FixPattern, NodeStmt, PatchTemplate
 
-logger = logging.getLogger(__name__)
-
-TEST_DIR = os.path.realpath(os.path.dirname(__file__))
-TEST_FILE_DIR = os.path.realpath(os.path.join(os.path.dirname(__file__), "test_files"))
-
-#############################
-#      Tests go here        #
-#############################
+TEST_DIR = Path(__file__).resolve().parent
+TEST_FILE_DIR = TEST_DIR / "test_files"
 
 
-def test_tourniquet_extract_ast():
-    logger.info("Testing extraction of simple types")
-
+def test_tourniquet_extract_ast(tmp_path):
     # No DB name for now
-    test_extractor = Tourniquet("test.db")
-    test_file = os.path.join(TEST_FILE_DIR, "patch_test.c")
+    test_extractor = Tourniquet(tmp_path)
+    test_file = TEST_FILE_DIR / "patch_test.c"
     ast_dict: dict = test_extractor._extract_ast(test_file)
 
     # The dictionary produced from the AST has three top-level keys:
@@ -48,20 +39,15 @@ def test_tourniquet_extract_ast():
     assert set(main_vars) == {"argc", "argv", "buff", "buff_len", "pov", "len"}
 
 
-def test_tourniquet_extract_ast_invalid_file():
-    logger.info("Testing extract error handling")
-    test_extractor = Tourniquet("test.db")
-    test_file = os.path.join(TEST_FILE_DIR, "")
+def test_tourniquet_extract_ast_invalid_file(tmp_path):
+    test_extractor = Tourniquet(tmp_path)
+    test_file = TEST_FILE_DIR / "does-not-exist"
     with pytest.raises(FileNotFoundError):
         test_extractor._extract_ast(test_file)
-    with pytest.raises(FileNotFoundError):
-        test_extractor._extract_ast("")
 
 
-def test_new_template():
-    test_extractor = Tourniquet("test.db")
-    os.path.join(TEST_FILE_DIR, "patch_test.c")
+def test_new_template(tmp_path):
+    test_extractor = Tourniquet(tmp_path)
     new_template = PatchTemplate("testme", lambda x, y: True, FixPattern(NodeStmt()))
     test_extractor.add_new_template(new_template)
     assert len(test_extractor.patch_templates) == 1
-    # view_str = test_extractor.view_template()

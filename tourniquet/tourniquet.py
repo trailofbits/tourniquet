@@ -1,5 +1,5 @@
-import os
 import subprocess
+from pathlib import Path
 from typing import Any, Dict, Iterator, List, Optional
 
 import extractor
@@ -15,14 +15,11 @@ class Tourniquet:
         self.db = models.DB.create(database_name)
         self.patch_templates: List[PatchTemplate] = []
 
-    def _extract_ast(self, filepath: str) -> Dict[str, Any]:
-        # Assert file path exists
-        if not os.path.exists(filepath):
-            raise FileNotFoundError("Error! File not found!")
-        if not os.path.isfile(filepath):
-            raise FileNotFoundError("Error! This is a directory and not a file")
+    def _extract_ast(self, source_path: Path) -> Dict[str, Any]:
+        if not source_path.is_file():
+            raise FileNotFoundError(f"{source_path} is not a file")
 
-        return extractor.extract_ast(filepath)
+        return extractor.extract_ast(str(source_path))
 
     def _store_ast(self, ast_info: Dict[str, Any]):
         module = models.Module(name=ast_info["module_name"])
@@ -113,8 +110,8 @@ class Tourniquet:
         self.db.session.commit()
 
     # TODO Should take a target
-    def collect_info(self, filepath: str):
-        ast_info = self._extract_ast(filepath)
+    def collect_info(self, source_path: Path):
+        ast_info = self._extract_ast(source_path)
         self._store_ast(ast_info)
 
     def add_new_template(self, template: PatchTemplate):
