@@ -9,9 +9,9 @@ TEST_DIR = Path(__file__).resolve().parent
 TEST_FILE_DIR = TEST_DIR / "test_files"
 
 
-def test_tourniquet_extract_ast(tmp_path):
+def test_tourniquet_extract_ast(tmp_db):
     # No DB name for now
-    test_extractor = Tourniquet(tmp_path)
+    test_extractor = Tourniquet(tmp_db)
     test_file = TEST_FILE_DIR / "patch_test.c"
     ast_dict: dict = test_extractor._extract_ast(test_file)
 
@@ -22,7 +22,7 @@ def test_tourniquet_extract_ast(tmp_path):
     assert "functions" in ast_dict
 
     # The module name is our source file.
-    assert ast_dict["module_name"] == test_file
+    assert ast_dict["module_name"] == str(test_file)
 
     # Everything in globals is a "var_type".
     assert all(global_[0] == "var_type" for global_ in ast_dict["globals"])
@@ -39,15 +39,15 @@ def test_tourniquet_extract_ast(tmp_path):
     assert set(main_vars) == {"argc", "argv", "buff", "buff_len", "pov", "len"}
 
 
-def test_tourniquet_extract_ast_invalid_file(tmp_path):
-    test_extractor = Tourniquet(tmp_path)
+def test_tourniquet_extract_ast_invalid_file(tmp_db):
+    test_extractor = Tourniquet(tmp_db)
     test_file = TEST_FILE_DIR / "does-not-exist"
     with pytest.raises(FileNotFoundError):
         test_extractor._extract_ast(test_file)
 
 
-def test_new_template(tmp_path):
-    test_extractor = Tourniquet(tmp_path)
+def test_new_template(tmp_db):
+    test_extractor = Tourniquet(tmp_db)
     new_template = PatchTemplate("testme", lambda x, y: True, FixPattern(NodeStmt()))
     test_extractor.add_new_template(new_template)
     assert len(test_extractor.patch_templates) == 1
