@@ -22,25 +22,30 @@ def test_tourniquet_extract_ast():
     # No DB name for now
     test_extractor = Tourniquet("test.db")
     test_file = os.path.join(TEST_FILE_DIR, "patch_test.c")
-    extraction_results: dict = test_extractor._extract_ast(test_file)
-    # Look for the four variables
-    assert "main" in extraction_results["functions"]
-    assert "globals" in extraction_results
-    entries = extraction_results["main"]
-    # Fold all vars into single list
-    var_list = [item for entry in entries if "var_type" in entry for item in entry]
-    # Test locals
-    assert "buff" in var_list
-    assert "len" in var_list
-    assert "buff_len" in var_list
-    assert "pov" in var_list
-    # Get function parameters
-    assert "argc" in var_list
-    assert "argv" in var_list
-    # The global should be there too :)
-    globals_ = extraction_results["globals"]
-    global_var_list = [item for entry in globals_ for item in entry]
-    assert "pass" in global_var_list
+    ast_dict: dict = test_extractor._extract_ast(test_file)
+
+    # The dictionary produced from the AST has three top-level keys:
+    # module_name, globals, and functions.
+    assert "module_name" in ast_dict
+    assert "globals" in ast_dict
+    assert "functions" in ast_dict
+
+    # The module name is our source file.
+    assert ast_dict["module_name"] == test_file
+
+    # Everything in globals is a "var_type".
+    assert all(global_[0] == "var_type" for global_ in ast_dict["globals"])
+
+    # There's at least one global named "pass".
+    assert any(global_[5] == "pass" for global_ in ast_dict["globals"])
+
+    # There's a "main" function in the "functions" dictionary.
+    assert "main" in ast_dict["functions"]
+    main = ast_dict["functions"]
+
+    # There are 4 variables in "main".
+    main_vars = [var_decl[5] for var_decl in main if var_decl[0] == "var_type"]
+    assert set(main_vars) == {"buff", "buff_len", "pov", "len"}
 
 
 def test_tourniquet_extract_badfile():
