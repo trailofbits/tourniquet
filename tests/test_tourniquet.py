@@ -54,7 +54,7 @@ def test_tourniquet_db(tmp_db):
     assert pass_.start_line == 20
     assert pass_.start_column == 1
     assert pass_.end_line == 20
-    assert pass_.end_column == 23
+    assert pass_.end_column == 14
     assert not pass_.is_array
     assert pass_.size == 8
 
