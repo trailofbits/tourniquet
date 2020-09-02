@@ -1,12 +1,8 @@
-from threading import local
-from typing import Any
-
 from sqlalchemy import Boolean, Column, ForeignKey, Integer, String, create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship, sessionmaker
 
-Base: Any = declarative_base()
-Base.local = local()
+Base = declarative_base()
 
 
 class Module(Base):
@@ -140,7 +136,6 @@ class DB:
         engine = create_engine(f"sqlite:///{db_path}", echo=echo)
 
         session = sessionmaker(bind=engine)()
-        Base.local.bind = engine
         Base.metadata.create_all(engine)
 
         return cls(session, db_path)
