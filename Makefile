@@ -19,6 +19,11 @@ dev: env
 		pip install -r dev-requirements.txt
 
 
+.PHONY: build
+build: env
+	. env/build/activate && \
+		pip install .
+
 .PHONY: py-lint
 py-lint:
 	. env/bin/activate && \
@@ -41,7 +46,7 @@ typecheck:
 		mypy tourniquet
 
 .PHONY: test
-test:
+test: build
 	. env/bin/activate && \
 		pytest tests/
 
