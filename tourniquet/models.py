@@ -136,10 +136,7 @@ class Statement(Base):
 class DB:
     @classmethod
     def create(cls, db_path, echo=False):
-        engine = create_engine(
-            f"sqlite:///{db_path}",
-            echo=echo,
-        )
+        engine = create_engine(f"sqlite:///{db_path}", echo=echo)
 
         session = sessionmaker(bind=engine)()
         Base.local.bind = engine

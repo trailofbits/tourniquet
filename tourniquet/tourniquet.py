@@ -10,50 +10,6 @@ from .patch_lang import PatchTemplate
 
 # TODO Make DB class to pass around instead of connection.
 class Tourniquet:
-    SQL_CREATE_MODULES_TABLE = """
-        CREATE TABLE IF NOT EXISTS '{}' (
-            id INTEGER PRIMARY KEY,
-            function_name nvarchar NOT NULL
-        );
-    """
-    SQL_INSERT_MOD_TABLE = """
-        INSERT INTO '{}' (function_name) VALUES ('{}')
-    """
-
-    SQL_CREATE_FUNC_TABLE = """
-            CREATE TABLE IF NOT EXISTS '{}' (
-            id INTEGER PRIMARY KEY,
-            entry_type nvarchar NOT NULL,
-            data json NOT NULL,
-            line int NOT NULL,
-            col int NOT NULL,
-            end_line int NOT NULL,
-            end_col int NOT NULL
-        );
-    """
-    # This table is to easily map line,col --> func_table
-    SQL_CREATE_LINE_MAP_TABLE = """
-        CREATE TABLE IF NOT EXISTS '{}' (
-        id INTEGER PRIMARY KEY,
-        line int NOT NULL,
-        col int NOT NULL,
-        func_name nvarchar NOT NULL
-        );
-    """
-    SQL_INSERT_LINE_MAP_TABLE = """
-        INSERT INTO '{}' (line, col, func_name) VALUES ('{}', '{}', '{}');
-    """
-    SQL_QUERY_LINE_MAP = """
-        SELECT func_name FROM '{}' WHERE line={} AND col={};
-    """
-    SQL_QUERY_FUNC_ENTRY = """
-        SELECT (entry_type, data) FROM '{}' WHERE line={} and col={};
-    """
-    SQL_INSERT_FUNC_ENTRY = """
-        INSERT INTO '{}' (entry_type, data, line, col, end_line, end_col)
-        VALUES ( '{}', '{}', '{}', '{}', '{}', '{}')
-    """
-
     def __init__(self, database_name):
         self.db_name = database_name
         self.db = models.DB.create(database_name)
@@ -67,70 +23,6 @@ class Tourniquet:
             raise FileNotFoundError("Error! This is a directory and not a file")
 
         return extractor.extract_ast(filepath)
-
-    # def _create_module_table(self, table_name: str) -> int:
-    #     cursor = self.db_conn.cursor()
-    #     cursor.execute(self.SQL_CREATE_MODULES_TABLE.format(table_name))
-    #     self.db_conn.commit()
-    #     return cursor.lastrowid
-
-    # # The way to relate to this table is via a string
-    # def _create_global_table(self, module_name) -> str:
-    #     cursor = self.db_conn.cursor()
-    #     global_query = self.SQL_CREATE_FUNC_TABLE.format(module_name + "_globals")
-    #     cursor.execute(global_query)
-    #     self.db_conn.commit()
-    #     return module_name + "_globals"
-
-    # def _create_line_map_table(self, module_name) -> str:
-    #     cursor = self.db_conn.cursor()
-    #     map_query = self.SQL_CREATE_LINE_MAP_TABLE.format(module_name + "_line_map")
-    #     cursor.execute(map_query)
-    #     self.db_conn.commit()
-    #     return module_name + "_line_map"
-
-    # def _create_function_table(self, table_name: str, table_entries) -> None:
-    #     cursor = self.db_conn.cursor()
-    #     table_create_query = self.SQL_CREATE_FUNC_TABLE.format(table_name)
-    #     cursor.execute(table_create_query)
-    #     for entry in table_entries:
-    #         entry_type = entry[len(entry) - 1]
-    #         start_line = entry[0]
-    #         start_col = entry[1]
-    #         end_line = entry[2]
-    #         end_col = entry[3]
-    #         query = self.SQL_INSERT_FUNC_ENTRY.format(
-    #             table_name, entry_type, json.dumps(entry), start_line, start_col, end_line, end_col
-    #         )
-    #         cursor.execute(query)
-    #     self.db_conn.commit()
-
-    # # Create module table
-    # # TODO take module name from extractor
-    # def _store_ast(self, ast_info: Dict[str, Any]) -> None:
-    #     module_name: str = ast_info["module_name"]
-    #     self._create_module_table(module_name)
-    #     # create global table
-    #     self._create_global_table(module_name)
-    #     line_map_table = self._create_line_map_table(module_name)
-    #     # Table for each function (maybe some symbol issues)
-    #     cursor = self.db_conn.cursor()
-    #     for func_key in ast_info:
-    #         if func_key == "global" or func_key == "module_name":
-    #             continue
-    #         self._create_function_table(func_key, ast_info[func_key])
-    #         mod_insert_query = self.SQL_INSERT_MOD_TABLE.format(module_name, func_key)
-    #         # print(mod_insert_query)
-    #         cursor.execute(mod_insert_query)
-    #         entry_info = ast_info[func_key]
-    #         for entry in entry_info:
-    #             start_line = entry[0]
-    #             start_col = entry[1]
-    #             line_map_query = self.SQL_INSERT_LINE_MAP_TABLE.format(
-    #                 line_map_table, start_line, start_col, func_key
-    #             )
-    #             cursor.execute(line_map_query)
-    #         self.db_conn.commit()
 
     def _store_ast(self, ast_info: Dict[str, Any]):
         module = models.Module(name=ast_info["module_name"])
@@ -203,11 +95,7 @@ class Tourniquet:
                     self.db.session.add(call)
 
                     for name, type_ in expr[7:]:
-                        argument = models.Argument(
-                            call=call,
-                            name=name,
-                            type_=type_,
-                        )
+                        argument = models.Argument(call=call, name=name, type_=type_)
                         self.db.session.add(argument)
                 elif expr[0] == "stmt_type":
                     stmt = models.Statement(
@@ -256,26 +144,24 @@ class Tourniquet:
 
     # TODO Should take a target
     def patch(self, file_path, replacement: str, line: int, col: int) -> bool:
-        # Query for end_line/end_col
-        cursor = self.db_conn.cursor()
-        SQL_QUERY_LINE_MAP = """
-                        SELECT func_name FROM '{}' WHERE line={} AND col={};
-                    """
-        # TODO Have this be inside the new DB class later
-        fetch_query = SQL_QUERY_LINE_MAP.format(file_path + "_line_map", line, col)
-        cursor.execute(fetch_query)
-        function_info = cursor.fetchall()
-        # Could be more than once match
-        func_name = function_info[0][0]
-        SQL_QUERY_FUNC_ENTRY = """
-            SELECT end_line, end_col FROM '{}' WHERE line={} and col={};
-        """
-        fetch_entry_query = SQL_QUERY_FUNC_ENTRY.format(func_name, line, col)
-        cursor.execute(fetch_entry_query)
-        line_info = cursor.fetchall()
-        # TODO have a better way of resolving this
-        end_line, end_col = line_info[0]
-        return self.transform(file_path, replacement, line, col, end_line, end_col)
+        function = (
+            self.db.query(models.Function)
+            .filter_by(start_line=line, start_column=col)
+            .one_or_none()
+        )
+
+        if function is None:
+            # TODO(ww): Come up with an appropriate exception here.
+            raise ValueError(f"no function at ({line}, {col})")
+
+        return self.transform(
+            file_path,
+            replacement,
+            function.start_line,
+            function.start_column,
+            function.end_line,
+            function.end_column,
+        )
 
     # TODO Should take a target
     def auto_patch(self, file_path, tests, template_name, line, col) -> bool:
