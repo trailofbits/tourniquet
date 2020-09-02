@@ -16,13 +16,13 @@ TEST_FILE_DIR = os.path.realpath(os.path.join(os.path.dirname(__file__), "test_f
 #############################
 
 
-def test_tourniquet_extract_simple():
+def test_tourniquet_extract_ast():
     logger.info("Testing extraction of simple types")
 
     # No DB name for now
     test_extractor = Tourniquet("test.db")
     test_file = os.path.join(TEST_FILE_DIR, "patch_test.c")
-    extraction_results: dict = test_extractor.extract_ast(test_file)
+    extraction_results: dict = test_extractor._extract_ast(test_file)
     # Look for the four variables
     assert "main" in extraction_results["functions"]
     assert "globals" in extraction_results
