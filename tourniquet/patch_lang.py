@@ -195,13 +195,6 @@ class StatementList:
         second
         [c1d1, c1d2, c1d3]
         """
-
-        #test = [[]]
-        #for i, stmt in enumerate(self.statements):
-         #   concrete_stmt = stmt.concretize(line, col, db_context, module_name)
-         #   test.append(concrete_stmt)
-        #itertools.product()
-
         concretized = [
             stmt.concretize(line, col, db_context, module_name) for stmt in self.statements
         ]
