@@ -215,9 +215,6 @@ class ReturnStmt(Statement):
 
 # TODO This should take a Node, which is something from... the DB? Maybe?
 class NodeStmt(Statement):
-    def __init__(self):
-        return
-
     def concretize(self, line: int, col: int, db, module_name) -> Iterator[str]:
         source_info = self.fetch_node(line, col, db, module_name)
         yield source_info
@@ -228,33 +225,13 @@ class NodeStmt(Statement):
         return source_info
 
     def fetch_node(self, line, col, db, module_name) -> str:
-        cursor = db.cursor()
-        SQL_QUERY_LINE_MAP = """
-            SELECT func_name FROM '{}' WHERE line={} AND col={};
-        """
-        # TODO Have this be inside the new DB class later
-        fetch_query = SQL_QUERY_LINE_MAP.format(module_name + "_line_map", line, col)
-        cursor.execute(fetch_query)
-        function_info = cursor.fetchall()
-        # Could be more than once match
-        func_name = function_info[0][0]
-        SQL_QUERY_FUNC_ENTRY = """
-        SELECT entry_type, data FROM '{}' WHERE line={} and col={};
-    """
-        fetch_entry_query = SQL_QUERY_FUNC_ENTRY.format(func_name, line, col)
-        cursor.execute(fetch_entry_query)
-        entry_info = cursor.fetchall()
-        # If there is multiple matches, select first one
-        # The DB stored the array as a string
-        # Convert back into an array
-        arr_string = entry_info[0][1]
-        arr_string = arr_string[1 : len(arr_string) - 1]
-        # TODO really need a parser for this.
-        source_list = [x.strip().replace('"', "") for x in arr_string.split('",')]
-        # source_list = arr_string[1 : len(arr_string) - 1].split(",")
-        # Todo have a parser for these types of things
-        ret_str = source_list[4] + ";"
-        return ret_str
+        # TODO(ww): Filter on module_name.
+        statement = (
+            db.query(models.Statement).filter_by(start_line=line, start_column=col).one_or_none()
+        )
+        if statement is None:
+            raise ValueError(f"no statement at ({line}, {col})")
+        return f"{statement.expr};"
 
 
 # Call patcher new pattern, then have the patcher add it to the list.
