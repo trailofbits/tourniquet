@@ -8,6 +8,9 @@ from setuptools.command.build_ext import build_ext
 
 module_name = "extractor"
 
+with open("dev-requirements.txt") as f:
+    dev_requirements = f.readlines()
+
 
 def get_ext_filename_without_platform_suffix(filename):
     name, ext = os.path.splitext(filename)
@@ -57,8 +60,8 @@ class CMakeBuild(build_ext):
         cmake_args = [
             f"-DCMAKE_LIBRARY_OUTPUT_DIRECTORY={extdir}",
             f"-DPYTHON_EXECUTABLE={sys.executable}",
+            f"-DPYTHON_MODULE_NAME={module_name}",
         ]
-        cmake_args += [f"-DPYTHON_MODULE_NAME={module_name}"]
         if not os.path.exists(self.build_temp):
             os.makedirs(self.build_temp)
         subprocess.check_call(["cmake", ext.sourcedir] + cmake_args, cwd=self.build_temp)
@@ -76,16 +79,5 @@ setup(
     cmdclass={"build_ext": CMakeBuild},
     zip_safe=False,
     install_requires=["sqlalchemy ~= 1.3"],
-    extras_require={
-        "dev": [
-            "ipython",
-            "pytest",
-            "pytest-cov",
-            "flake8",
-            "black",
-            "mypy",
-            "isort",
-            "sqlalchemy-stubs",
-        ]
-    },
+    extras_require={"dev": dev_requirements},
 )
