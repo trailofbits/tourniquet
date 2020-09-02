@@ -198,7 +198,7 @@ class StatementList:
         concretized = [
             stmt.concretize(line, col, db_context, module_name) for stmt in self.statements
         ]
-        for items in itertools.product(*concretized):
+        for items in set(itertools.product(*concretized)):
             yield "\n".join(items)
 
     def view(self, line: int, col: int, db_context, module_name) -> str:
