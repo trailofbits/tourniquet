@@ -46,17 +46,17 @@ typecheck:
 		mypy tourniquet
 
 .PHONY: test
-test: build
+test: dev build
 	. env/bin/activate && \
 		pytest tests/
 
 .PHONY: test-cov
-test-cov:
+test-cov: dev
 	. env/bin/activate && \
 		pytest --cov=tourniquet/ tests/
 
 .PHONY: doc
-doc:
+doc: dev
 	. env/bin/activate && \
 		PYTHONWARNINGS='error::UserWarning' pdoc --force --html tourniquet
 
