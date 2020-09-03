@@ -1,7 +1,9 @@
 import os
+import platform
 import subprocess
 import sys
 import sysconfig
+from pathlib import Path
 
 from setuptools import Extension, find_packages, setup
 from setuptools.command.build_ext import build_ext
@@ -55,13 +57,32 @@ class CMakeBuild(build_ext):
         filename = super().get_ext_filename(ext_name)
         return get_ext_filename_without_platform_suffix(filename)
 
+    def _platform_cmake_args(self):
+        args = []
+        if platform.system() == "Darwin":
+            deps = {
+                "LLVM 9": "/usr/local/opt/llvm@9",
+            }
+
+            for name, dir_ in deps.items():
+                if not Path(dir_).is_dir():
+                    print(
+                        f"Error: Couldn't find a {name} installation at {dir_}", file=sys.stderr
+                    )
+                    sys.exit(1)
+
+            prefix_path = ":".join(deps.values())
+            args.append(f"-DCMAKE_PREFIX_PATH={prefix_path}")
+        return args
+
     def build_extension(self, ext):
         extdir = os.path.abspath(os.path.dirname(self.get_ext_fullpath(ext.name)))
         cmake_args = [
             f"-DCMAKE_LIBRARY_OUTPUT_DIRECTORY={extdir}",
-            f"-DPYTHON_EXECUTABLE={sys.executable}",
             f"-DPYTHON_MODULE_NAME={module_name}",
         ]
+        cmake_args += self._platform_cmake_args()
+        print(cmake_args)
         if not os.path.exists(self.build_temp):
             os.makedirs(self.build_temp)
         subprocess.check_call(["cmake", ext.sourcedir] + cmake_args, cwd=self.build_temp)

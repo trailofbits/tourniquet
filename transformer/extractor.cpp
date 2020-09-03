@@ -78,7 +78,7 @@ PyMethodDef extractor_methods[] = {
     {NULL, NULL, 0, NULL},
 };
 
-struct PyModuleDef extractor_definition = {
+static struct PyModuleDef extractor_definition = {
     PyModuleDef_HEAD_INIT,
     "extractor",
     "The extractor extension uses clang to extract AST information and perform "
@@ -87,7 +87,7 @@ struct PyModuleDef extractor_definition = {
     extractor_methods,
 };
 
-extern "C" PyMODINIT_FUNC PyInit_extractor(void) {
+PyMODINIT_FUNC PyInit_extractor(void) {
   Py_Initialize();
   PyObject *m = PyModule_Create(&extractor_definition);
   return m;

@@ -231,6 +231,9 @@ class NodeStmt(Statement):
         )
         if statement is None:
             raise ValueError(f"no statement at ({line}, {col})")
+
+        # TODO(ww): Is this semicolon necessary? It seems to already
+        # be contained in `expr`.
         return f"{statement.expr};"
 
 

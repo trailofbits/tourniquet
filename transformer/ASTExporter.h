@@ -24,11 +24,7 @@
 #include <llvm/Support/FileSystem.h>
 #include <llvm/Support/raw_ostream.h>
 
-#ifdef __APPLE__
-#include <python3.8/Python.h>
-#else
 #include <Python.h>
-#endif
 
 using namespace llvm::json;
 using namespace clang::tooling;
