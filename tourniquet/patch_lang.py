@@ -14,6 +14,17 @@ class Expression(ABC):
         return "Expression()"
 
 
+class Lit(Expression):
+    def __init__(self, expr: str):
+        self.expr = expr
+
+    def concretize(self, _line, _col, _db, _module_name) -> Iterator[str]:
+        yield self.expr
+
+    def view(self, _line, _col, _db, _module_name):
+        return f"Lit({self.expr})"
+
+
 # TODO For these base types when you concretize them return a list of potential values
 # by querying the DB or having some preset
 class Variable(Expression):
@@ -73,7 +84,7 @@ class StaticBufferSize(Expression):
         for var_decl in function.var_decls:
             if not var_decl.is_array:
                 continue
-            yield f"sizeof({var_decl.size})"
+            yield f"sizeof({var_decl.name})"
 
     def view(self, line: int, col: int, db, module_name) -> str:
         return "StaticBufferSize()"
