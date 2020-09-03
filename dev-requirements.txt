@@ -6,3 +6,4 @@ black
 mypy
 isort
 sqlalchemy-stubs
+pdoc3
