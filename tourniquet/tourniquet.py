@@ -114,10 +114,16 @@ class Tourniquet:
 
     # TODO Should take a target
     def collect_info(self, source_path: Path):
+        """
+        Collect information about the given source file and add it to the backing database.
+        """
         ast_info = self._extract_ast(source_path, is_cxx=self._path_looks_like_cxx(source_path))
         self._store_ast(ast_info)
 
     def register_template(self, name: str, template: PatchTemplate):
+        """
+        Register a patching template with the given name.
+        """
         if name in self.patch_templates:
             raise ValueError(f"a template has already been registered as {name}")
         self.patch_templates[name] = template
@@ -125,6 +131,10 @@ class Tourniquet:
     # TODO Should take  target
     # TODO(ww): Consider rehoming this?
     def view_template(self, module_name, template_name, line: int, col: int) -> Optional[str]:
+        """
+        Pretty-print the given template, partially concretized to the given
+        module and source location.
+        """
         template = self.patch_templates.get(template_name)
         if template is None:
             return None
@@ -137,6 +147,10 @@ class Tourniquet:
 
     # TODO Should take a target
     def concretize_template(self, module_name, template_name, line, col) -> Iterator[str]:
+        """
+        Concretize the given registered template to the given
+        module and source location, yielding each candidate patch.
+        """
         template = self.patch_templates.get(template_name)
         if template is None:
             # TODO(ww): Custom error.
