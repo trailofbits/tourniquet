@@ -8,7 +8,7 @@ from tourniquet.patch_lang import (
     LessThanExpr,
     Lit,
     NodeStmt,
-    PatchTemplate,
+    ReturnStmt,
     StaticBufferSize,
     Variable
 )
@@ -69,12 +69,25 @@ def test_concretize_nodestmt(test_files, tmp_db):
     assert concretized[0] == "char buff[10];;"
 
 
+def test_concretize_ifstmt():
+    ifs = IfStmt(Lit("1"), Lit("bark;"))
+    assert set(ifs.concretize(None, None, None, None)) == {"if (1) {\nbark;\n}\n"}
+
+
+def test_concretize_elsestmt():
+    elses = ElseStmt(Lit("bark;"))
+    assert set(elses.concretize(None, None, None, None)) == {"else {\nbark;\n}\n"}
+
+
+def test_concretize_returnstmt():
+    rets = ReturnStmt(Lit("foo"))
+    assert set(rets.concretize(None, None, None, None)) == {"return foo;"}
+
+
 # TODO(ww): Tests for:
 # * Statement
 # * StatementList
-# * IfStmt
-# * ElseStmt
-# * ReturnStmt
+# * PatchTemplate
 
 
 def test_fixpattern():
@@ -82,8 +95,3 @@ def test_fixpattern():
     concretized = list(fp.concretize(None, None, None, None))
     assert len(concretized) == 1
     assert concretized[0] == "if (1) {\nexit(1);\n}\n\nelse {\nexit(2);\n}\n"
-
-
-def test_patch():
-    _ = FixPattern
-    _ = PatchTemplate
