@@ -90,7 +90,6 @@ static struct PyModuleDef extractor_definition = {
 };
 
 PyMODINIT_FUNC PyInit_extractor(void) {
-  Py_Initialize();
   PyObject *m = PyModule_Create(&extractor_definition);
   return m;
 }
