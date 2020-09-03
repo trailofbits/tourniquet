@@ -41,7 +41,7 @@ def test_tourniquet_db(test_files, tmp_db):
     tourniquet.collect_info(test_file)
 
     module = tourniquet.db.query(Module).filter_by(name=str(test_file)).one()
-    assert len(module.functions) > 1
+    assert len(module.functions) >= 1
 
     pass_ = tourniquet.db.query(Global).filter_by(name="pass").one()
     assert pass_.name == "pass"
