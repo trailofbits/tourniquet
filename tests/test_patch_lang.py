@@ -81,17 +81,7 @@ def test_fixpattern():
     fp = FixPattern(IfStmt(Lit("1"), Lit("exit(1);")), ElseStmt(Lit("exit(2);")))
     concretized = list(fp.concretize(None, None, None, None))
     assert len(concretized) == 1
-    assert (
-        concretized[0]
-        == """if (1) {
-exit(1);
-}
-
-else {
-exit(2);
-}
-"""
-    )
+    assert concretized[0] == "if (1) {\nexit(1);\n}\n\nelse {\nexit(2);\n}\n"
 
 
 def test_patch():
