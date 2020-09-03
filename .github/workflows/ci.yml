@@ -3,7 +3,7 @@ name: CI
 on: push
 
 jobs:
-  tests:
+  tests-linux:
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -19,18 +19,13 @@ jobs:
         run: |
           sudo apt-get update -y
           sudo apt install -y \
-            clang-format \
             clang-9 \
-            clang++-9 \
-            cmake \
             git \
-            zlib1g-dev \
             build-essential \
-            libboost-all-dev \
-            autoconf \
-            libzmqpp-dev \
-            automake \
-            llvm
+            python3.7-dev \
+            python3-pip \
+            llvm-9-dev \
+            libclang-9-dev
 
       - name: python deps
         run: make dev
@@ -40,6 +35,27 @@ jobs:
 
       - name: typecheck
         run: make typecheck
+
+      - name: test
+        run: make test
+
+  tests-macos:
+    runs-on: macos-latest
+    strategy:
+      matrix:
+        python-version: [3.7, 3.8]
+    steps:
+      - uses: actions/checkout@v2
+
+      - uses: actions/setup-python@v1
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: system deps
+        run: brew install llvm@9
+
+      - name: build
+        run: make build
 
       - name: test
         run: make test
