@@ -8,7 +8,6 @@ from . import models
 from .patch_lang import PatchTemplate
 
 
-# TODO Make DB class to pass around instead of connection.
 class Tourniquet:
     def __init__(self, database_name):
         self.db_name = database_name
