@@ -54,6 +54,9 @@ jobs:
       - name: system deps
         run: brew install llvm@9
 
+      - name: python deps
+        run: make dev
+
       - name: build
         run: make build
 
