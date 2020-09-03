@@ -25,21 +25,20 @@ static PyObject *extract_ast(PyObject *self, PyObject *args) {
   // NOTE(ww): Instead of parsing the filename as a string, should probably use
   // "O&" with PyUnicode_FSConverter()
   if (!PyArg_ParseTuple(args, "sp", &filename, &is_cxx)) {
-    PyErr_SetString(PyExc_TypeError, "Invalid arguments passed to extract_ast");
-    Py_RETURN_NONE;
+    return nullptr;
   }
 
   std::string data;
   if (!read_file_to_string(filename, data)) {
     PyErr_SetString(PyExc_IOError, "Failed to open file for extraction");
-    Py_RETURN_NONE;
+    return nullptr;
   }
 
   // Allocate dictionary to return to Python
   PyObject *extract_results = PyDict_New();
   if (!extract_results) {
     PyErr_SetString(PyExc_MemoryError, "Allocation failed for dict");
-    Py_RETURN_NONE;
+    return nullptr;
   }
   PyDict_SetItem(extract_results, PyUnicode_FromString("module_name"),
                  PyUnicode_FromString(filename));
@@ -57,14 +56,13 @@ static PyObject *transform(PyObject *self, PyObject *args) {
   int start_line, start_col, end_line, end_col;
   if (!PyArg_ParseTuple(args, "spsiiii", &filename, &is_cxx, &replacement,
                         &start_line, &start_col, &end_line, &end_col)) {
-    PyErr_SetString(PyExc_TypeError, "Invalid arguments passed to transform");
-    Py_RETURN_FALSE;
+    return nullptr;
   }
 
   std::string data;
   if (!read_file_to_string(filename, data)) {
     PyErr_SetString(PyExc_IOError, "Failed to open file for patching");
-    Py_RETURN_NONE;
+    return nullptr;
   }
 
   runToolOnCode(new ASTPatchAction(start_line, start_col, end_line, end_col,
@@ -79,7 +77,7 @@ PyMethodDef extractor_methods[] = {
      "Returns a dictionary containing AST info for a file"},
     {"transform", transform, METH_VARARGS,
      "Transforms the target program with a replacement"},
-    {NULL, NULL, 0, NULL},
+    {nullptr, nullptr, 0, nullptr},
 };
 
 static struct PyModuleDef extractor_definition = {
