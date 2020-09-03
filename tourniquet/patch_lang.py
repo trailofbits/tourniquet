@@ -240,9 +240,14 @@ class NodeStmt(Statement):
         return source_info
 
     def fetch_node(self, line, col, db, module_name) -> str:
-        # TODO(ww): Filter on module_name.
         statement = (
-            db.query(models.Statement).filter_by(start_line=line, start_column=col).one_or_none()
+            db.query(models.Statement)
+            .filter(
+                (models.Statement.module_name == module_name)
+                & (models.Statement.start_line == line)
+                & (models.Statement.start_column == col)
+            )
+            .one_or_none()
         )
         if statement is None:
             raise ValueError(f"no statement at ({line}, {col})")

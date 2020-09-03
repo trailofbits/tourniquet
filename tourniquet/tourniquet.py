@@ -96,6 +96,7 @@ class Tourniquet:
                         self.db.session.add(argument)
                 elif expr[0] == "stmt_type":
                     stmt = models.Statement(
+                        module=module,
                         function=function,
                         expr=expr[5],
                         start_line=expr[1],

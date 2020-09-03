@@ -13,6 +13,8 @@ class Module(Base):
 
     functions = relationship("Function")
     global_variables = relationship("Global")
+    statements = relationship("Statement")
+    # TODO(ww): Module -> [VarDecl], -> [Call] relationships
 
     def __repr__(self):
         return f"<Module {self.name}>"
@@ -117,6 +119,9 @@ class Statement(Base):
     __tablename__ = "statements"
 
     id = Column(Integer, primary_key=True)
+    module_name = Column(Integer, ForeignKey("modules.name"))
+    module = relationship("Module", back_populates="statements")
+
     function_id = Column(Integer, ForeignKey("functions.id"))
     function = relationship("Function", back_populates="statements")
 
