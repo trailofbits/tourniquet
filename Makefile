@@ -25,7 +25,7 @@ build: env
 		pip install -e .
 
 .PHONY: py-lint
-py-lint:
+py-lint: dev
 	. env/bin/activate && \
 		black $(ALL_PY_SRCS) && \
 		isort $(ALL_PY_SRCS) && \

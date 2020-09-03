@@ -21,16 +21,18 @@ class Variable(Expression):
     # TODO(ww): This is probably slightly unsound, in terms of concretizations
     # produced: the set of variables in a function is not the set of variables
     # guaranteed to be in scope at a line number.
-    def concretize(self, line: int, col: int, db, _module_name) -> Iterator[str]:
+    def concretize(self, line: int, col: int, db, module_name) -> Iterator[str]:
         # TODO(ww): Should we also concretize with available globals?
-        # TODO(ww): Filter by module_name.
         function = (
             db.query(models.Function)
             .filter(
-                (line >= models.Function.start_line)
+                (module_name == models.Function.module_name)
+                & (line >= models.Function.start_line)
                 & (col >= models.Function.start_column)
-                & (line <= models.Function.end_line)
-                & (col <= models.Function.end_column)
+                & (
+                    ((line == models.Function.end_line) & (col <= models.Function.end_column))
+                    | ((line < models.Function.end_line))
+                )
             )
             .one_or_none()
         )
@@ -50,14 +52,16 @@ class StaticBufferSize(Expression):
     # Query for all static array types and return list of sizeof()..
     def concretize(self, line: int, col: int, db, module_name) -> Iterator[str]:
         # TODO(ww): Should we also concretize with available globals?
-        # TODO(ww): Filter by module_name.
         function = (
             db.query(models.Function)
             .filter(
-                (line >= models.Function.start_line)
+                (module_name == models.Function.module_name)
+                & (line >= models.Function.start_line)
                 & (col >= models.Function.start_column)
-                & (line <= models.Function.end_line)
-                & (col <= models.Function.end_column)
+                & (
+                    ((line == models.Function.end_line) & (col <= models.Function.end_column))
+                    | ((line < models.Function.end_line))
+                )
             )
             .one_or_none()
         )
