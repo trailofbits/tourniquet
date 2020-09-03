@@ -20,8 +20,11 @@ static bool read_file_to_string(const char *filename, std::string &data) {
 }
 
 static PyObject *extract_ast(PyObject *self, PyObject *args) {
-  const char *filename;
-  if (!PyArg_ParseTuple(args, "s", &filename)) {
+  char *filename;
+  int is_cxx;
+  // NOTE(ww): Instead of parsing the filename as a string, should probably use
+  // "O&" with PyUnicode_FSConverter()
+  if (!PyArg_ParseTuple(args, "sp", &filename, &is_cxx)) {
     PyErr_SetString(PyExc_TypeError, "Invalid arguments passed to extract_ast");
     Py_RETURN_NONE;
   }
@@ -48,10 +51,11 @@ static PyObject *extract_ast(PyObject *self, PyObject *args) {
 }
 
 static PyObject *transform(PyObject *self, PyObject *args) {
-  int start_line, start_col, end_line, end_col;
-  char *replacement;
   char *filename;
-  if (!PyArg_ParseTuple(args, "s|s|i|i|i|i", &filename, &replacement,
+  char *replacement;
+  int is_cxx;
+  int start_line, start_col, end_line, end_col;
+  if (!PyArg_ParseTuple(args, "spsiiii", &filename, &is_cxx, &replacement,
                         &start_line, &start_col, &end_line, &end_col)) {
     PyErr_SetString(PyExc_TypeError, "Invalid arguments passed to transform");
     Py_RETURN_FALSE;

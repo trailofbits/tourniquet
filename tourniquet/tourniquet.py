@@ -15,11 +15,14 @@ class Tourniquet:
         self.db = models.DB.create(database_name)
         self.patch_templates: Dict[str, PatchTemplate] = {}
 
-    def _extract_ast(self, source_path: Path) -> Dict[str, Any]:
+    def _path_looks_like_cxx(self, source_path: Path):
+        return source_path.suffix in [".cpp", ".cc", ".cxx"]
+
+    def _extract_ast(self, source_path: Path, is_cxx: bool = True) -> Dict[str, Any]:
         if not source_path.is_file():
             raise FileNotFoundError(f"{source_path} is not a file")
 
-        return extractor.extract_ast(str(source_path))
+        return extractor.extract_ast(str(source_path), is_cxx)
 
     def _store_ast(self, ast_info: Dict[str, Any]):
         module = models.Module(name=ast_info["module_name"])
@@ -112,7 +115,7 @@ class Tourniquet:
 
     # TODO Should take a target
     def collect_info(self, source_path: Path):
-        ast_info = self._extract_ast(source_path)
+        ast_info = self._extract_ast(source_path, is_cxx=self._path_looks_like_cxx(source_path))
         self._store_ast(ast_info)
 
     def register_template(self, name: str, template: PatchTemplate):
