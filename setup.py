@@ -66,9 +66,7 @@ class CMakeBuild(build_ext):
 
             for name, dir_ in deps.items():
                 if not Path(dir_).is_dir():
-                    print(
-                        f"Error: Couldn't find a {name} installation at {dir_}", file=sys.stderr
-                    )
+                    print(f"Error: Couldn't find a {name} installation at {dir_}", file=sys.stderr)
                     sys.exit(1)
 
             prefix_path = ":".join(deps.values())
