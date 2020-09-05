@@ -6,8 +6,7 @@ import subprocess
 from sqlite3 import Error
 from typing import Dict, Iterator, List, Optional
 
-import extractor
-
+from . import extractor  # type: ignore
 from .patch_lang import PatchTemplate
 
 
