@@ -6,8 +6,20 @@ from typing import Iterator
 
 @dataclass(frozen=True)
 class SourceCoordinate:
+    """
+    Encapsulates the bare amount of state required to uniquely locate
+    a source feature within *some* unspecified source file.
+    """
+
     line: int
+    """
+    The line that the feature occurs on.
+    """
+
     column: int
+    """
+    The column that the feature occurs on.
+    """
 
 
 @dataclass(frozen=True)
@@ -21,14 +33,29 @@ class Location:
     """
 
     filename: Path
+    """
+    The path to the file that the feature occurs in.
+    """
+
     coordinates: SourceCoordinate
+    """
+    The coordinates (line and column) of the feature.
+
+    See also `line` and `column`.
+    """
 
     @property
-    def line(self):
+    def line(self) -> int:
+        """
+        Returns the line that the feature occurs on.
+        """
         return self.coordinates.line
 
     @property
-    def column(self):
+    def column(self) -> int:
+        """
+        Returns the column that the feature occurs on.
+        """
         return self.coordinates.column
 
 
