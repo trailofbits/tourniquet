@@ -252,9 +252,10 @@ class NodeStmt(Statement):
         if statement is None:
             raise ValueError(f"no statement at ({line}, {col})")
 
-        # TODO(ww): Is this semicolon necessary? It seems to already
-        # be contained in `expr`.
-        return f"{statement.expr};"
+        if statement.expr.endswith(";"):
+            return statement.expr
+        else:
+            return f"{statement.expr};"
 
 
 # Call patcher new pattern, then have the patcher add it to the list.

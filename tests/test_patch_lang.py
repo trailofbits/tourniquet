@@ -66,7 +66,7 @@ def test_concretize_nodestmt(test_files, tmp_db):
     node = NodeStmt()
     concretized = list(node.concretize(23, 3, tourniquet.db, str(test_file)))
     assert len(concretized) == 1
-    assert concretized[0] == "char buff[10];;"
+    assert concretized[0] == "char buff[10];"
 
 
 def test_concretize_ifstmt():
