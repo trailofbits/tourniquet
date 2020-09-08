@@ -72,6 +72,7 @@ setup(
     packages=find_packages(),
     version="1.0",
     description="Syntax Guided Repair/Transformation Package",
+    ext_package="tourniquet",
     ext_modules=[CMakeExtension(module_name)],
     cmdclass={"build_ext": CMakeBuild},
     zip_safe=False,
