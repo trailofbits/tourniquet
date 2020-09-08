@@ -79,7 +79,7 @@ value. Return values have semantic properties, returning some arbitrary integer 
 good idea. This means you can use some program analysis technique to
 infer what an appropriate return code might actually be, or simply ask a human to intervene.
 
-*Location 5* is for a matcher function. The matcher function is a callable that is supposed to
+*Location 5* is for a matcher. The matcher is a callable that is supposed to
 take source line and column information and return `True` or `False` if the `FixPatern` is
 applicable to that source location. The idea here is that we couple specific types of fixes with
 specific types of bugs. We intend to use some other tools
