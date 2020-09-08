@@ -75,6 +75,6 @@ def test_tourniquet_extract_ast_invalid_file(test_files, tmp_db):
 
 def test_register_template(tmp_db):
     test_extractor = Tourniquet(tmp_db)
-    new_template = PatchTemplate(lambda x, y: True, FixPattern(NodeStmt()))
+    new_template = PatchTemplate(FixPattern(NodeStmt()), lambda x, y: True)
     test_extractor.register_template("testme", new_template)
     assert len(test_extractor.patch_templates) == 1

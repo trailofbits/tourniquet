@@ -233,10 +233,3 @@ class Tourniquet:
             end.column,
         )
         return res
-
-    # TODO Autopatch
-    # TODO Integrate with CPG
-    # def create_new_template(self, matcher_func, statement_list: StatementList):
-    #    new_fix_pattern = FixPattern(statement_list)
-    #    patch_t = PatchTemplate(matcher_func, new_fix_pattern)
-    #    self.patch_templates.append((template_name, patch_t))

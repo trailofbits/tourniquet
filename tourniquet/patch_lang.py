@@ -1,6 +1,6 @@
 import itertools
 from abc import ABC, abstractmethod
-from typing import Iterator, List
+from typing import Callable, Iterator, List, Optional
 
 from . import models
 from .location import Location
@@ -272,13 +272,16 @@ class FixPattern:
 
 class PatchTemplate:
     # TODO Think of better API
-    def __init__(self, matcher_func, fix_pattern: FixPattern):
+    def __init__(
+        self, fix_pattern: FixPattern, matcher_func: Optional[Callable[[int, int], bool]] = None
+    ):
         self.matcher_func = matcher_func
         self.fix_pattern = fix_pattern
 
     def matches(self, line: int, col: int) -> bool:
-        matches: bool = self.matcher_func(line, col)
-        return matches
+        if self.matcher_func is None:
+            return True
+        return self.matcher_func(line, col)
 
     def concretize(self, db, location: Location) -> Iterator[str]:
         yield from self.fix_pattern.concretize(db, location)
