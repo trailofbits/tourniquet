@@ -1,0 +1,9 @@
+ipython
+pytest
+pytest-cov
+flake8
+black
+mypy
+isort
+sqlalchemy-stubs
+pdoc3

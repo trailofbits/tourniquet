@@ -1,46 +1,38 @@
 #include "ASTExporter.h"
+
 ASTExporterVisitor::ASTExporterVisitor(ASTContext *Context, PyObject *info)
     : Context(Context), tree_info(info), current_func(nullptr) {}
 
-// TODO How to handle these types of errors in visitor and extension?
-void ASTExporterVisitor::PyListAppendString(PyObject *list, std::string str) {
-  PyObject *name_bytes = PyBytes_FromString(str.c_str());
-  if (name_bytes == nullptr) {
-    // TODO(ww): ValueError or MemoryError here?
-    PyErr_SetString(PyExc_ValueError,
-                    "Failed to create bytes object from function name");
-    return;
-  }
-  PyList_Append(list, name_bytes);
-}
-
-void ASTExporterVisitor::PyDictUpdateEntry(PyObject *dict, PyObject *key,
+void ASTExporterVisitor::PyDictUpdateEntry(PyObject *dict, const char *key,
                                            PyObject *new_item) {
-  if (auto old_item = PyDict_GetItem(dict, key)) {
+  if (auto old_item = PyDict_GetItemString(dict, key)) {
     PyList_Append(old_item, new_item);
   } else {
     // Always init to be [item]
     PyObject *arr = PyList_New(0);
     PyList_Append(arr, new_item);
-    PyDict_SetItem(dict, key, arr);
+    PyDict_SetItemString(dict, key, arr);
+  }
+}
+
+void ASTExporterVisitor::AddGlobalEntry(PyObject *entry) {
+  PyDictUpdateEntry(tree_info, "globals", entry);
+}
+
+void ASTExporterVisitor::AddFunctionEntry(const char *func_name,
+                                          PyObject *entry) {
+  if (auto functions = PyDict_GetItemString(tree_info, "functions")) {
+    PyDictUpdateEntry(functions, func_name, entry);
+  } else {
+    functions = PyDict_New();
+    PyDict_SetItemString(tree_info, "functions", functions);
+    PyDictUpdateEntry(functions, func_name, entry);
   }
 }
 
 bool ASTExporterVisitor::VisitDeclStmt(Stmt *stmt) {
   std::string expr = getText(*stmt, *Context);
-  PyObject *func_key =
-      PyBytes_FromString(current_func->getNameAsString().c_str());
-  if (func_key == nullptr) {
-    // TODO(ww): ValueError or MemoryError here?
-    PyErr_SetString(PyExc_ValueError,
-                    "Failed to create bytes object from function name");
-    return true;
-  }
-  PyObject *new_arr = PyList_New(0);
-  if (new_arr == nullptr) {
-    PyErr_SetString(PyExc_MemoryError, "Allocation failed for list");
-    return true;
-  }
+
   unsigned int start_line =
       Context->getSourceManager().getExpansionLineNumber(stmt->getBeginLoc());
   unsigned int start_col =
@@ -49,13 +41,15 @@ bool ASTExporterVisitor::VisitDeclStmt(Stmt *stmt) {
       Context->getSourceManager().getExpansionLineNumber(stmt->getEndLoc());
   unsigned int end_col =
       Context->getSourceManager().getExpansionColumnNumber(stmt->getEndLoc());
-  PyListAppendString(new_arr, std::to_string(start_line));
-  PyListAppendString(new_arr, std::to_string(start_col));
-  PyListAppendString(new_arr, std::to_string(end_line));
-  PyListAppendString(new_arr, std::to_string(end_col));
-  PyListAppendString(new_arr, expr);
-  PyListAppendString(new_arr, "stmt_type");
-  PyDictUpdateEntry(tree_info, func_key, new_arr);
+
+  PyObject *new_arr = PyList_New(0);
+  PyList_Append(new_arr, PyUnicode_FromString("stmt_type"));
+  PyList_Append(new_arr, PyLong_FromUnsignedLong(start_line));
+  PyList_Append(new_arr, PyLong_FromUnsignedLong(start_col));
+  PyList_Append(new_arr, PyLong_FromUnsignedLong(end_line));
+  PyList_Append(new_arr, PyLong_FromUnsignedLong(end_col));
+  PyList_Append(new_arr, PyUnicode_FromString(expr.c_str()));
+  AddFunctionEntry(current_func->getNameAsString().c_str(), new_arr);
   return true;
 }
 
@@ -67,28 +61,7 @@ bool ASTExporterVisitor::VisitVarDecl(VarDecl *vdecl) {
   if (vdecl->getStorageClass() == SC_Extern) {
     return true;
   }
-  std::string fname = "global";
-  auto parent_func = vdecl->getParentFunctionOrMethod();
-  if (parent_func != nullptr) {
-    FunctionDecl *fdecl = llvm::dyn_cast<FunctionDecl>(parent_func);
-    if (fdecl->isFileContext()) {
-      return true;
-    }
-    fname = fdecl->getNameAsString();
-  }
-  PyObject *func_key = PyBytes_FromString(fname.c_str());
-  if (func_key == nullptr) {
-    // TODO(ww): ValueError or MemoryError here?
-    PyErr_SetString(PyExc_ValueError,
-                    "Failed to create bytes object from function name");
-    return true;
-  }
-  // Function name --> (var_name, type, is_arr, size)
-  PyObject *new_arr = PyList_New(0);
-  if (new_arr == nullptr) {
-    PyErr_SetString(PyExc_MemoryError, "Allocation failed for list");
-    return true;
-  }
+
   unsigned int start_line =
       Context->getSourceManager().getExpansionLineNumber(vdecl->getBeginLoc());
   unsigned int start_col = Context->getSourceManager().getExpansionColumnNumber(
@@ -97,46 +70,57 @@ bool ASTExporterVisitor::VisitVarDecl(VarDecl *vdecl) {
       Context->getSourceManager().getExpansionLineNumber(vdecl->getEndLoc());
   unsigned int end_col =
       Context->getSourceManager().getExpansionColumnNumber(vdecl->getEndLoc());
-  PyListAppendString(new_arr, std::to_string(start_line));
-  PyListAppendString(new_arr, std::to_string(start_col));
-  PyListAppendString(new_arr, std::to_string(end_line));
-  PyListAppendString(new_arr, std::to_string(end_col));
-  PyListAppendString(new_arr, vdecl->getNameAsString());
+
+  // This Python list object contains our variable declaration state,
+  // with the following layout:
+  // [
+  //   "var_type", start_line, start_col, end_line, end_col,
+  //   var_name, var_type, is_array, size
+  // ]
+  // The variable declaration is either added to the list under the "globals"
+  // key or to its enclosing function, depending on whether it's in a function.
+
+  PyObject *new_arr = PyList_New(0);
+  PyList_Append(new_arr, PyUnicode_FromString("var_type"));
+  PyList_Append(new_arr, PyLong_FromUnsignedLong(start_line));
+  PyList_Append(new_arr, PyLong_FromUnsignedLong(start_col));
+  PyList_Append(new_arr, PyLong_FromUnsignedLong(end_line));
+  PyList_Append(new_arr, PyLong_FromUnsignedLong(end_col));
+  PyList_Append(new_arr,
+                PyUnicode_FromString(vdecl->getNameAsString().c_str()));
+
   auto qt = vdecl->getType();
   if (auto arr_type = llvm::dyn_cast<ConstantArrayType>(qt.getTypePtr())) {
-    auto size = arr_type->getSize().getSExtValue();
+    auto size = arr_type->getSize().getZExtValue();
     std::string type = arr_type->getElementType().getAsString();
-    PyListAppendString(new_arr, type);
-    PyListAppendString(new_arr, "1");
-    PyListAppendString(new_arr, std::to_string(size));
+    PyList_Append(new_arr, PyUnicode_FromString(type.c_str()));
+    PyList_Append(new_arr, PyLong_FromUnsignedLong(1));
+    PyList_Append(new_arr, PyLong_FromUnsignedLong(size));
   } else {
-    PyListAppendString(new_arr, qt.getAsString());
-    PyListAppendString(new_arr, "0");
+    PyList_Append(new_arr, PyUnicode_FromString(qt.getAsString().c_str()));
+    PyList_Append(new_arr, PyLong_FromUnsignedLong(0));
     auto type_info = Context->getTypeInfo(qt);
-    PyListAppendString(new_arr, std::to_string(type_info.Width / 8));
+    PyList_Append(new_arr, PyLong_FromUnsignedLong(type_info.Width / 8));
   }
-  PyListAppendString(new_arr, "var_type");
-  PyDictUpdateEntry(tree_info, func_key, new_arr);
+
+  auto parent_func = vdecl->getParentFunctionOrMethod();
+  if (parent_func == nullptr) {
+    AddGlobalEntry(new_arr);
+  } else {
+    FunctionDecl *fdecl = llvm::dyn_cast<FunctionDecl>(parent_func);
+    if (fdecl->isFileContext()) {
+      return true;
+    }
+    AddFunctionEntry(fdecl->getNameAsString().c_str(), new_arr);
+  }
+
   return true;
 }
 
 // Current func, Callee, args, arg types, string
 bool ASTExporterVisitor::VisitCallExpr(CallExpr *call_expr) {
   std::string expr = getText(*call_expr, *Context);
-  PyObject *func_key =
-      PyBytes_FromString(current_func->getNameAsString().c_str());
-  if (func_key == nullptr) {
-    // TODO(ww): ValueError or MemoryError here?
-    PyErr_SetString(PyExc_ValueError,
-                    "Failed to create bytes object from function name");
-    return true;
-  }
-  PyObject *new_arr = PyList_New(0);
-  if (new_arr == nullptr) {
-    PyErr_SetString(PyExc_MemoryError, "Allocation failed for list");
-    return true;
-  }
-  auto test = call_expr->getCallee();
+
   FunctionDecl *func = call_expr->getDirectCallee();
   std::string callee = func->getNameInfo().getName().getAsString();
   unsigned int start_line = Context->getSourceManager().getExpansionLineNumber(
@@ -147,20 +131,25 @@ bool ASTExporterVisitor::VisitCallExpr(CallExpr *call_expr) {
       call_expr->getEndLoc());
   unsigned int end_col = Context->getSourceManager().getExpansionColumnNumber(
       call_expr->getEndLoc());
-  PyListAppendString(new_arr, std::to_string(start_line));
-  PyListAppendString(new_arr, std::to_string(start_col));
-  PyListAppendString(new_arr, std::to_string(end_line));
-  // +1 here to catch the semi colon :)
-  PyListAppendString(new_arr, std::to_string(end_col));
-  PyListAppendString(new_arr, expr);
-  PyListAppendString(new_arr, callee);
+
+  PyObject *new_arr = PyList_New(0);
+  PyList_Append(new_arr, PyUnicode_FromString("call_type"));
+  PyList_Append(new_arr, PyLong_FromUnsignedLong(start_line));
+  PyList_Append(new_arr, PyLong_FromUnsignedLong(start_col));
+  PyList_Append(new_arr, PyLong_FromUnsignedLong(end_line));
+  PyList_Append(new_arr, PyLong_FromUnsignedLong(end_col));
+  PyList_Append(new_arr, PyUnicode_FromString(expr.c_str()));
+  PyList_Append(new_arr, PyUnicode_FromString(callee.c_str()));
+
   for (auto arg : call_expr->arguments()) {
-    std::string arg_str = getText(*arg, *Context);
-    PyListAppendString(new_arr, arg_str);
-    PyListAppendString(new_arr, arg->getType().getAsString());
+    auto arg_arr = PyList_New(0);
+    PyList_Append(arg_arr,
+                  PyUnicode_FromString(getText(*arg, *Context).str().c_str()));
+    PyList_Append(arg_arr,
+                  PyUnicode_FromString(arg->getType().getAsString().c_str()));
+    PyList_Append(new_arr, arg_arr);
   }
-  PyListAppendString(new_arr, "call_type");
-  PyDictUpdateEntry(tree_info, func_key, new_arr);
+  AddFunctionEntry(current_func->getNameAsString().c_str(), new_arr);
   return true;
 }
 
@@ -169,6 +158,28 @@ bool ASTExporterVisitor::VisitFunctionDecl(FunctionDecl *func_decl) {
   if (func_decl->getStorageClass() == SC_Extern) {
     return true;
   }
+
+  unsigned int start_line = Context->getSourceManager().getExpansionLineNumber(
+      func_decl->getBeginLoc());
+  unsigned int start_col = Context->getSourceManager().getExpansionColumnNumber(
+      func_decl->getBeginLoc());
+  unsigned int end_line = Context->getSourceManager().getExpansionLineNumber(
+      func_decl->getEndLoc());
+  unsigned int end_col = Context->getSourceManager().getExpansionColumnNumber(
+      func_decl->getEndLoc());
+
+  PyObject *new_arr = PyList_New(0);
+  PyList_Append(new_arr, PyUnicode_FromString("func_decl"));
+  PyList_Append(new_arr, PyLong_FromUnsignedLong(start_line));
+  PyList_Append(new_arr, PyLong_FromUnsignedLong(start_col));
+  PyList_Append(new_arr, PyLong_FromUnsignedLong(end_line));
+  PyList_Append(new_arr, PyLong_FromUnsignedLong(end_col));
+
+  AddFunctionEntry(func_decl->getNameAsString().c_str(), new_arr);
+
+  // NOTE(ww) Subsequent visitor methods use this member to determine which
+  // function they're in.
   current_func = func_decl;
+
   return true;
 }

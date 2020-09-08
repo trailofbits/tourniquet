@@ -6,12 +6,8 @@
 #include <memory>
 #include <sstream>
 
-/*
- * TODO Remove global and pass to frontend action instead
- */
-PyObject *extract_results;
-
-static bool read_file_to_string(const char *filename, std::string &data) {
+static bool read_file_to_string(const std::string &filename,
+                                std::string &data) {
   std::ifstream file(filename);
   if (!file.is_open()) {
     return false;
@@ -25,58 +21,59 @@ static bool read_file_to_string(const char *filename, std::string &data) {
 }
 
 static PyObject *extract_ast(PyObject *self, PyObject *args) {
-  const char *filename;
-  if (!PyArg_ParseTuple(args, "s", &filename)) {
-    PyErr_SetString(PyExc_TypeError, "Invalid arguments passed to extract_ast");
-    Py_RETURN_NONE;
+  PyObject *filename_bytes;
+  int is_cxx;
+  if (!PyArg_ParseTuple(args, "O&p", PyUnicode_FSConverter, &filename_bytes,
+                        &is_cxx)) {
+    return nullptr;
   }
+
+  std::string filename = PyBytes_AsString(filename_bytes);
+  Py_DECREF(filename_bytes);
 
   std::string data;
   if (!read_file_to_string(filename, data)) {
     PyErr_SetString(PyExc_IOError, "Failed to open file for extraction");
-    Py_RETURN_NONE;
+    return nullptr;
   }
 
   // Allocate dictionary to return to Python
-  extract_results = PyDict_New();
+  PyObject *extract_results = PyDict_New();
   if (!extract_results) {
     PyErr_SetString(PyExc_MemoryError, "Allocation failed for dict");
-    Py_RETURN_NONE;
+    return nullptr;
   }
-  PyDict_Clear(extract_results);
-  PyObject *mod_key = PyBytes_FromString("module_name");
-  PyObject *file_info = PyBytes_FromString(filename);
-  PyObject *arr1 = PyList_New(0);
-  PyObject *arr2 = PyList_New(0);
-  PyList_Append(arr1, file_info);
-  PyList_Append(arr2, arr1);
-  PyDict_SetItem(extract_results, mod_key, arr2);
+  PyDict_SetItem(extract_results, PyUnicode_FromString("module_name"),
+                 PyUnicode_FromString(filename.c_str()));
   // Run tool on code, I believe that runToolOnCode owns/calls delete on the
   // FrontendAction Get double free when deleting manually
-  runToolOnCode(new ASTExporterFrontendAction(), data);
+  runToolOnCode(new ASTExporterFrontendAction(extract_results), data);
   // Return the python dictionary back to the python code.
   return extract_results;
 }
 
 static PyObject *transform(PyObject *self, PyObject *args) {
-  int start_line, start_col, end_line, end_col;
+  PyObject *filename_bytes;
   char *replacement;
-  char *filename;
-  if (!PyArg_ParseTuple(args, "s|s|i|i|i|i", &filename, &replacement,
-                        &start_line, &start_col, &end_line, &end_col)) {
-    PyErr_SetString(PyExc_TypeError, "Invalid arguments passed to transform");
-    Py_RETURN_FALSE;
+  int is_cxx;
+  int start_line, start_col, end_line, end_col;
+  if (!PyArg_ParseTuple(args, "O&psiiii", PyUnicode_FSConverter,
+                        &filename_bytes, &is_cxx, &replacement, &start_line,
+                        &start_col, &end_line, &end_col)) {
+    return nullptr;
   }
+
+  std::string filename = PyBytes_AsString(filename_bytes);
+  Py_DECREF(filename_bytes);
 
   std::string data;
   if (!read_file_to_string(filename, data)) {
     PyErr_SetString(PyExc_IOError, "Failed to open file for patching");
-    Py_RETURN_NONE;
+    return nullptr;
   }
 
   runToolOnCode(new ASTPatchAction(start_line, start_col, end_line, end_col,
-                                   std::string(replacement),
-                                   std::string(filename)),
+                                   std::string(replacement), filename),
                 data);
   Py_RETURN_TRUE;
 }
@@ -86,10 +83,10 @@ PyMethodDef extractor_methods[] = {
      "Returns a dictionary containing AST info for a file"},
     {"transform", transform, METH_VARARGS,
      "Transforms the target program with a replacement"},
-    {NULL, NULL, 0, NULL},
+    {nullptr, nullptr, 0, nullptr},
 };
 
-struct PyModuleDef extractor_definition = {
+static struct PyModuleDef extractor_definition = {
     PyModuleDef_HEAD_INIT,
     "extractor",
     "The extractor extension uses clang to extract AST information and perform "
@@ -98,8 +95,7 @@ struct PyModuleDef extractor_definition = {
     extractor_methods,
 };
 
-extern "C" PyMODINIT_FUNC PyInit_extractor(void) {
-  Py_Initialize();
+PyMODINIT_FUNC PyInit_extractor(void) {
   PyObject *m = PyModule_Create(&extractor_definition);
   return m;
 }

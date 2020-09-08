@@ -24,18 +24,12 @@
 #include <llvm/Support/FileSystem.h>
 #include <llvm/Support/raw_ostream.h>
 
-#ifdef __APPLE__
-#include <python3.8/Python.h>
-#else
 #include <Python.h>
-#endif
 
 using namespace llvm::json;
 using namespace clang::tooling;
 using JObject = llvm::json::Object;
 using namespace clang;
-
-extern PyObject *extract_results;
 
 /*
  * This is a simpler AST visitor that collects some information from nodes it
@@ -55,10 +49,12 @@ public:
   bool VisitVarDecl(VarDecl *vdecl);
   bool VisitCallExpr(CallExpr *call_expr);
   bool VisitFunctionDecl(FunctionDecl *func_decl);
-  void PyListAppendString(PyObject *list, std::string str);
-  void PyDictUpdateEntry(PyObject *dict, PyObject *key, PyObject *new_item);
 
 private:
+  void PyDictUpdateEntry(PyObject *dict, const char *key, PyObject *new_item);
+  void AddGlobalEntry(PyObject *entry);
+  void AddFunctionEntry(const char *func_name, PyObject *entry);
+
   ASTContext *Context;
   PyObject *tree_info;
   // Clang doesn't store parental relationships for statements (it does for
@@ -91,8 +87,14 @@ public:
   std::unique_ptr<clang::ASTConsumer>
   CreateASTConsumer(clang::CompilerInstance &Compiler, llvm::StringRef InFile) {
     return std::unique_ptr<clang::ASTConsumer>(
-        new ASTExporterConsumer(&Compiler.getASTContext(), extract_results));
+        new ASTExporterConsumer(&Compiler.getASTContext(), extract_results_));
   }
+
+  explicit ASTExporterFrontendAction(PyObject *extract_results)
+      : extract_results_{extract_results} {}
+
+private:
+  PyObject *extract_results_;
 };
 
 #endif /* TRANSFORMER_ASTEXPORTER_H_ */

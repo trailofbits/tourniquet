@@ -8,19 +8,28 @@ ALL_PY_SRCS := setup.py \
 all:
 	@echo "Run my targets individually!"
 
-.PHONY: dev
-dev:
-	test -d env || python3 -m venv env
-	. env/bin/activate && pip install -e .[dev]
+env:
+	test -d env || python3 -m venv env && \
+		. env/bin/activate && \
+		pip install --upgrade pip
 
+.PHONY: dev
+dev: env
+	. env/bin/activate && \
+		pip install -r dev-requirements.txt
+
+
+.PHONY: build
+build: env
+	. env/bin/activate && \
+		pip install -e .
 
 .PHONY: py-lint
-.ONESHELL:
-py-lint:
-	. env/bin/activate
-	black $(ALL_PY_SRCS)
-	isort $(ALL_PY_SRCS)
-	flake8 $(ALL_PY_SRCS)
+py-lint: dev
+	. env/bin/activate && \
+		black $(ALL_PY_SRCS) && \
+		isort $(ALL_PY_SRCS) && \
+		flake8 $(ALL_PY_SRCS)
 
 
 .PHONY: cxx-lint
@@ -28,33 +37,28 @@ cxx-lint:
 	clang-format -i $(ALL_CXX_SRCS)
 
 .PHONY: lint
-.ONESHELL:
 lint: py-lint cxx-lint
 	git diff --exit-code
 
 .PHONY: typecheck
-.ONESHELL:
 typecheck:
-	. env/bin/activate
-	mypy tourniquet
+	. env/bin/activate && \
+		mypy tourniquet
 
 .PHONY: test
-.ONESHELL:
-test:
-	. env/bin/activate
-	pytest tests/
+test: dev build
+	. env/bin/activate && \
+		pytest tests/
 
 .PHONY: test-cov
-.ONESHELL:
-test-cov:
-	. env/bin/activate
-	pytest --cov=tourniquet/ tests/
+test-cov: dev
+	. env/bin/activate && \
+		pytest --cov=tourniquet/ tests/
 
 .PHONY: doc
-.ONESHELL:
-doc:
-	. env/bin/activate
-	PYTHONWARNINGS='error::UserWarning' pdoc --force --html tourniquet
+doc: dev
+	. env/bin/activate && \
+		PYTHONWARNINGS='error::UserWarning' pdoc --force --html tourniquet
 
 .PHONY: edit
 edit:

@@ -2,24 +2,30 @@ FROM ubuntu:18.04 as base
 
 MAINTAINER Carson Harmon <carson.harmon@trailofbits.com>
 
-RUN apt-get update -y
+RUN apt-get update
 
-RUN apt install -y \
+RUN DEBIAN_FRONTEND="noninteractive" apt-get install -y \
 	clang-9 \
-	clang++-9 \
-	cmake \
 	git \
-	zlib1g-dev \
 	build-essential \
 	python3.7-dev \
 	python3-pip \
-	libboost-all-dev \
-	autoconf \
-	libzmqpp-dev \
-	automake \
-	llvm
+	llvm-9-dev \
+	libclang-9-dev \
+	apt-transport-https \
+	ca-certificates \
+	gnupg \
+	software-properties-common \
+	wget
 
-RUN python3.7 -m pip install --upgrade pip
+RUN wget -O - https://apt.kitware.com/keys/kitware-archive-latest.asc 2>/dev/null \
+		| gpg --dearmor - \
+		| tee /etc/apt/trusted.gpg.d/kitware.gpg >/dev/null && \
+	apt-add-repository 'deb https://apt.kitware.com/ubuntu/ bionic main' && \
+	apt-get update && \
+	apt-get install -y cmake
+
+RUN python3 -m pip install --upgrade pip
 
 WORKDIR /
 COPY . /tourniquet

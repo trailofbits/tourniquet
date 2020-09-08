@@ -1,62 +1,80 @@
-import logging
-import os
-
 import pytest
 
 from tourniquet import Tourniquet
+from tourniquet.models import Function, Global, Module
 from tourniquet.patch_lang import FixPattern, NodeStmt, PatchTemplate
 
-logger = logging.getLogger(__name__)
 
-TEST_DIR = os.path.realpath(os.path.dirname(__file__))
-TEST_FILE_DIR = os.path.realpath(os.path.join(os.path.dirname(__file__), "test_files"))
-
-#############################
-#      Tests go here        #
-#############################
-
-
-def test_tourniquet_extract_simple():
-    logger.info("Testing extraction of simple types")
-
+def test_tourniquet_extract_ast(test_files, tmp_db):
     # No DB name for now
-    test_extractor = Tourniquet("test.db")
-    test_file = os.path.join(TEST_FILE_DIR, "patch_test.c")
-    extraction_results: dict = test_extractor.extract_ast(test_file)
-    # Look for the four variables
-    assert "main" in extraction_results
-    assert "global" in extraction_results
-    entries = extraction_results["main"]
-    # Fold all vars into single list
-    var_list = [item for entry in entries if "var_type" in entry for item in entry]
-    # Test locals
-    assert "buff" in var_list
-    assert "len" in var_list
-    assert "buff_len" in var_list
-    assert "pov" in var_list
-    # Get function parameters
-    assert "argc" in var_list
-    assert "argv" in var_list
-    # The global should be there too :)
-    globals_ = extraction_results["global"]
-    global_var_list = [item for entry in globals_ for item in entry]
-    assert "pass" in global_var_list
+    test_extractor = Tourniquet(tmp_db)
+    test_file = test_files / "patch_test.c"
+    ast_dict: dict = test_extractor._extract_ast(test_file)
+
+    # The dictionary produced from the AST has three top-level keys:
+    # module_name, globals, and functions.
+    assert "module_name" in ast_dict
+    assert "globals" in ast_dict
+    assert "functions" in ast_dict
+
+    # The module name is our source file.
+    assert ast_dict["module_name"] == str(test_file)
+
+    # Everything in globals is a "var_type".
+    assert all(global_[0] == "var_type" for global_ in ast_dict["globals"])
+
+    # There's at least one global named "pass".
+    assert any(global_[5] == "pass" for global_ in ast_dict["globals"])
+
+    # There's a "main" function in the "functions" dictionary.
+    assert "main" in ast_dict["functions"]
+    main = ast_dict["functions"]["main"]
+
+    # There are 4 variables in "main", plus "argc" and "argv".
+    main_vars = [var_decl[5] for var_decl in main if var_decl[0] == "var_type"]
+    assert set(main_vars) == {"argc", "argv", "buff", "buff_len", "pov", "len"}
 
 
-def test_tourniquet_extract_badfile():
-    logger.info("Testing extract error handling")
-    test_extractor = Tourniquet("test.db")
-    test_file = os.path.join(TEST_FILE_DIR, "")
+def test_tourniquet_db(test_files, tmp_db):
+    tourniquet = Tourniquet(tmp_db)
+    test_file = test_files / "patch_test.c"
+    tourniquet.collect_info(test_file)
+
+    module = tourniquet.db.query(Module).filter_by(name=str(test_file)).one()
+    assert len(module.functions) >= 1
+
+    pass_ = tourniquet.db.query(Global).filter_by(name="pass").one()
+    assert pass_.name == "pass"
+    assert pass_.type_ == "char *"
+    assert pass_.start_line == 20
+    assert pass_.start_column == 1
+    assert pass_.end_line == 20
+    assert pass_.end_column == 14
+    assert not pass_.is_array
+    assert pass_.size == 8
+
+    main = tourniquet.db.query(Function).filter_by(name="main").one()
+    assert main.name == "main"
+    assert main.start_line == 22
+    assert main.start_column == 1
+    assert main.end_line == 38
+    assert main.end_column == 1
+    assert len(main.var_decls) == 6
+    assert len(main.calls) == 4
+    assert len(main.statements) == 4
+
+    # TODO(ww): Test main.{var_decls,calls,statements}
+
+
+def test_tourniquet_extract_ast_invalid_file(test_files, tmp_db):
+    test_extractor = Tourniquet(tmp_db)
+    test_file = test_files / "does-not-exist"
     with pytest.raises(FileNotFoundError):
-        test_extractor.extract_ast(test_file)
-    with pytest.raises(FileNotFoundError):
-        test_extractor.extract_ast("")
+        test_extractor._extract_ast(test_file)
 
 
-def test_new_template():
-    test_extractor = Tourniquet("test.db")
-    os.path.join(TEST_FILE_DIR, "patch_test.c")
-    new_template = PatchTemplate("testme", lambda x, y: True, FixPattern(NodeStmt()))
-    test_extractor.add_new_template(new_template)
+def test_register_template(tmp_db):
+    test_extractor = Tourniquet(tmp_db)
+    new_template = PatchTemplate(lambda x, y: True, FixPattern(NodeStmt()))
+    test_extractor.register_template("testme", new_template)
     assert len(test_extractor.patch_templates) == 1
-    # view_str = test_extractor.view_template()
