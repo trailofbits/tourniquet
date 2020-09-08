@@ -39,6 +39,11 @@ describe part of the syntax and part of the semantics of a repair and lets the c
 example template:
 
 ```python
+class YourSemanticAnalysis(Expression):
+    def concretize(self, _db, _location):
+        yield "SOME_ERROR_CONSTANT"
+
+
 demo_template = PatchTemplate(
     FixPattern( # Location 1
         IfStmt(
@@ -46,7 +51,7 @@ demo_template = PatchTemplate(
             NodeStmt() # Location 3
         ),
         ElseStmt(
-            ReturnStmt(your_semantic_analysis) # Location 4
+            ReturnStmt(YourSemanticAnalysis()) # Location 4
         )
     ),
     your_matcher_func # Location 5
