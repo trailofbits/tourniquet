@@ -128,6 +128,12 @@ root@b9f3a28655b6:/tourniquet# python3 -m venv env
 root@b9f3a28655b6:/tourniquet# make test
 ```
 
+## Contributors
+
+* Carson Harmon (carson.harmon@trailofbits.com)
+* Evan Sultanik (evan.sultanik@trailofbits.com)
+* William Woodruff (william@trailofbits.com)
+
 ## License and Acknowledgements
 
 This research was developed by Trail of Bits with partial funding from the
