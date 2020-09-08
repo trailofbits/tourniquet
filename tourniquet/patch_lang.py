@@ -224,7 +224,7 @@ class ReturnStmt(Statement):
             yield candidate_str
 
     def view(self, db, location: Location):
-        return f"return  {self.expr.view(db, location)};"
+        return f"return {self.expr.view(db, location)};"
 
 
 # TODO This should take a Node, which is something from... the DB? Maybe?
