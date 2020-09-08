@@ -44,17 +44,21 @@ class YourSemanticAnalysis(Expression):
         yield "SOME_ERROR_CONSTANT"
 
 
+def your_matcher_func(line, col):
+    return True
+
+
 demo_template = PatchTemplate(
-    FixPattern( # Location 1
+    FixPattern(  # Location 1
         IfStmt(
-            LessThanExpr(Variable(), Variable()), # Location 2
-            NodeStmt() # Location 3
+            LessThanExpr(Variable(), Variable()),  # Location 2
+            NodeStmt()  # Location 3
         ),
         ElseStmt(
-            ReturnStmt(YourSemanticAnalysis()) # Location 4
+            ReturnStmt(YourSemanticAnalysis())  # Location 4
         )
     ),
-    your_matcher_func # Location 5
+    your_matcher_func  # Location 5
 )
 ```
 
