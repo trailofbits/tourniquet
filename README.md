@@ -22,7 +22,7 @@ repair you are mutating the program until you pass some specific tests.
 
 One huge drawback of this search based approach is that the search space is huge and most mutations in it
 are useless. The idea behind syntax guided program repair is to come up with some generally useful syntax patterns and
-to use those from your search space. This means your search space is smaller (restricted by the syntax patterns) and
+to use those for your search space. This means your search space is smaller (restricted by the syntax patterns) and
 you are focusing on patch candidates that might actually fix whatever bug is in front of you.
 
 ## So What Even Is Tourniquet?
