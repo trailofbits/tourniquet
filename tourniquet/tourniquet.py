@@ -3,8 +3,7 @@ import subprocess
 from pathlib import Path
 from typing import Any, Dict, Iterator, Optional
 
-from . import extractor
-from . import models
+from . import extractor, models
 from .patch_lang import PatchTemplate
 
 
