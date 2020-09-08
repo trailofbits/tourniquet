@@ -1,3 +1,4 @@
+import shutil
 import subprocess
 from pathlib import Path
 from typing import Any, Dict, Iterator, Optional
@@ -21,7 +22,7 @@ class Tourniquet:
         if not source_path.is_file():
             raise FileNotFoundError(f"{source_path} is not a file")
 
-        return extractor.extract_ast(str(source_path), is_cxx)
+        return extractor.extract_ast(source_path, is_cxx)
 
     def _store_ast(self, ast_info: Dict[str, Any]):
         module = models.Module(name=ast_info["module_name"])
@@ -159,10 +160,10 @@ class Tourniquet:
         yield from template.concretize(line, col, self.db, module_name)
 
     # TODO Should take a target
-    def patch(self, file_path, replacement: str, line: int, col: int) -> bool:
+    def patch(self, filename: Path, replacement: str, line: int, col: int) -> bool:
         function = (
             self.db.query(models.Function)
-            .filter_by(start_line=line, start_column=col)
+            .filter_by(module_name=str(filename), start_line=line, start_column=col)
             .one_or_none()
         )
 
@@ -171,7 +172,7 @@ class Tourniquet:
             raise ValueError(f"no function at ({line}, {col})")
 
         return self.transform(
-            file_path,
+            filename,
             replacement,
             function.start_line,
             function.start_column,
@@ -180,30 +181,25 @@ class Tourniquet:
         )
 
     # TODO Should take a target
-    def auto_patch(self, file_path, tests, template_name, line, col) -> bool:
+    def auto_patch(self, filename: Path, tests, template_name, line, col) -> bool:
+        # TODO(ww): This should be completely refactored.
         # Save the current file to tmp
-        TEMP_FILE = "/tmp/save_file"
-        EXEC_FILE = "/tmp/target"
-        ret = subprocess.call(["cp", file_path, TEMP_FILE])
-        if ret != 0:
-            print("Failed to save copy of original file")
-            return False
+        TEMP_FILE = Path("/tmp/save_file")
+        EXEC_FILE = Path("/tmp/target")
+        shutil.copyfile(filename, TEMP_FILE)
 
         # Collect replacements
-        replacements = self.concretize_template(file_path, template_name, line, col)
+        replacements = self.concretize_template(filename, template_name, line, col)
 
         # Patch
         for replacement in replacements:
             # Copy file back over to reset
-            ret = subprocess.call(["cp", TEMP_FILE, file_path])
-            if ret != 0:
-                print("Failed to copy saved file back to original location")
-                return False
+            shutil.copyfile(TEMP_FILE, filename)
 
-            self.patch(file_path, replacement, line, col)
+            self.patch(filename, replacement, line, col)
 
             # Just compile with clang for now
-            ret = subprocess.call(["clang-9", "-g", "-o", EXEC_FILE, file_path])
+            ret = subprocess.call(["clang-9", "-g", "-o", EXEC_FILE, filename])
             if ret != 0:
                 print("Error, build failed?")
                 continue
@@ -220,10 +216,7 @@ class Tourniquet:
                 # This means that its fixed :)
                 return True
 
-        ret = subprocess.call(["cp", TEMP_FILE, file_path])
-        if ret != 0:
-            print("Failed to copy saved file back to original location")
-            return False
+        shutil.copyfile(TEMP_FILE, filename)
         return False
 
     def transform(self, filename, replacement, start_line, start_col, end_line, end_col):
