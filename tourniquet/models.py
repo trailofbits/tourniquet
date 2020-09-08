@@ -1,6 +1,10 @@
+from pathlib import Path
+
 from sqlalchemy import Boolean, Column, ForeignKey, Integer, String, create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship, sessionmaker
+
+from .location import Location, SourceCoordinate
 
 Base = declarative_base()
 
@@ -104,6 +108,18 @@ class Function(Base):
     """
     The `Statement`s present in this function.
     """
+
+    @property
+    def start_coordinate(self):
+        return SourceCoordinate(self.start_line, self.start_column)
+
+    @property
+    def end_coordinate(self):
+        return SourceCoordinate(self.end_line, self.end_column)
+
+    @property
+    def location(self):
+        return Location(Path(self.module_name), self.start_coordinate)
 
     def __repr__(self):
         return f"<Function {self.name}>"

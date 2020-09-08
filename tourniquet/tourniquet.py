@@ -4,6 +4,7 @@ from pathlib import Path
 from typing import Any, Dict, Iterator, Optional
 
 from . import extractor, models
+from .location import Location, SourceCoordinate
 from .patch_lang import PatchTemplate
 
 
@@ -129,7 +130,7 @@ class Tourniquet:
 
     # TODO Should take  target
     # TODO(ww): Consider rehoming this?
-    def view_template(self, module_name, template_name, line: int, col: int) -> Optional[str]:
+    def view_template(self, template_name, location: Location) -> Optional[str]:
         """
         Pretty-print the given template, partially concretized to the given
         module and source location.
@@ -139,13 +140,13 @@ class Tourniquet:
             return None
 
         print("=" * 10, template_name, "=" * 10)
-        view_str = template.view(line, col, self.db, module_name)
+        view_str = template.view(self.db, location)
         print(view_str)
         print("=" * 10, "END", "=" * 10)
         return view_str
 
     # TODO Should take a target
-    def concretize_template(self, module_name, template_name, line, col) -> Iterator[str]:
+    def concretize_template(self, template_name, location: Location) -> Iterator[str]:
         """
         Concretize the given registered template to the given
         module and source location, yielding each candidate patch.
@@ -155,49 +156,51 @@ class Tourniquet:
             # TODO(ww): Custom error.
             raise ValueError(f"no template registed with name {template_name}")
 
-        yield from template.concretize(line, col, self.db, module_name)
+        yield from template.concretize(self.db, location)
 
     # TODO Should take a target
-    def patch(self, filename: Path, replacement: str, line: int, col: int) -> bool:
+    def patch(self, replacement: str, location: Location) -> bool:
         function = (
             self.db.query(models.Function)
-            .filter_by(module_name=str(filename), start_line=line, start_column=col)
+            .filter_by(
+                module_name=str(location.filename),
+                start_line=location.line,
+                start_column=location.column,
+            )
             .one_or_none()
         )
 
         if function is None:
             # TODO(ww): Come up with an appropriate exception here.
-            raise ValueError(f"no function at ({line}, {col})")
+            raise ValueError(f"no function at ({location.line}, {location.column})")
 
         return self.transform(
-            filename,
+            location.filename,
             replacement,
-            function.start_line,
-            function.start_column,
-            function.end_line,
-            function.end_column,
+            function.start_coordinate,
+            function.end_coordinate,
         )
 
     # TODO Should take a target
-    def auto_patch(self, filename: Path, tests, template_name, line, col) -> bool:
+    def auto_patch(self, template_name, tests, location: Location) -> bool:
         # TODO(ww): This should be completely refactored.
         # Save the current file to tmp
         TEMP_FILE = Path("/tmp/save_file")
         EXEC_FILE = Path("/tmp/target")
-        shutil.copyfile(filename, TEMP_FILE)
+        shutil.copyfile(location.filename, TEMP_FILE)
 
         # Collect replacements
-        replacements = self.concretize_template(filename, template_name, line, col)
+        replacements = self.concretize_template(template_name, location)
 
         # Patch
         for replacement in replacements:
             # Copy file back over to reset
-            shutil.copyfile(TEMP_FILE, filename)
+            shutil.copyfile(TEMP_FILE, location.filename)
 
-            self.patch(filename, replacement, line, col)
+            self.patch(replacement, location)
 
             # Just compile with clang for now
-            ret = subprocess.call(["clang-9", "-g", "-o", EXEC_FILE, filename])
+            ret = subprocess.call(["clang-9", "-g", "-o", EXEC_FILE, location.filename])
             if ret != 0:
                 print("Error, build failed?")
                 continue
@@ -214,11 +217,21 @@ class Tourniquet:
                 # This means that its fixed :)
                 return True
 
-        shutil.copyfile(TEMP_FILE, filename)
+        shutil.copyfile(TEMP_FILE, location.filename)
         return False
 
-    def transform(self, filename, replacement, start_line, start_col, end_line, end_col):
-        res = extractor.transform(filename, replacement, start_line, start_col, end_line, end_col)
+    def transform(
+        self, filename: Path, replacement: str, start: SourceCoordinate, end: SourceCoordinate
+    ):
+        res = extractor.transform(
+            filename,
+            self._path_looks_like_cxx(filename),
+            replacement,
+            start.line,
+            start.column,
+            end.line,
+            end.column,
+        )
         return res
 
     # TODO Autopatch
