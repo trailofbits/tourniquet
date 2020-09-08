@@ -114,7 +114,7 @@ location = Location("demo_prog.c", SourceCoordinate(44, 3))
 samples = demo.concretize_template("demo_template", location)
 
 # Look at all the patch candidates!
-print(samples)
+print(list(samples))
 
 # Attempt to automatically repair the program using that template
 # Specify the file, some testcases, and the location information again

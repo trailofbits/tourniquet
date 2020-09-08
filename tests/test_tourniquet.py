@@ -1,8 +1,20 @@
 import pytest
 
 from tourniquet import Tourniquet
+from tourniquet.location import Location as L
+from tourniquet.location import SourceCoordinate as SC
 from tourniquet.models import Function, Global, Module
-from tourniquet.patch_lang import FixPattern, NodeStmt, PatchTemplate
+from tourniquet.patch_lang import (
+    ElseStmt,
+    Expression,
+    FixPattern,
+    IfStmt,
+    LessThanExpr,
+    Lit,
+    NodeStmt,
+    PatchTemplate,
+    ReturnStmt
+)
 
 
 def test_tourniquet_extract_ast(test_files, tmp_db):
@@ -78,3 +90,42 @@ def test_register_template(tmp_db):
     new_template = PatchTemplate(FixPattern(NodeStmt()), lambda x, y: True)
     test_extractor.register_template("testme", new_template)
     assert len(test_extractor.patch_templates) == 1
+
+
+def test_auto_patch(test_files, tmp_db):
+    tourniquet = Tourniquet(tmp_db)
+    test_file = test_files / "patch_test.c"
+    tourniquet.collect_info(test_file)
+
+    class DummyErrorAnalysis(Expression):
+        def __init__(self, expr):
+            self.lit = Lit(expr)
+
+        def concretize(self, db, location):
+            yield from self.lit.concretize(db, location)
+
+    class DummyCallable:
+        def __init__(self, unused):
+            self._unused = unused
+
+        def __call__(self, line, col):
+            return line == 32 and col == 3
+
+    location = L(test_file, SC(32, 3))
+    template = PatchTemplate(
+        FixPattern(
+            IfStmt(LessThanExpr(Lit("len"), Lit("buff_len")), NodeStmt()),
+            ElseStmt(ReturnStmt(DummyErrorAnalysis("1"))),
+        ),
+        DummyCallable("unused"),
+    )
+    tourniquet.register_template("buffer_guard", template)
+
+    assert (
+        tourniquet.auto_patch(
+            "buffer_guard",
+            [("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", 1), ("password", 0)],
+            location,
+        )
+        is not None
+    )

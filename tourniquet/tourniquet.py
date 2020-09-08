@@ -1,5 +1,7 @@
 import shutil
 import subprocess
+import tempfile
+from contextlib import contextmanager
 from pathlib import Path
 from typing import Any, Dict, Iterator, Optional
 
@@ -83,6 +85,7 @@ class Tourniquet:
                     self.db.session.add(var_decl)
                 elif expr[0] == "call_type":
                     call = models.Call(
+                        module=module,
                         function=function,
                         expr=expr[5],
                         name=expr[6],
@@ -159,66 +162,56 @@ class Tourniquet:
         yield from template.concretize(self.db, location)
 
     # TODO Should take a target
-    def patch(self, replacement: str, location: Location) -> bool:
-        function = (
-            self.db.query(models.Function)
-            .filter_by(
-                module_name=str(location.filename),
-                start_line=location.line,
-                start_column=location.column,
+    @contextmanager
+    def patch(self, replacement: str, location: Location) -> Iterator[bool]:
+        try:
+            temp_file = tempfile.NamedTemporaryFile()
+            shutil.copyfile(location.filename, temp_file.name)
+
+            statement_or_call = self.db.statement_or_call_at(location)
+            if statement_or_call is None:
+                # TODO(ww): Come up with an appropriate exception here.
+                raise ValueError(f"no statement or call at ({location.line}, {location.column})")
+
+            yield self.transform(
+                location.filename,
+                replacement,
+                statement_or_call.start_coordinate,
+                statement_or_call.end_coordinate,
             )
-            .one_or_none()
-        )
-
-        if function is None:
-            # TODO(ww): Come up with an appropriate exception here.
-            raise ValueError(f"no function at ({location.line}, {location.column})")
-
-        return self.transform(
-            location.filename,
-            replacement,
-            function.start_coordinate,
-            function.end_coordinate,
-        )
+        finally:
+            shutil.copyfile(temp_file.name, location.filename)
+            temp_file.close()
 
     # TODO Should take a target
-    def auto_patch(self, template_name, tests, location: Location) -> bool:
-        # TODO(ww): This should be completely refactored.
-        # Save the current file to tmp
-        TEMP_FILE = Path("/tmp/save_file")
+    def auto_patch(self, template_name, tests, location: Location) -> Optional[str]:
         EXEC_FILE = Path("/tmp/target")
-        shutil.copyfile(location.filename, TEMP_FILE)
 
         # Collect replacements
         replacements = self.concretize_template(template_name, location)
 
         # Patch
         for replacement in replacements:
-            # Copy file back over to reset
-            shutil.copyfile(TEMP_FILE, location.filename)
+            with self.patch(replacement, location):
+                # Just compile with clang for now
+                ret = subprocess.call(["clang", "-g", "-o", EXEC_FILE, location.filename])
+                if ret != 0:
+                    print("Error, build failed?")
+                    continue
 
-            self.patch(replacement, location)
+                # Run the test suite
+                failed_test = False
+                for test_case in tests:
+                    (input_, output) = test_case
+                    ret = subprocess.call([EXEC_FILE, input_])
+                    if output != ret:
+                        failed_test = True
+                        break
+                if not failed_test:
+                    # This means that its fixed :)
+                    return replacement
 
-            # Just compile with clang for now
-            ret = subprocess.call(["clang-9", "-g", "-o", EXEC_FILE, location.filename])
-            if ret != 0:
-                print("Error, build failed?")
-                continue
-            # Run the test suite
-            failed_test = False
-            for test_case in tests:
-                input = test_case[0]
-                output = test_case[1]
-                ret = subprocess.call([EXEC_FILE, input])
-                if output != ret:
-                    failed_test = True
-                    break
-            if not failed_test:
-                # This means that its fixed :)
-                return True
-
-        shutil.copyfile(TEMP_FILE, location.filename)
-        return False
+        return None
 
     def transform(
         self, filename: Path, replacement: str, start: SourceCoordinate, end: SourceCoordinate

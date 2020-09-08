@@ -35,23 +35,7 @@ class Variable(Expression):
     # guaranteed to be in scope at a line number.
     def concretize(self, db, location: Location) -> Iterator[str]:
         # TODO(ww): Should we also concretize with available globals?
-        function = (
-            db.query(models.Function)
-            .filter(
-                (str(location.filename) == models.Function.module_name)
-                & (location.line >= models.Function.start_line)
-                & (location.column >= models.Function.start_column)
-                & (
-                    (
-                        (location.line == models.Function.end_line)
-                        & (location.column <= models.Function.end_column)
-                    )
-                    | ((location.line < models.Function.end_line))
-                )
-            )
-            .one_or_none()
-        )
-
+        function = db.function_at(location)
         if function is None:
             # TODO(ww): Custom error.
             raise ValueError(f"no function contains ({location.line}, {location.column})")
@@ -67,22 +51,7 @@ class StaticBufferSize(Expression):
     # Query for all static array types and return list of sizeof()..
     def concretize(self, db, location: Location) -> Iterator[str]:
         # TODO(ww): Should we also concretize with available globals?
-        function = (
-            db.query(models.Function)
-            .filter(
-                (str(location.filename) == models.Function.module_name)
-                & (location.line >= models.Function.start_line)
-                & (location.column >= models.Function.start_column)
-                & (
-                    (
-                        (location.line == models.Function.end_line)
-                        & (location.column <= models.Function.end_column)
-                    )
-                    | ((location.line < models.Function.end_line))
-                )
-            )
-            .one_or_none()
-        )
+        function = db.function_at(location)
 
         if function is None:
             # TODO(ww): Custom error.
@@ -248,8 +217,20 @@ class NodeStmt(Statement):
             )
             .one_or_none()
         )
+
         if statement is None:
-            raise ValueError(f"no statement at ({location.line}, {location.col})")
+            statement = (
+                db.query(models.Call)
+                .filter(
+                    (models.Call.module_name == str(location.filename))
+                    & (models.Call.start_line == location.line)
+                    & (models.Call.start_column == location.column)
+                )
+                .one_or_none()
+            )
+
+        if statement is None:
+            raise ValueError(f"no statement or call at ({location.line}, {location.column})")
 
         if statement.expr.endswith(";"):
             return statement.expr

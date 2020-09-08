@@ -5,8 +5,7 @@
  *      Author: carson
  */
 
-#ifndef TRANSFORMER_ASTEXPORTER_H_
-#define TRANSFORMER_ASTEXPORTER_H_
+#pragma once
 
 #include "clang/AST/RecursiveASTVisitor.h"
 #include "clang/Frontend/CompilerInstance.h"
@@ -26,9 +25,7 @@
 
 #include <Python.h>
 
-using namespace llvm::json;
 using namespace clang::tooling;
-using JObject = llvm::json::Object;
 using namespace clang;
 
 /*
@@ -96,5 +93,3 @@ public:
 private:
   PyObject *extract_results_;
 };
-
-#endif /* TRANSFORMER_ASTEXPORTER_H_ */

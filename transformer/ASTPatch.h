@@ -5,8 +5,7 @@
  *      Author: carson
  */
 
-#ifndef TRANSFORMER_ASTTRANSFORMER_CPP_
-#define TRANSFORMER_ASTTRANSFORMER_CPP_
+#pragma once
 
 #include "clang/AST/RecursiveASTVisitor.h"
 #include "clang/Frontend/CompilerInstance.h"
@@ -85,5 +84,3 @@ private:
   std::string replacement;
   std::string filepath;
 };
-
-#endif /* TRANSFORMER_ASTTRANSFORMER_CPP_ */
