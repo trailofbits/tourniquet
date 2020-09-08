@@ -111,14 +111,26 @@ class Function(Base):
 
     @property
     def start_coordinate(self):
+        """
+        Returns a `SourceCoordinate` representing where this function
+        begins in its source file.
+        """
         return SourceCoordinate(self.start_line, self.start_column)
 
     @property
     def end_coordinate(self):
+        """
+        Returns a `SourceCoordinate` representing where this function ends
+        in its source file.
+        """
         return SourceCoordinate(self.end_line, self.end_column)
 
     @property
     def location(self):
+        """
+        Returns a `Location` representing this function's source file and start
+        coordinate.
+        """
         return Location(Path(self.module_name), self.start_coordinate)
 
     def __repr__(self):
