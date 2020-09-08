@@ -6,7 +6,8 @@
 #include <memory>
 #include <sstream>
 
-static bool read_file_to_string(const char *filename, std::string &data) {
+static bool read_file_to_string(const std::string &filename,
+                                std::string &data) {
   std::ifstream file(filename);
   if (!file.is_open()) {
     return false;
@@ -20,13 +21,15 @@ static bool read_file_to_string(const char *filename, std::string &data) {
 }
 
 static PyObject *extract_ast(PyObject *self, PyObject *args) {
-  char *filename;
+  PyObject *filename_bytes;
   int is_cxx;
-  // NOTE(ww): Instead of parsing the filename as a string, should probably use
-  // "O&" with PyUnicode_FSConverter()
-  if (!PyArg_ParseTuple(args, "sp", &filename, &is_cxx)) {
+  if (!PyArg_ParseTuple(args, "O&p", PyUnicode_FSConverter, &filename_bytes,
+                        &is_cxx)) {
     return nullptr;
   }
+
+  std::string filename = PyBytes_AsString(filename_bytes);
+  Py_DECREF(filename_bytes);
 
   std::string data;
   if (!read_file_to_string(filename, data)) {
@@ -41,7 +44,7 @@ static PyObject *extract_ast(PyObject *self, PyObject *args) {
     return nullptr;
   }
   PyDict_SetItem(extract_results, PyUnicode_FromString("module_name"),
-                 PyUnicode_FromString(filename));
+                 PyUnicode_FromString(filename.c_str()));
   // Run tool on code, I believe that runToolOnCode owns/calls delete on the
   // FrontendAction Get double free when deleting manually
   runToolOnCode(new ASTExporterFrontendAction(extract_results), data);
@@ -50,14 +53,18 @@ static PyObject *extract_ast(PyObject *self, PyObject *args) {
 }
 
 static PyObject *transform(PyObject *self, PyObject *args) {
-  char *filename;
+  PyObject *filename_bytes;
   char *replacement;
   int is_cxx;
   int start_line, start_col, end_line, end_col;
-  if (!PyArg_ParseTuple(args, "spsiiii", &filename, &is_cxx, &replacement,
-                        &start_line, &start_col, &end_line, &end_col)) {
+  if (!PyArg_ParseTuple(args, "O&psiiii", PyUnicode_FSConverter,
+                        &filename_bytes, &is_cxx, &replacement, &start_line,
+                        &start_col, &end_line, &end_col)) {
     return nullptr;
   }
+
+  std::string filename = PyBytes_AsString(filename_bytes);
+  Py_DECREF(filename_bytes);
 
   std::string data;
   if (!read_file_to_string(filename, data)) {
@@ -66,8 +73,7 @@ static PyObject *transform(PyObject *self, PyObject *args) {
   }
 
   runToolOnCode(new ASTPatchAction(start_line, start_col, end_line, end_col,
-                                   std::string(replacement),
-                                   std::string(filename)),
+                                   std::string(replacement), filename),
                 data);
   Py_RETURN_TRUE;
 }
