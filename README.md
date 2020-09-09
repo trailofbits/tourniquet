@@ -149,9 +149,9 @@ root@b9f3a28655b6:/tourniquet# make test
 * Evan Sultanik (evan.sultanik@trailofbits.com)
 * William Woodruff (william@trailofbits.com)
 
-## License and Acknowledgements
+## Acknowledgements
 
-This research was developed by Trail of Bits with partial funding from the
-Defense Advanced Research Projects Agency (DARPA) under the CHESS program as a subcontractor to
-Galois. It is licensed under the Apache 2 License. Contact us if
-you're looking for an exception to the terms. © 2020, Trail of Bits.
+The project or effort depicted is sponsored by the Air Force Research Laboratory (AFRL) and
+DARPA under contract FA8750-19-C-0004. Any opinions, findings and conclusions or recommendations
+expressed in this material are those of the author(s) and do not necessarily reflect the views of
+the Air Force Research Laboratory (AFRL) and DARPA.
