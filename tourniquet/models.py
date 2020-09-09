@@ -22,27 +22,27 @@ class Module(Base):
     This module's database ID.
     """
 
-    name = Column(String, unique=True)
+    name = Column(String, unique=True, nullable=False)
     """
     The name (i.e. source file) of this module.
     """
 
-    functions = relationship("Function")
+    functions = relationship("Function", uselist=True)
     """
     The `Function`s present in this module.
     """
 
-    global_variables = relationship("Global")
+    global_variables = relationship("Global", uselist=True)
     """
     The `Global`s present in this module.
     """
 
-    statements = relationship("Statement")
+    statements = relationship("Statement", uselist=True)
     """
     The `Statement`s present in this module.
     """
 
-    calls = relationship("Call")
+    calls = relationship("Call", uselist=True)
     """
     The `Call`s present in this module.
     """
@@ -75,42 +75,42 @@ class Function(Base):
     The `Module` that this function belongs to.
     """
 
-    name = Column(String)
+    name = Column(String, nullable=False)
     """
     The name of this function.
     """
 
-    start_line = Column(Integer)
+    start_line = Column(Integer, nullable=False)
     """
     The line that this function begins on.
     """
 
-    start_column = Column(Integer)
+    start_column = Column(Integer, nullable=False)
     """
     The column that this function begins on.
     """
 
-    end_line = Column(Integer)
+    end_line = Column(Integer, nullable=False)
     """
     The line that this function ends on.
     """
 
-    end_column = Column(Integer)
+    end_column = Column(Integer, nullable=False)
     """
     The column that this function ends on.
     """
 
-    var_decls = relationship("VarDecl")
+    var_decls = relationship("VarDecl", uselist=True)
     """
     The `VarDecl`s present in this function.
     """
 
-    calls = relationship("Call")
+    calls = relationship("Call", uselist=True)
     """
     The `Call`s present in this function.
     """
 
-    statements = relationship("Statement")
+    statements = relationship("Statement", uselist=True)
     """
     The `Statement`s present in this function.
     """
@@ -165,42 +165,42 @@ class Global(Base):
     The `Module` that this global belongs to.
     """
 
-    name = Column(String)
+    name = Column(String, nullable=False)
     """
     The declared name of this global.
     """
 
-    type_ = Column(String)
+    type_ = Column(String, nullable=False)
     """
     The declared type of this global.
     """
 
-    start_line = Column(Integer)
+    start_line = Column(Integer, nullable=False)
     """
     The line that this global begins on.
     """
 
-    start_column = Column(Integer)
+    start_column = Column(Integer, nullable=False)
     """
     The column that this global begins on.
     """
 
-    end_line = Column(Integer)
+    end_line = Column(Integer, nullable=False)
     """
     The line that this global ends on.
     """
 
-    end_column = Column(Integer)
+    end_column = Column(Integer, nullable=False)
     """
     The column that this global ends on.
     """
 
-    is_array = Column(Boolean)
+    is_array = Column(Boolean, nullable=False)
     """
     Whether or not this global's declaration is for an array type.
     """
 
-    size = Column(Integer)
+    size = Column(Integer, nullable=False)
     """
     The size of this global, in bytes.
     """
@@ -231,42 +231,42 @@ class VarDecl(Base):
     The `Function` that this declaration is present in.
     """
 
-    name = Column(String)
+    name = Column(String, nullable=False)
     """
     The name of this declared variable.
     """
 
-    type_ = Column(String)
+    type_ = Column(String, nullable=False)
     """
     The type of this declared variable.
     """
 
-    start_line = Column(Integer)
+    start_line = Column(Integer, nullable=False)
     """
     The line that this declaration begins on.
     """
 
-    start_column = Column(Integer)
+    start_column = Column(Integer, nullable=False)
     """
     The column that this declaration begins on.
     """
 
-    end_line = Column(Integer)
+    end_line = Column(Integer, nullable=False)
     """
     The line that this declaration ends on.
     """
 
-    end_column = Column(Integer)
+    end_column = Column(Integer, nullable=False)
     """
     The column that this declaration ends on.
     """
 
-    is_array = Column(Boolean)
+    is_array = Column(Boolean, nullable=False)
     """
     Whether or not this declaration is for an array type.
     """
 
-    size = Column(Integer)
+    size = Column(Integer, nullable=False)
     """
     The size of the declared variable, in bytes.
     """
@@ -307,37 +307,37 @@ class Call(Base):
     The `Function` that this call is present in.
     """
 
-    expr = Column(String)
+    expr = Column(String, nullable=False)
     """
     The call expression itself.
     """
 
-    name = Column(String)
+    name = Column(String, nullable=False)
     """
     The name of the callee.
     """
 
-    start_line = Column(Integer)
+    start_line = Column(Integer, nullable=False)
     """
     The line that this call begins on.
     """
 
-    start_column = Column(Integer)
+    start_column = Column(Integer, nullable=False)
     """
     The column that this call begins on.
     """
 
-    end_line = Column(Integer)
+    end_line = Column(Integer, nullable=False)
     """
     The line that this call ends on.
     """
 
-    end_column = Column(Integer)
+    end_column = Column(Integer, nullable=False)
     """
     The column that this call ends on.
     """
 
-    arguments = relationship("Argument")
+    arguments = relationship("Argument", uselist=True)
     """
     The `Argument`s associated with this call.
     """
@@ -392,12 +392,12 @@ class Argument(Base):
     The `Call` that this argument is in.
     """
 
-    name = Column(String)
+    name = Column(String, nullable=False)
     """
     The name of the argument.
     """
 
-    type_ = Column(String)
+    type_ = Column(String, nullable=False)
     """
     The type of the argument.
     """
@@ -438,27 +438,27 @@ class Statement(Base):
     The `Function` that this statement is in.
     """
 
-    start_line = Column(Integer)
+    start_line = Column(Integer, nullable=False)
     """
     The line that this statement begins on.
     """
 
-    start_column = Column(Integer)
+    start_column = Column(Integer, nullable=False)
     """
     The column that this statement begins on.
     """
 
-    end_line = Column(Integer)
+    end_line = Column(Integer, nullable=False)
     """
     The line that this statement ends on.
     """
 
-    end_column = Column(Integer)
+    end_column = Column(Integer, nullable=False)
     """
     The column that this statement ends on.
     """
 
-    expr = Column(String)
+    expr = Column(String, nullable=False)
     """
     The expression text of this statement.
     """
