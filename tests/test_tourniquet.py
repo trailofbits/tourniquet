@@ -73,7 +73,7 @@ def test_tourniquet_db(test_files, tmp_db):
     assert main.end_column == 1
     assert len(main.var_decls) == 6
     assert len(main.calls) == 4
-    assert len(main.statements) == 4
+    assert len(main.statements) == 8
 
     # TODO(ww): Test main.{var_decls,calls,statements}
 

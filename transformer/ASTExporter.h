@@ -49,6 +49,7 @@ public:
 
 private:
   void PyDictUpdateEntry(PyObject *dict, const char *key, PyObject *new_item);
+  PyObject *BuildStmtEntry(Stmt *stmt);
   void AddGlobalEntry(PyObject *entry);
   void AddFunctionEntry(const char *func_name, PyObject *entry);
 

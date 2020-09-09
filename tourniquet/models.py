@@ -1,5 +1,5 @@
 from pathlib import Path
-from typing import Optional, Union
+from typing import Optional
 
 from sqlalchemy import Boolean, Column, ForeignKey, Integer, String, create_engine
 from sqlalchemy.ext.declarative import declarative_base
@@ -538,7 +538,7 @@ class DB:
             .one_or_none()
         )
 
-    def statement_or_call_at(self, location: Location) -> Optional[Union[Statement, Call]]:
+    def statement_at(self, location: Location) -> Optional[Statement]:
         statement = (
             self.query(Statement)
             .filter(
@@ -548,16 +548,5 @@ class DB:
             )
             .one_or_none()
         )
-
-        if statement is None:
-            statement = (
-                self.query(Call)
-                .filter(
-                    (Call.module_name == str(location.filename))
-                    & (Call.start_line == location.line)
-                    & (Call.start_column == location.column)
-                )
-                .one_or_none()
-            )
 
         return statement

@@ -168,16 +168,16 @@ class Tourniquet:
             temp_file = tempfile.NamedTemporaryFile()
             shutil.copyfile(location.filename, temp_file.name)
 
-            statement_or_call = self.db.statement_or_call_at(location)
-            if statement_or_call is None:
+            statement = self.db.statement_at(location)
+            if statement is None:
                 # TODO(ww): Come up with an appropriate exception here.
-                raise ValueError(f"no statement or call at ({location.line}, {location.column})")
+                raise ValueError(f"no statement at ({location.line}, {location.column})")
 
             yield self.transform(
                 location.filename,
                 replacement,
-                statement_or_call.start_coordinate,
-                statement_or_call.end_coordinate,
+                statement.start_coordinate,
+                statement.end_coordinate,
             )
         finally:
             shutil.copyfile(temp_file.name, location.filename)
@@ -185,6 +185,7 @@ class Tourniquet:
 
     # TODO Should take a target
     def auto_patch(self, template_name, tests, location: Location) -> Optional[str]:
+        # TODO(ww): This should be a NamedTempFile, at the absolute minimum.
         EXEC_FILE = Path("/tmp/target")
 
         # Collect replacements
