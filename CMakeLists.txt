@@ -9,8 +9,6 @@ if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
 endif()
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-# TODO(ww): Don't unconditionally set this.
-set(CMAKE_BUILD_TYPE Debug)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
 find_package(
   Python3

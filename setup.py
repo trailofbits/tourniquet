@@ -75,7 +75,13 @@ class CMakeBuild(build_ext):
 
     def build_extension(self, ext):
         extdir = os.path.abspath(os.path.dirname(self.get_ext_fullpath(ext.name)))
+
+        build_type = "Release"
+        if os.getenv("DEBUG", None) is not None:
+            build_type = "Debug"
+
         cmake_args = [
+            f"-DCMAKE_BUILD_TYPE={build_type}",
             f"-DCMAKE_LIBRARY_OUTPUT_DIRECTORY={extdir}",
             f"-DPYTHON_MODULE_NAME={module_name}",
         ]
