@@ -1,9 +1,12 @@
 import shutil
 import subprocess
+import tempfile
+from contextlib import contextmanager
 from pathlib import Path
 from typing import Any, Dict, Iterator, Optional
 
 from . import extractor, models
+from .location import Location, SourceCoordinate
 from .patch_lang import PatchTemplate
 
 
@@ -82,6 +85,7 @@ class Tourniquet:
                     self.db.session.add(var_decl)
                 elif expr[0] == "call_type":
                     call = models.Call(
+                        module=module,
                         function=function,
                         expr=expr[5],
                         name=expr[6],
@@ -129,7 +133,7 @@ class Tourniquet:
 
     # TODO Should take  target
     # TODO(ww): Consider rehoming this?
-    def view_template(self, module_name, template_name, line: int, col: int) -> Optional[str]:
+    def view_template(self, template_name, location: Location) -> Optional[str]:
         """
         Pretty-print the given template, partially concretized to the given
         module and source location.
@@ -139,13 +143,13 @@ class Tourniquet:
             return None
 
         print("=" * 10, template_name, "=" * 10)
-        view_str = template.view(line, col, self.db, module_name)
+        view_str = template.view(self.db, location)
         print(view_str)
         print("=" * 10, "END", "=" * 10)
         return view_str
 
     # TODO Should take a target
-    def concretize_template(self, module_name, template_name, line, col) -> Iterator[str]:
+    def concretize_template(self, template_name, location: Location) -> Iterator[str]:
         """
         Concretize the given registered template to the given
         module and source location, yielding each candidate patch.
@@ -155,75 +159,71 @@ class Tourniquet:
             # TODO(ww): Custom error.
             raise ValueError(f"no template registed with name {template_name}")
 
-        yield from template.concretize(line, col, self.db, module_name)
+        yield from template.concretize(self.db, location)
 
     # TODO Should take a target
-    def patch(self, filename: Path, replacement: str, line: int, col: int) -> bool:
-        function = (
-            self.db.query(models.Function)
-            .filter_by(module_name=str(filename), start_line=line, start_column=col)
-            .one_or_none()
-        )
+    @contextmanager
+    def patch(self, replacement: str, location: Location) -> Iterator[bool]:
+        try:
+            temp_file = tempfile.NamedTemporaryFile()
+            shutil.copyfile(location.filename, temp_file.name)
 
-        if function is None:
-            # TODO(ww): Come up with an appropriate exception here.
-            raise ValueError(f"no function at ({line}, {col})")
+            statement = self.db.statement_at(location)
+            if statement is None:
+                # TODO(ww): Come up with an appropriate exception here.
+                raise ValueError(f"no statement at ({location.line}, {location.column})")
 
-        return self.transform(
-            filename,
-            replacement,
-            function.start_line,
-            function.start_column,
-            function.end_line,
-            function.end_column,
-        )
+            yield self.transform(
+                location.filename,
+                replacement,
+                statement.start_coordinate,
+                statement.end_coordinate,
+            )
+        finally:
+            shutil.copyfile(temp_file.name, location.filename)
+            temp_file.close()
 
     # TODO Should take a target
-    def auto_patch(self, filename: Path, tests, template_name, line, col) -> bool:
-        # TODO(ww): This should be completely refactored.
-        # Save the current file to tmp
-        TEMP_FILE = Path("/tmp/save_file")
+    def auto_patch(self, template_name, tests, location: Location) -> Optional[str]:
+        # TODO(ww): This should be a NamedTempFile, at the absolute minimum.
         EXEC_FILE = Path("/tmp/target")
-        shutil.copyfile(filename, TEMP_FILE)
 
         # Collect replacements
-        replacements = self.concretize_template(filename, template_name, line, col)
+        replacements = self.concretize_template(template_name, location)
 
         # Patch
         for replacement in replacements:
-            # Copy file back over to reset
-            shutil.copyfile(TEMP_FILE, filename)
+            with self.patch(replacement, location):
+                # Just compile with clang for now
+                ret = subprocess.call(["clang", "-g", "-o", EXEC_FILE, location.filename])
+                if ret != 0:
+                    print("Error, build failed?")
+                    continue
 
-            self.patch(filename, replacement, line, col)
+                # Run the test suite
+                failed_test = False
+                for test_case in tests:
+                    (input_, output) = test_case
+                    ret = subprocess.call([EXEC_FILE, input_])
+                    if output != ret:
+                        failed_test = True
+                        break
+                if not failed_test:
+                    # This means that its fixed :)
+                    return replacement
 
-            # Just compile with clang for now
-            ret = subprocess.call(["clang-9", "-g", "-o", EXEC_FILE, filename])
-            if ret != 0:
-                print("Error, build failed?")
-                continue
-            # Run the test suite
-            failed_test = False
-            for test_case in tests:
-                input = test_case[0]
-                output = test_case[1]
-                ret = subprocess.call([EXEC_FILE, input])
-                if output != ret:
-                    failed_test = True
-                    break
-            if not failed_test:
-                # This means that its fixed :)
-                return True
+        return None
 
-        shutil.copyfile(TEMP_FILE, filename)
-        return False
-
-    def transform(self, filename, replacement, start_line, start_col, end_line, end_col):
-        res = extractor.transform(filename, replacement, start_line, start_col, end_line, end_col)
+    def transform(
+        self, filename: Path, replacement: str, start: SourceCoordinate, end: SourceCoordinate
+    ):
+        res = extractor.transform(
+            filename,
+            self._path_looks_like_cxx(filename),
+            replacement,
+            start.line,
+            start.column,
+            end.line,
+            end.column,
+        )
         return res
-
-    # TODO Autopatch
-    # TODO Integrate with CPG
-    # def create_new_template(self, matcher_func, statement_list: StatementList):
-    #    new_fix_pattern = FixPattern(statement_list)
-    #    patch_t = PatchTemplate(matcher_func, new_fix_pattern)
-    #    self.patch_templates.append((template_name, patch_t))

@@ -5,8 +5,7 @@
  *      Author: carson
  */
 
-#ifndef TRANSFORMER_ASTEXPORTER_H_
-#define TRANSFORMER_ASTEXPORTER_H_
+#pragma once
 
 #include "clang/AST/RecursiveASTVisitor.h"
 #include "clang/Frontend/CompilerInstance.h"
@@ -26,9 +25,7 @@
 
 #include <Python.h>
 
-using namespace llvm::json;
 using namespace clang::tooling;
-using JObject = llvm::json::Object;
 using namespace clang;
 
 /*
@@ -52,6 +49,7 @@ public:
 
 private:
   void PyDictUpdateEntry(PyObject *dict, const char *key, PyObject *new_item);
+  PyObject *BuildStmtEntry(Stmt *stmt);
   void AddGlobalEntry(PyObject *entry);
   void AddFunctionEntry(const char *func_name, PyObject *entry);
 
@@ -96,5 +94,3 @@ public:
 private:
   PyObject *extract_results_;
 };
-
-#endif /* TRANSFORMER_ASTEXPORTER_H_ */

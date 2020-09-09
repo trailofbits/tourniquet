@@ -15,22 +15,7 @@ void ASTExporterVisitor::PyDictUpdateEntry(PyObject *dict, const char *key,
   }
 }
 
-void ASTExporterVisitor::AddGlobalEntry(PyObject *entry) {
-  PyDictUpdateEntry(tree_info, "globals", entry);
-}
-
-void ASTExporterVisitor::AddFunctionEntry(const char *func_name,
-                                          PyObject *entry) {
-  if (auto functions = PyDict_GetItemString(tree_info, "functions")) {
-    PyDictUpdateEntry(functions, func_name, entry);
-  } else {
-    functions = PyDict_New();
-    PyDict_SetItemString(tree_info, "functions", functions);
-    PyDictUpdateEntry(functions, func_name, entry);
-  }
-}
-
-bool ASTExporterVisitor::VisitDeclStmt(Stmt *stmt) {
+PyObject *ASTExporterVisitor::BuildStmtEntry(Stmt *stmt) {
   std::string expr = getText(*stmt, *Context);
 
   unsigned int start_line =
@@ -49,7 +34,28 @@ bool ASTExporterVisitor::VisitDeclStmt(Stmt *stmt) {
   PyList_Append(new_arr, PyLong_FromUnsignedLong(end_line));
   PyList_Append(new_arr, PyLong_FromUnsignedLong(end_col));
   PyList_Append(new_arr, PyUnicode_FromString(expr.c_str()));
-  AddFunctionEntry(current_func->getNameAsString().c_str(), new_arr);
+
+  return new_arr;
+}
+
+void ASTExporterVisitor::AddGlobalEntry(PyObject *entry) {
+  PyDictUpdateEntry(tree_info, "globals", entry);
+}
+
+void ASTExporterVisitor::AddFunctionEntry(const char *func_name,
+                                          PyObject *entry) {
+  if (auto functions = PyDict_GetItemString(tree_info, "functions")) {
+    PyDictUpdateEntry(functions, func_name, entry);
+  } else {
+    functions = PyDict_New();
+    PyDict_SetItemString(tree_info, "functions", functions);
+    PyDictUpdateEntry(functions, func_name, entry);
+  }
+}
+
+bool ASTExporterVisitor::VisitDeclStmt(Stmt *stmt) {
+  AddFunctionEntry(current_func->getNameAsString().c_str(),
+                   BuildStmtEntry(stmt));
   return true;
 }
 
@@ -119,6 +125,11 @@ bool ASTExporterVisitor::VisitVarDecl(VarDecl *vdecl) {
 
 // Current func, Callee, args, arg types, string
 bool ASTExporterVisitor::VisitCallExpr(CallExpr *call_expr) {
+  auto func_name = current_func->getNameAsString();
+
+  // Every CallExpr is a Stmt, so also record it as a Stmt.
+  AddFunctionEntry(func_name.c_str(), BuildStmtEntry(call_expr));
+
   std::string expr = getText(*call_expr, *Context);
 
   FunctionDecl *func = call_expr->getDirectCallee();
@@ -149,7 +160,7 @@ bool ASTExporterVisitor::VisitCallExpr(CallExpr *call_expr) {
                   PyUnicode_FromString(arg->getType().getAsString().c_str()));
     PyList_Append(new_arr, arg_arr);
   }
-  AddFunctionEntry(current_func->getNameAsString().c_str(), new_arr);
+  AddFunctionEntry(func_name.c_str(), new_arr);
   return true;
 }
 

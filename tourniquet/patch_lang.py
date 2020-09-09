@@ -1,16 +1,17 @@
 import itertools
 from abc import ABC, abstractmethod
-from typing import Iterator, List
+from typing import Callable, Iterator, List, Optional
 
 from . import models
+from .location import Location
 
 
 class Expression(ABC):
     @abstractmethod
-    def concretize(self, line: int, col: int, db, module_name) -> Iterator[str]:
+    def concretize(self, db, location: Location) -> Iterator[str]:
         yield from ()
 
-    def view(self, line: int, col: int, db, module_name) -> str:
+    def view(self, db, location: Location) -> str:
         return "Expression()"
 
 
@@ -18,10 +19,10 @@ class Lit(Expression):
     def __init__(self, expr: str):
         self.expr = expr
 
-    def concretize(self, _line, _col, _db, _module_name) -> Iterator[str]:
+    def concretize(self, _db, _location) -> Iterator[str]:
         yield self.expr
 
-    def view(self, _line, _col, _db, _module_name):
+    def view(self, _db, _location):
         return f"Lit({self.expr})"
 
 
@@ -32,61 +33,36 @@ class Variable(Expression):
     # TODO(ww): This is probably slightly unsound, in terms of concretizations
     # produced: the set of variables in a function is not the set of variables
     # guaranteed to be in scope at a line number.
-    def concretize(self, line: int, col: int, db, module_name) -> Iterator[str]:
+    def concretize(self, db, location: Location) -> Iterator[str]:
         # TODO(ww): Should we also concretize with available globals?
-        function = (
-            db.query(models.Function)
-            .filter(
-                (module_name == models.Function.module_name)
-                & (line >= models.Function.start_line)
-                & (col >= models.Function.start_column)
-                & (
-                    ((line == models.Function.end_line) & (col <= models.Function.end_column))
-                    | ((line < models.Function.end_line))
-                )
-            )
-            .one_or_none()
-        )
-
+        function = db.function_at(location)
         if function is None:
             # TODO(ww): Custom error.
-            raise ValueError(f"no function contains ({line}, {col})")
+            raise ValueError(f"no function contains ({location.line}, {location.column})")
 
         for var_decl in function.var_decls:
             yield var_decl.name
 
-    def view(self, line: int, col: int, db, _module_name) -> str:
+    def view(self, _db, _location) -> str:
         return "Variable()"
 
 
 class StaticBufferSize(Expression):
     # Query for all static array types and return list of sizeof()..
-    def concretize(self, line: int, col: int, db, module_name) -> Iterator[str]:
+    def concretize(self, db, location: Location) -> Iterator[str]:
         # TODO(ww): Should we also concretize with available globals?
-        function = (
-            db.query(models.Function)
-            .filter(
-                (module_name == models.Function.module_name)
-                & (line >= models.Function.start_line)
-                & (col >= models.Function.start_column)
-                & (
-                    ((line == models.Function.end_line) & (col <= models.Function.end_column))
-                    | ((line < models.Function.end_line))
-                )
-            )
-            .one_or_none()
-        )
+        function = db.function_at(location)
 
         if function is None:
             # TODO(ww): Custom error.
-            raise ValueError(f"no function contains ({line}, {col})")
+            raise ValueError(f"no function contains ({location.line}, {location.column})")
 
         for var_decl in function.var_decls:
             if not var_decl.is_array:
                 continue
             yield f"sizeof({var_decl.name})"
 
-    def view(self, line: int, col: int, db, module_name) -> str:
+    def view(self, _db, _location) -> str:
         return "StaticBufferSize()"
 
 
@@ -96,9 +72,9 @@ class BinaryMathOperator(Expression):
         self.lhs = lhs
         self.rhs = rhs
 
-    def concretize(self, line: int, col: int, db, module_name) -> Iterator[str]:
-        lhs_exprs = self.lhs.concretize(line, col, db, module_name)
-        rhs_exprs = self.rhs.concretize(line, col, db, module_name)
+    def concretize(self, db, location: Location) -> Iterator[str]:
+        lhs_exprs = self.lhs.concretize(db, location)
+        rhs_exprs = self.rhs.concretize(db, location)
         for (lhs, rhs) in itertools.product(lhs_exprs, rhs_exprs):
             yield f"{lhs} + {rhs}"
             yield f"{lhs} - {rhs}"
@@ -106,11 +82,8 @@ class BinaryMathOperator(Expression):
             yield f"{lhs} * {rhs}"
             yield f"{lhs} << {rhs}"
 
-    def view(self, line: int, col: int, db, module_name) -> str:
-        return (
-            f"BinaryMathOperator({self.lhs.view(line, col, db, module_name)}, "
-            f"{self.lhs.view(line, col, db, module_name)})"
-        )
+    def view(self, db, location: Location) -> str:
+        return f"BinaryMathOperator({self.lhs.view(db, location)}, {self.lhs.view(db, location)})"
 
 
 class BinaryBoolOperator(Expression):
@@ -119,9 +92,9 @@ class BinaryBoolOperator(Expression):
         self.lhs = lhs
         self.rhs = rhs
 
-    def concretize(self, line: int, col: int, db, module_name) -> Iterator[str]:
-        lhs_exprs = self.lhs.concretize(line, col, db, module_name)
-        rhs_exprs = self.rhs.concretize(line, col, db, module_name)
+    def concretize(self, db, location: Location) -> Iterator[str]:
+        lhs_exprs = self.lhs.concretize(db, location)
+        rhs_exprs = self.rhs.concretize(db, location)
         for (lhs, rhs) in itertools.product(lhs_exprs, rhs_exprs):
             yield f"{lhs} == {rhs}"
             yield f"{lhs} != {rhs}"
@@ -130,11 +103,8 @@ class BinaryBoolOperator(Expression):
             yield f"{lhs} >= {rhs}"
             yield f"{lhs} > {rhs}"
 
-    def view(self, line: int, col: int, db, module_name) -> str:
-        return (
-            f"BinaryBoolOperator({self.lhs.view(line, col, db, module_name)}, "
-            f"{self.rhs.view(line, col, db, module_name)})"
-        )
+    def view(self, db, location: Location) -> str:
+        return f"BinaryBoolOperator({self.lhs.view(db, location)}, {self.rhs.view(db, location)})"
 
 
 class LessThanExpr(Expression):
@@ -142,23 +112,21 @@ class LessThanExpr(Expression):
         self.lhs = lhs
         self.rhs = rhs
 
-    def concretize(self, line: int, col: int, db, module_name) -> Iterator[str]:
-        lhs_exprs = self.lhs.concretize(line, col, db, module_name)
-        rhs_exprs = self.rhs.concretize(line, col, db, module_name)
+    def concretize(self, db, location: Location) -> Iterator[str]:
+        lhs_exprs = self.lhs.concretize(db, location)
+        rhs_exprs = self.rhs.concretize(db, location)
         for (lhs, rhs) in itertools.product(lhs_exprs, rhs_exprs):
             yield f"{lhs} < {rhs}"
 
-    def view(self, line: int, col: int, db, module_name):
-        self.lhs.view(line, col, db, module_name) + " < " + self.rhs.view(
-            line, col, db, module_name
-        )
+    def view(self, db, location: Location):
+        self.lhs.view(db, location) + " < " + self.rhs.view(db, location)
 
 
 class Statement(ABC):
-    def concretize(self, line: int, col: int, db, module_name) -> Iterator[str]:
+    def concretize(self, db, location: Location) -> Iterator[str]:
         pass
 
-    def view(self, line: int, col: int, db, module_name):
+    def view(self, db, location: Location):
         pass
 
 
@@ -169,15 +137,15 @@ class StatementList:
             for i in arg:
                 self.statements.append(i)
 
-    def concretize(self, line: int, col: int, db, module_name) -> Iterator[str]:
-        concretized = [stmt.concretize(line, col, db, module_name) for stmt in self.statements]
+    def concretize(self, db, location: Location) -> Iterator[str]:
+        concretized = [stmt.concretize(db, location) for stmt in self.statements]
         for items in set(itertools.product(*concretized)):
             yield "\n".join(items)
 
-    def view(self, line: int, col: int, db, module_name) -> str:
+    def view(self, db, location: Location) -> str:
         final_str = ""
         for stmt in self.statements:
-            final_str += stmt.view(line, col, db, module_name) + "\n"
+            final_str += stmt.view(db, location) + "\n"
         return final_str
 
 
@@ -186,16 +154,16 @@ class IfStmt(Statement):
         self.cond_expr = cond_expr
         self.statement_list = StatementList(args)
 
-    def concretize(self, line: int, col: int, db, module_name) -> Iterator[str]:
-        cond_list = self.cond_expr.concretize(line, col, db, module_name)
-        stmt_list = self.statement_list.concretize(line, col, db, module_name)
+    def concretize(self, db, location: Location) -> Iterator[str]:
+        cond_list = self.cond_expr.concretize(db, location)
+        stmt_list = self.statement_list.concretize(db, location)
         for (cond, stmt) in itertools.product(cond_list, stmt_list):
             cand_str = "if (" + cond + ") {\n" + stmt + "\n}\n"
             yield cand_str
 
-    def view(self, line: int, col: int, db, module_name) -> str:
-        if_str = "if (" + self.cond_expr.view(line, col, db, module_name) + ") {\n"
-        if_str += self.statement_list.view(line, col, db, module_name)
+    def view(self, db, location: Location) -> str:
+        if_str = "if (" + self.cond_expr.view(db, location) + ") {\n"
+        if_str += self.statement_list.view(db, location)
         if_str += "\n}\n"
         return if_str
 
@@ -204,53 +172,65 @@ class ElseStmt(Statement):
     def __init__(self, *args):
         self.statement_list = StatementList(args)
 
-    def concretize(self, line: int, col: int, db, module_name) -> Iterator[str]:
-        stmt_list = self.statement_list.concretize(line, col, db, module_name)
+    def concretize(self, db, location: Location) -> Iterator[str]:
+        stmt_list = self.statement_list.concretize(db, location)
         for stmt in stmt_list:
             cand_str = "else {\n" + stmt + "\n}\n"
             yield cand_str
 
-    def view(self, line: int, col: int, db, module_name) -> str:
-        return "else {\n" + self.statement_list.view(line, col, db, module_name) + "\n}\n"
+    def view(self, db, location: Location) -> str:
+        return "else {\n" + self.statement_list.view(db, location) + "\n}\n"
 
 
 class ReturnStmt(Statement):
     def __init__(self, expr: Expression):
         self.expr = expr
 
-    def concretize(self, line: int, col: int, db, module_name) -> Iterator[str]:
-        expr_list = self.expr.concretize(line, col, db, module_name)
+    def concretize(self, db, location: Location) -> Iterator[str]:
+        expr_list = self.expr.concretize(db, location)
         for exp in expr_list:
             candidate_str = f"return {exp};"
             yield candidate_str
 
-    def view(self, line: int, col: int, db, module_name):
-        return f"return  {self.expr.view(line, col, db, module_name)};"
+    def view(self, db, location: Location):
+        return f"return {self.expr.view(db, location)};"
 
 
 # TODO This should take a Node, which is something from... the DB? Maybe?
 class NodeStmt(Statement):
-    def concretize(self, line: int, col: int, db, module_name) -> Iterator[str]:
-        source_info = self.fetch_node(line, col, db, module_name)
+    def concretize(self, db, location: Location) -> Iterator[str]:
+        source_info = self.fetch_node(db, location)
         yield source_info
 
-    def view(self, line, col, db, module_name) -> str:
+    def view(self, db, location) -> str:
         # Fetch and create a node.
-        source_info = self.fetch_node(line, col, db, module_name)
+        source_info = self.fetch_node(db, location)
         return source_info
 
-    def fetch_node(self, line, col, db, module_name) -> str:
+    def fetch_node(self, db, location) -> str:
         statement = (
             db.query(models.Statement)
             .filter(
-                (models.Statement.module_name == module_name)
-                & (models.Statement.start_line == line)
-                & (models.Statement.start_column == col)
+                (models.Statement.module_name == str(location.filename))
+                & (models.Statement.start_line == location.line)
+                & (models.Statement.start_column == location.column)
             )
             .one_or_none()
         )
+
         if statement is None:
-            raise ValueError(f"no statement at ({line}, {col})")
+            statement = (
+                db.query(models.Call)
+                .filter(
+                    (models.Call.module_name == str(location.filename))
+                    & (models.Call.start_line == location.line)
+                    & (models.Call.start_column == location.column)
+                )
+                .one_or_none()
+            )
+
+        if statement is None:
+            raise ValueError(f"no statement or call at ({location.line}, {location.column})")
 
         if statement.expr.endswith(";"):
             return statement.expr
@@ -264,25 +244,28 @@ class FixPattern:
     def __init__(self, *args):
         self.statement_list = StatementList(args)
 
-    def concretize(self, line: int, col: int, db, module_name) -> Iterator[str]:
-        yield from self.statement_list.concretize(line, col, db, module_name)
+    def concretize(self, db, location: Location) -> Iterator[str]:
+        yield from self.statement_list.concretize(db, location)
 
-    def view(self, line: int, col: int, db, module_name) -> str:
-        return self.statement_list.view(line, col, db, module_name)
+    def view(self, db, location: Location) -> str:
+        return self.statement_list.view(db, location)
 
 
 class PatchTemplate:
     # TODO Think of better API
-    def __init__(self, matcher_func, fix_pattern: FixPattern):
+    def __init__(
+        self, fix_pattern: FixPattern, matcher_func: Optional[Callable[[int, int], bool]] = None
+    ):
         self.matcher_func = matcher_func
         self.fix_pattern = fix_pattern
 
     def matches(self, line: int, col: int) -> bool:
-        matches: bool = self.matcher_func(line, col)
-        return matches
+        if self.matcher_func is None:
+            return True
+        return self.matcher_func(line, col)
 
-    def concretize(self, line: int, col: int, db, module_name) -> Iterator[str]:
-        yield from self.fix_pattern.concretize(line, col, db, module_name)
+    def concretize(self, db, location: Location) -> Iterator[str]:
+        yield from self.fix_pattern.concretize(db, location)
 
-    def view(self, line: int, col: int, db, module_name) -> str:
-        return self.fix_pattern.view(line, col, db, module_name)
+    def view(self, db, location: Location) -> str:
+        return self.fix_pattern.view(db, location)

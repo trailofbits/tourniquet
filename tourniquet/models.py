@@ -1,6 +1,11 @@
+from pathlib import Path
+from typing import Optional
+
 from sqlalchemy import Boolean, Column, ForeignKey, Integer, String, create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship, sessionmaker
+
+from .location import Location, SourceCoordinate
 
 Base = declarative_base()
 
@@ -37,7 +42,12 @@ class Module(Base):
     The `Statement`s present in this module.
     """
 
-    # TODO(ww): Module -> [VarDecl], -> [Call] relationships
+    calls = relationship("Call")
+    """
+    The `Call`s present in this module.
+    """
+
+    # TODO(ww): Module -> [VarDecl] relationship
 
     def __repr__(self):
         return f"<Module {self.name}>"
@@ -55,7 +65,7 @@ class Function(Base):
     This function's database ID.
     """
 
-    module_name = Column(Integer, ForeignKey("modules.name"))
+    module_name = Column(String, ForeignKey("modules.name"))
     """
     The name of the `Module` that this function belongs to.
     """
@@ -105,6 +115,30 @@ class Function(Base):
     The `Statement`s present in this function.
     """
 
+    @property
+    def start_coordinate(self):
+        """
+        Returns a `SourceCoordinate` representing where this function
+        begins in its source file.
+        """
+        return SourceCoordinate(self.start_line, self.start_column)
+
+    @property
+    def end_coordinate(self):
+        """
+        Returns a `SourceCoordinate` representing where this function ends
+        in its source file.
+        """
+        return SourceCoordinate(self.end_line, self.end_column)
+
+    @property
+    def location(self):
+        """
+        Returns a `Location` representing this function's source file and start
+        coordinate.
+        """
+        return Location(Path(self.module_name), self.start_coordinate)
+
     def __repr__(self):
         return f"<Function {self.name}>"
 
@@ -121,7 +155,7 @@ class Global(Base):
     This global's database ID.
     """
 
-    module_name = Column(Integer, ForeignKey("modules.name"))
+    module_name = Column(String, ForeignKey("modules.name"))
     """
     The name of the `Module` that this global belongs to.
     """
@@ -253,6 +287,16 @@ class Call(Base):
     This call's database ID.
     """
 
+    module_name = Column(String, ForeignKey("modules.name"))
+    """
+    The name of the `Module` that this statement is in.
+    """
+
+    module = relationship("Module", back_populates="calls")
+    """
+    The `Module` that this statement is in.
+    """
+
     function_id = Column(Integer, ForeignKey("functions.id"))
     """
     The ID of the `Function` that this call is present in.
@@ -298,6 +342,30 @@ class Call(Base):
     The `Argument`s associated with this call.
     """
 
+    @property
+    def start_coordinate(self):
+        """
+        Returns a `SourceCoordinate` representing where this call
+        begins in its source file.
+        """
+        return SourceCoordinate(self.start_line, self.start_column)
+
+    @property
+    def end_coordinate(self):
+        """
+        Returns a `SourceCoordinate` representing where this call ends
+        in its source file.
+        """
+        return SourceCoordinate(self.end_line, self.end_column)
+
+    @property
+    def location(self):
+        """
+        Returns a `Location` representing this call's source file and start
+        coordinate.
+        """
+        return Location(Path(self.module_name), self.start_coordinate)
+
     def __repr__(self):
         return f"<Call {self.expr}>"
 
@@ -340,7 +408,7 @@ class Argument(Base):
 
 class Statement(Base):
     """
-    Represents a primitive (i.e., non-compound) C or C++ statment.
+    Represents a primitive (i.e., non-compound) C or C++ statement.
     """
 
     __tablename__ = "statements"
@@ -350,7 +418,7 @@ class Statement(Base):
     This statement's database ID.
     """
 
-    module_name = Column(Integer, ForeignKey("modules.name"))
+    module_name = Column(String, ForeignKey("modules.name"))
     """
     The name of the `Module` that this statement is in.
     """
@@ -395,6 +463,30 @@ class Statement(Base):
     The expression text of this statement.
     """
 
+    @property
+    def start_coordinate(self):
+        """
+        Returns a `SourceCoordinate` representing where this statement
+        begins in its source file.
+        """
+        return SourceCoordinate(self.start_line, self.start_column)
+
+    @property
+    def end_coordinate(self):
+        """
+        Returns a `SourceCoordinate` representing where this statement ends
+        in its source file.
+        """
+        return SourceCoordinate(self.end_line, self.end_column)
+
+    @property
+    def location(self):
+        """
+        Returns a `Location` representing this statement's source file and start
+        coordinate.
+        """
+        return Location(Path(self.module_name), self.start_coordinate)
+
     def __repr__(self):
         return f"<Statement {self.expr}>"
 
@@ -427,3 +519,34 @@ class DB:
         """
 
         return self.session.query(*args, **kwargs)
+
+    def function_at(self, location: Location) -> Optional[Function]:
+        return (
+            self.query(Function)
+            .filter(
+                (str(location.filename) == Function.module_name)
+                & (location.line >= Function.start_line)
+                & (location.column >= Function.start_column)
+                & (
+                    (
+                        (location.line == Function.end_line)
+                        & (location.column <= Function.end_column)
+                    )
+                    | ((location.line < Function.end_line))
+                )
+            )
+            .one_or_none()
+        )
+
+    def statement_at(self, location: Location) -> Optional[Statement]:
+        statement = (
+            self.query(Statement)
+            .filter(
+                (Statement.module_name == str(location.filename))
+                & (Statement.start_line == location.line)
+                & (Statement.start_column == location.column)
+            )
+            .one_or_none()
+        )
+
+        return statement

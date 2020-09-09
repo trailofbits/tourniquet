@@ -39,39 +39,51 @@ describe part of the syntax and part of the semantics of a repair and lets the c
 example template:
 
 ```python
-demo_template = PatchTemplate("demo_template", # Location 1
-                  your_matcher_function # Location 2
-                  FixPattern( # Location 3
-                    IfStmt(
-                      LessThanExpr(Variable(), Variable()), # Location 4
-                        NodeStmt() # Location 5
-                    ),
-                    ElseStmt(
-                        ReturnStmt(your_semantic_analysis) # Location 6
-                        )
-                    )
-                  )
+class YourSemanticAnalysis(Expression):
+    def concretize(self, _db, _location):
+        yield "SOME_ERROR_CONSTANT"
+
+
+def your_matcher_func(line, col):
+    return True
+
+
+demo_template = PatchTemplate(
+    FixPattern(  # Location 1
+        IfStmt(
+            LessThanExpr(Variable(), Variable()),  # Location 2
+            NodeStmt()  # Location 3
+        ),
+        ElseStmt(
+            ReturnStmt(YourSemanticAnalysis())  # Location 4
+        )
+    ),
+    your_matcher_func  # Location 5
+)
 ```
 
-*Location 1* describes the name of the template you are creating.
+*Location 1* is the beginning of the `FixPattern`. The `FixPattern` describes the overall shape of
+the repair. This means the human provides part of the syntax, and part of the semantics of the
+repair.
 
-*Location 2* is for a matcher function. The matcher function is a function that is supposed to take source line and column
-information and return True or False if the FixPatern is applicable to that source location. The idea here is that we
-couple specific types of fixes with specific types of bugs. We intend to use some other tools (such as manticore) to
-help determine bug classes.
+*Location 2* shows some of the different types in the DSL. What this line is describing is a less
+than statement with two variables, all the variable information is automatically extracted from the
+Clang AST.
 
-*Location 3* is the beginning of the FixPattern. The FixPattern describes the overall shape of the repair. This means the
-human provides part of the syntax, and part of the semantics of the repair.
+*Location 3* is whatever source was matched by your matcher function, also extracted from the
+Clang AST.
 
-*Location 4* shows some of the different types in the DSL. What this line is describing is a less than statement
-with two variables, all the variable information is automatically extracted from the clang AST.
-
-*Location 5* is whatever source was matched by your matcher function, also extracted from the clang AST.
-
-*Location 6* is an example of how you could integrate program analysis tools with Tourniquet. The FixPattern is trying
-to do a basic if/else statement where the else case returns some value. Return values have semantic properties,
-returning some arbitrary integer isn't usually a good idea. This means you can use some program analysis technique to
+*Location 4* is an example of how you could integrate program analysis tools with Tourniquet.
+The `FixPattern` is trying to do a basic `if...else` statement where the `else` case returns some
+value. Return values have semantic properties, returning some arbitrary integer isn't usually a
+good idea. This means you can use some program analysis technique to
 infer what an appropriate return code might actually be, or simply ask a human to intervene.
+
+*Location 5* is for a matcher. The matcher is a callable that is supposed to
+take source line and column information and return `True` or `False` if the `FixPatern` is
+applicable to that source location. The idea here is that we couple specific types of fixes with
+specific types of bugs. We intend to use some other tools
+(such as [Manticore](https://github.com/trailofbits/manticore)) to help determine bug classes.
 
 ## Using Tourniquet
 
@@ -80,37 +92,40 @@ infer what an appropriate return code might actually be, or simply ask a human t
 demo = Tourniquet("test.db")
 
 # Extract info from its AST into the database
-demo.collect_info("your_program.c")
+demo.collect_info("demo_prog.c")
 
 # Create a new patch template
-demo_template = PatchTemplate("demo_template",
-                        lambda x, y: True,
-                        FixPattern(
-                            IfStmt(
-                    	    LessThanExpr(Variable(), Variable()),
-                      	        NodeStmt()
-                            )
-                        )
-                    )
+demo_template = PatchTemplate(
+    FixPattern(
+        IfStmt(
+            LessThanExpr(Variable(), Variable()),
+            NodeStmt()
+        )
+    ),
+    lambda x, y: True,
+)
 
-#Add the template to the tourniquet instance
-demo.add_new_template(demo_template)
+# Add the template to the tourniquet instance
+demo.register_template("demo_template", demo_template)
 
-# Tell Tourniquet you want to see results from this program, with this template, matching against some location
-samples = demo.concretize_template("demo_prog.c", "demo", 44, 3)
+# Tell Tourniquet you want to see results from this program, with this template,
+# matching against some location
+location = Location("demo_prog.c", SourceCoordinate(44, 3))
+samples = demo.concretize_template("demo_template", location)
 
 # Look at all the patch candidates!
-print(samples)
+print(list(samples))
 
 # Attempt to automatically repair the program using that template
 # Specify the file, some testcases, and the location information again
-demo.auto_patch("demo_prog.c",
-                [
-                    ("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", 1),
-                    ("password", 0)
-                 ],
-                "demo",
-                44, 3)
+demo.auto_patch(
+    "demo_template"
+    [
+        ("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", 1),
+        ("password", 0)
+    ],
+    location
+)
 ```
 
 Auto patch will return `True` or `False` depending on if you successfully found a patch to fix all testcases. Eventually
