@@ -23,6 +23,29 @@ class SourceCoordinate:
 
 
 @dataclass(frozen=True)
+class Span:
+    """
+    Encapsulates a "span" of a source feature, i.e. its start and end lines
+    and columns.
+    """
+
+    filename: Path
+    """
+    The path to the file that the span occurs in.
+    """
+
+    start: SourceCoordinate
+    """
+    The coordinates (line and column) that the span starts on.
+    """
+
+    end: SourceCoordinate
+    """
+    The coordinates (line and column) that the span ends on.
+    """
+
+
+@dataclass(frozen=True)
 class Location:
     """
     Encapsulates the bare amount of state required to uniquely locate a source

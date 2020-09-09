@@ -3,10 +3,18 @@ from abc import ABC, abstractmethod
 from typing import Callable, Iterator, List, Optional
 
 from . import models
+from .error import PatchConcretizationError
 from .location import Location
 
 
 class Expression(ABC):
+    """
+    Represents an abstract source "expression".
+
+    `Expression` is an abstract base class whose interfaces should be consumed via
+    specific base classes.
+    """
+
     @abstractmethod
     def concretize(self, db, location: Location) -> Iterator[str]:
         yield from ()
@@ -16,29 +24,61 @@ class Expression(ABC):
 
 
 class Lit(Expression):
+    """
+    Represents a literal source string.
+
+    Template authors can use this to insert pre-formed source code, or code that doesn't need
+    to be concretized by location.
+    """
+
     def __init__(self, expr: str):
+        """
+        Create a new `Lit` with the given source string.
+
+        Args:
+            expr: The source literal.
+        """
         self.expr = expr
 
     def concretize(self, _db, _location) -> Iterator[str]:
+        """
+        Concretize this literal into its underlying source string.
+        """
         yield self.expr
 
     def view(self, _db, _location):
         return f"Lit({self.expr})"
 
 
-# TODO For these base types when you concretize them return a list of potential values
-# by querying the DB or having some preset
 class Variable(Expression):
-    # Query DB for all variables within scope at the line number.
-    # TODO(ww): This is probably slightly unsound, in terms of concretizations
+    """
+    Represents an abstract source variable.
+    """
+
+    # NOTE(ww): This is probably slightly unsound, in terms of concretizations
     # produced: the set of variables in a function is not the set of variables
     # guaranteed to be in scope at a line number.
-    def concretize(self, db, location: Location) -> Iterator[str]:
-        # TODO(ww): Should we also concretize with available globals?
+    def concretize(self, db: models.DB, location: Location) -> Iterator[str]:
+        """
+        Concretize this `Variable` into its potential names.
+
+        Args:
+            db: The AST database to concretize against
+            location: The location to concretize at
+
+        Returns:
+            A generator of strings, each of which is a concrete variable name.
+
+        Raises:
+            PatchConcretizationError: If the scope of the variable can't be resolved.
+        """
+
+        # TODO(ww): We should also concretize with the available globals.
         function = db.function_at(location)
         if function is None:
-            # TODO(ww): Custom error.
-            raise ValueError(f"no function contains ({location.line}, {location.column})")
+            raise PatchConcretizationError(
+                f"no function contains ({location.line}, {location.column})"
+            )
 
         for var_decl in function.var_decls:
             yield var_decl.name
@@ -48,14 +88,33 @@ class Variable(Expression):
 
 
 class StaticBufferSize(Expression):
+    """
+    Represents an abstract "sizeof(...)" expression.
+    """
+
     # Query for all static array types and return list of sizeof()..
     def concretize(self, db, location: Location) -> Iterator[str]:
-        # TODO(ww): Should we also concretize with available globals?
+        """
+        Concretize this `StaticBufferSize` into its potential sizes.
+
+        Args:
+            db: The AST database to concretize against
+            location: The location to concretize at
+
+        Returns:
+            A generator of strings, each of which is a concrete `sizeof(...)` expression.
+
+        Raises:
+            PatchConcretizationError: If the scope of the location is not a function.
+        """
+
+        # TODO(ww): We should also concretize with available globals.
         function = db.function_at(location)
 
         if function is None:
-            # TODO(ww): Custom error.
-            raise ValueError(f"no function contains ({location.line}, {location.column})")
+            raise PatchConcretizationError(
+                f"no function contains ({location.line}, {location.column})"
+            )
 
         for var_decl in function.var_decls:
             if not var_decl.is_array:
@@ -208,29 +267,22 @@ class NodeStmt(Statement):
         return source_info
 
     def fetch_node(self, db, location) -> str:
-        statement = (
-            db.query(models.Statement)
-            .filter(
-                (models.Statement.module_name == str(location.filename))
-                & (models.Statement.start_line == location.line)
-                & (models.Statement.start_column == location.column)
-            )
-            .one_or_none()
-        )
+        """
+        Fetches the statement at the given location.
 
-        if statement is None:
-            statement = (
-                db.query(models.Call)
-                .filter(
-                    (models.Call.module_name == str(location.filename))
-                    & (models.Call.start_line == location.line)
-                    & (models.Call.start_column == location.column)
-                )
-                .one_or_none()
-            )
+        Args:
+            db: The AST database to query against.
+            location: The location of the statement.
 
+        Returns:
+            The statement, including trailing semicolon.
+
+        Raises:
+            PatchConcretizationError: If there is no statement at the supplied location.
+        """
+        statement = db.statement_at(location)
         if statement is None:
-            raise ValueError(f"no statement or call at ({location.line}, {location.column})")
+            raise PatchConcretizationError(f"no statement at ({location.line}, {location.column})")
 
         if statement.expr.endswith(";"):
             return statement.expr

@@ -6,6 +6,7 @@ from pathlib import Path
 from typing import Any, Dict, Iterator, Optional
 
 from . import extractor, models
+from .error import PatchSituationError, TemplateNameError
 from .location import Location, SourceCoordinate
 from .patch_lang import PatchTemplate
 
@@ -128,7 +129,7 @@ class Tourniquet:
         Register a patching template with the given name.
         """
         if name in self.patch_templates:
-            raise ValueError(f"a template has already been registered as {name}")
+            raise TemplateNameError(f"a template has already been registered as {name}")
         self.patch_templates[name] = template
 
     # TODO Should take  target
@@ -149,29 +150,56 @@ class Tourniquet:
         return view_str
 
     # TODO Should take a target
-    def concretize_template(self, template_name, location: Location) -> Iterator[str]:
+    def concretize_template(self, template_name: str, location: Location) -> Iterator[str]:
         """
         Concretize the given registered template to the given
         module and source location, yielding each candidate patch.
+
+        Args:
+            template_name: The name of the template to concretize. This name
+                must have been previously registered with `register_template`.
+            location: The `Location` to concretize the template at.
+
+        Returns:
+            A generator of strings, each one representing a concrete patch suitable
+            for placement at the supplied location.
+
+        Raises:
+            TemplateNameError: If the supplied template name isn't registered.
         """
         template = self.patch_templates.get(template_name)
         if template is None:
-            # TODO(ww): Custom error.
-            raise ValueError(f"no template registed with name {template_name}")
+            raise TemplateNameError(f"no template registed with name {template_name}")
 
         yield from template.concretize(self.db, location)
 
     # TODO Should take a target
+    # TODO(ww): This should take a span instead of a location, so that it doesn't have
+    # to depend on the patch location being a statement.
     @contextmanager
     def patch(self, replacement: str, location: Location) -> Iterator[bool]:
+        """
+        Applies the given replacement to the given location.
+
+        Rolls back the replacement after context closure.
+
+        Args:
+            replacement: The patch to insert.
+            location: The `Location` to insert at, including the source file.
+
+        Returns:
+            A generator whose single yield is the status of the replacement operation.
+
+        Raises:
+            PatchSituationError: If the supplied location can't be used for a patch.
+        """
         try:
             temp_file = tempfile.NamedTemporaryFile()
             shutil.copyfile(location.filename, temp_file.name)
 
             statement = self.db.statement_at(location)
             if statement is None:
-                # TODO(ww): Come up with an appropriate exception here.
-                raise ValueError(f"no statement at ({location.line}, {location.column})")
+                raise PatchSituationError(f"no statement at ({location.line}, {location.column})")
 
             yield self.transform(
                 location.filename,
