@@ -470,6 +470,16 @@ class FixPattern:
         self.statement_list = StatementList(*args)
 
     def concretize(self, db: models.DB, location: Location) -> Iterator[str]:
+        """
+        Concretize this `FixPattern` into a sequence of candidate patches.
+
+        Args:
+            db: The AST database to concretize against
+            location: The location to concretize at
+
+        Returns:
+            A generator of strings, each of which is a candidate patch
+        """
         yield from self.statement_list.concretize(db, location)
 
     def view(self, db: models.DB, location: Location) -> str:
@@ -477,19 +487,52 @@ class FixPattern:
 
 
 class PatchTemplate:
-    # TODO Think of better API
+    """
+    Represents a templatized patch, including a matcher callable.
+    """
+
     def __init__(
         self, fix_pattern: FixPattern, matcher_func: Optional[Callable[[int, int], bool]] = None
     ):
+        """
+        Create a new `PatchTemplate`.
+
+        Args:
+            fix_pattern: The fix pattern to concretize into patches
+            matcher_func: The callable to filter patch locations with, if any
+        """
         self.matcher_func = matcher_func
         self.fix_pattern = fix_pattern
 
     def matches(self, line: int, col: int) -> bool:
+        """
+        Returns whether the given line and column is suitable for patch situation.
+
+        Calls `self.matcher_func` internally, if supplied.
+
+        Args:
+            line: The line to patch on
+            column: The column to patch on
+
+        Returns:
+            `True` if `matcher_func` was not supplied or returns `True`, `False` otherwise
+        """
         if self.matcher_func is None:
             return True
         return self.matcher_func(line, col)
 
     def concretize(self, db: models.DB, location: Location) -> Iterator[str]:
+        """
+        Concretize the inner `FixPattern` into a sequence of patch candidates.
+
+        Args:
+            db: The AST database to concretize against
+            location: The location to concretize at
+
+        Returns:
+            A generator of strings, each of which is a candidate patch
+        """
+
         yield from self.fix_pattern.concretize(db, location)
 
     def view(self, db: models.DB, location: Location) -> str:
