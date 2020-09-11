@@ -125,15 +125,30 @@ bool ASTExporterVisitor::VisitVarDecl(VarDecl *vdecl) {
 
 // Current func, Callee, args, arg types, string
 bool ASTExporterVisitor::VisitCallExpr(CallExpr *call_expr) {
-  auto func_name = current_func->getNameAsString();
+  FunctionDecl *func = call_expr->getDirectCallee();
+  if (func == nullptr) {
+    return true;
+  }
 
+  auto decl_name = func->getNameInfo().getName();
+  if (decl_name.isEmpty()) {
+    return true;
+  }
+
+  // NOTE(ww): This can happen for compiler inserted calls, e.g. a call
+  // to __builtin_object_size. These don't appear anywhere in the source
+  // so we skip them. There might be a better way to check for these,
+  // like func->getBuiltinID() != 0.
+  std::string expr = getText(*call_expr, *Context);
+  if (expr.empty()) {
+    return true;
+  }
+
+  auto func_name = current_func->getNameAsString();
   // Every CallExpr is a Stmt, so also record it as a Stmt.
   AddFunctionEntry(func_name.c_str(), BuildStmtEntry(call_expr));
 
-  std::string expr = getText(*call_expr, *Context);
-
-  FunctionDecl *func = call_expr->getDirectCallee();
-  std::string callee = func->getNameInfo().getName().getAsString();
+  std::string callee = decl_name.getAsString();
   unsigned int start_line = Context->getSourceManager().getExpansionLineNumber(
       call_expr->getBeginLoc());
   unsigned int start_col = Context->getSourceManager().getExpansionColumnNumber(

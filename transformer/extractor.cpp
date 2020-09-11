@@ -20,6 +20,18 @@ static bool read_file_to_string(const std::string &filename,
   return true;
 }
 
+static void run_clang_tool(FrontendAction *tool, std::string &data,
+                           int is_cxx) {
+  std::vector<std::string> args{"-x"};
+  if (is_cxx) {
+    args.push_back("c++");
+  } else {
+    args.push_back("c");
+  }
+
+  runToolOnCodeWithArgs(tool, data, args);
+}
+
 static PyObject *extract_ast(PyObject *self, PyObject *args) {
   PyObject *filename_bytes;
   int is_cxx;
@@ -45,9 +57,9 @@ static PyObject *extract_ast(PyObject *self, PyObject *args) {
   }
   PyDict_SetItem(extract_results, PyUnicode_FromString("module_name"),
                  PyUnicode_FromString(filename.c_str()));
-  // Run tool on code, I believe that runToolOnCode owns/calls delete on the
-  // FrontendAction Get double free when deleting manually
-  runToolOnCode(new ASTExporterFrontendAction(extract_results), data);
+
+  run_clang_tool(new ASTExporterFrontendAction(extract_results), data, is_cxx);
+
   // Return the python dictionary back to the python code.
   return extract_results;
 }
@@ -72,9 +84,9 @@ static PyObject *transform(PyObject *self, PyObject *args) {
     return nullptr;
   }
 
-  runToolOnCode(new ASTPatchAction(start_line, start_col, end_line, end_col,
-                                   std::string(replacement), filename),
-                data);
+  run_clang_tool(new ASTPatchAction(start_line, start_col, end_line, end_col,
+                                    std::string(replacement), filename),
+                 data, is_cxx);
   Py_RETURN_TRUE;
 }
 
