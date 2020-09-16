@@ -25,6 +25,8 @@
 #include <llvm/Support/FileSystem.h>
 #include <llvm/Support/raw_ostream.h>
 
+#include <Python.h>
+
 using namespace clang;
 using namespace llvm;
 
@@ -65,9 +67,8 @@ public:
     if (ofs.is_open()) {
       ofs << output_stream.str();
     } else {
-      std::cerr << "Error! Could not open file to patch" << std::endl;
+      PyErr_SetString(PyExc_IOError, "Failed to open file for patching");
     }
-    ofs.close();
   }
 
   std::unique_ptr<ASTConsumer> CreateASTConsumer(CompilerInstance &Compiler,

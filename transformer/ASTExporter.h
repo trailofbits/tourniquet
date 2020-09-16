@@ -35,8 +35,6 @@ using namespace clang;
  * be able to access functions, parameters, local/global variables, statements,
  * and arguments passed to call exprs. There might be some more info we need
  * when dealing with templates etc.
- *
- * All information is just stored into a json object right now
  */
 class ASTExporterVisitor
     : public clang::RecursiveASTVisitor<ASTExporterVisitor> {

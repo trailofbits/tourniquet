@@ -87,6 +87,14 @@ static PyObject *transform(PyObject *self, PyObject *args) {
   run_clang_tool(new ASTPatchAction(start_line, start_col, end_line, end_col,
                                     std::string(replacement), filename),
                  data, is_cxx);
+
+  // The patching action might have failed (and set an appropriate Python
+  // exception) on an I/O error. If so, return nullptr and allow the exception
+  // to propagate.
+  if (PyErr_Occurred()) {
+    return nullptr;
+  }
+
   Py_RETURN_TRUE;
 }
 
