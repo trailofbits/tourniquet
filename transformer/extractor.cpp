@@ -20,8 +20,8 @@ static bool read_file_to_string(const std::string &filename,
   return true;
 }
 
-static void run_clang_tool(FrontendAction *tool, std::string &data,
-                           int is_cxx) {
+static void run_clang_tool(std::unique_ptr<FrontendAction> tool,
+                           std::string &data, int is_cxx) {
   std::vector<std::string> args{"-x"};
   if (is_cxx) {
     args.push_back("c++");
@@ -58,7 +58,8 @@ static PyObject *extract_ast(PyObject *self, PyObject *args) {
   PyDict_SetItem(extract_results, PyUnicode_FromString("module_name"),
                  PyUnicode_FromString(filename.c_str()));
 
-  run_clang_tool(new ASTExporterFrontendAction(extract_results), data, is_cxx);
+  run_clang_tool(std::make_unique<ASTExporterFrontendAction>(extract_results),
+                 data, is_cxx);
 
   // Return the python dictionary back to the python code.
   return extract_results;
@@ -84,9 +85,10 @@ static PyObject *transform(PyObject *self, PyObject *args) {
     return nullptr;
   }
 
-  run_clang_tool(new ASTPatchAction(start_line, start_col, end_line, end_col,
-                                    std::string(replacement), filename),
-                 data, is_cxx);
+  run_clang_tool(
+      std::make_unique<ASTPatchAction>(start_line, start_col, end_line, end_col,
+                                       std::string(replacement), filename),
+      data, is_cxx);
 
   // The patching action might have failed (and set an appropriate Python
   // exception) on an I/O error. If so, return nullptr and allow the exception
