@@ -95,6 +95,10 @@ public:
   explicit ASTExporterFrontendAction(PyObject *extract_results)
       : extract_results_{extract_results} {}
 
+  ASTExporterFrontendAction(const ASTExporterFrontendAction &) = delete;
+  ASTExporterFrontendAction &
+  operator=(const ASTExporterFrontendAction &) = delete;
+
 private:
   PyObject *extract_results_;
 };

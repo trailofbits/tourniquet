@@ -29,7 +29,11 @@ static void run_clang_tool(std::unique_ptr<FrontendAction> tool,
     args.push_back("c");
   }
 
+#if LLVM_VERSION_MAJOR <= 9
+  runToolOnCodeWithArgs(tool.get(), data, args);
+#else
   runToolOnCodeWithArgs(tool, data, args);
+#endif
 }
 
 static PyObject *extract_ast(PyObject *self, PyObject *args) {

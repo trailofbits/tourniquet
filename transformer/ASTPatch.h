@@ -56,10 +56,14 @@ public:
 
 class ASTPatchAction : public ASTFrontendAction {
 public:
-  ASTPatchAction(int start_line, int start_col, int end_line, int end_col,
-                 std::string replacement, std::string filepath)
+  explicit ASTPatchAction(int start_line, int start_col, int end_line,
+                          int end_col, std::string replacement,
+                          std::string filepath)
       : start_line(start_line), start_col(start_col), end_line(end_line),
         end_col(end_col), replacement(replacement), filepath(filepath) {}
+
+  ASTPatchAction(const ASTPatchAction &) = delete;
+  ASTPatchAction &operator=(const ASTPatchAction &) = delete;
 
   // TODO There is probably a better place to do this, HandleTranslationUnit
   // maybe?
