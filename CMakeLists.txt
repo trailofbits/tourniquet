@@ -24,8 +24,8 @@ find_package(LLVM REQUIRED CONFIG)
 message(STATUS "Found LLVM ${LLVM_PACKAGE_VERSION}")
 message(STATUS "Using LLVMConfig.cmake in: ${LLVM_DIR}")
 
-if(("${LLVM_PACKAGE_VERSION}" VERSION_LESS 9.0.0) OR ("${LLVM_PACKAGE_VERSION}"
-                                                      VERSION_GREATER_EQUAL 11.0.0))
+if(("${LLVM_PACKAGE_VERSION}" VERSION_LESS 9.0.0)
+   OR ("${LLVM_PACKAGE_VERSION}" VERSION_GREATER_EQUAL 11.0.0))
   message(FATAL_ERROR "Unsupported LLVM version: ${LLVM_PACKAGE_VERSION}")
 endif()
 
@@ -59,8 +59,13 @@ set(LIBRARY_LIST
     clangToolingCore
     clangToolingInclusions
     clangTooling
-    clangToolingRefactoring
     clangFormat)
+
+if("${LLVM_PACKAGE_VERSION}" VERSION_LESS 10.0.0)
+  list(APPEND LIBRARY_LIST clangToolingRefactoring)
+elseif("${LLVM_PACKAGE_VERSION}" VERSION_GREATER_EQUAL 10.0.0)
+  list(APPEND LIBRARY_LIST clangTransformer)
+endif()
 
 if(NOT MACOSX)
   # NOTE(ww): For reasons that are unclear to me, macOS does *not* want Python
@@ -78,9 +83,9 @@ set_target_properties(${PROJECT_NAME}
                       PROPERTIES PREFIX "" OUTPUT_NAME ${PYTHON_MODULE_NAME})
 
 if(MACOSX)
+  target_link_libraries(${PROJECT_NAME} ${LIBRARY_LIST})
   # NOTE(ww): See the conditional inclusion above.
   target_link_options(${PROJECT_NAME} PUBLIC -undefined dynamic_lookup)
-  target_link_libraries(${PROJECT_NAME} ${LIBRARY_LIST})
   # NOTE(ww): Python extensions on macOS don't use .dylib.
   set_target_properties(${PROJECT_NAME} PROPERTIES SUFFIX ".so")
 else()

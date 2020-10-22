@@ -68,7 +68,7 @@ class CMakeBuild(build_ext):
         args = []
         if platform.system() == "Darwin":
             deps = {
-                "LLVM 9": "/usr/local/opt/llvm@9",
+                "LLVM": "/usr/local/opt/llvm",
             }
 
             for name, dir_ in deps.items():

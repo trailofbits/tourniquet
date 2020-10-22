@@ -32,7 +32,7 @@ static void run_clang_tool(std::unique_ptr<FrontendAction> tool,
 #if LLVM_VERSION_MAJOR <= 9
   runToolOnCodeWithArgs(tool.get(), data, args);
 #else
-  runToolOnCodeWithArgs(tool, data, args);
+  runToolOnCodeWithArgs(std::move(tool), data, args);
 #endif
 }
 
