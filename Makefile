@@ -18,6 +18,10 @@ dev: env
 	. env/bin/activate && \
 		pip install -r dev-requirements.txt
 
+.PHONY: deps
+deps: env
+	. env/bin/activate && \
+		pip install -r requirements.txt
 
 .PHONY: build
 build: env

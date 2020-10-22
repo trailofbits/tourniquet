@@ -8,6 +8,7 @@ jobs:
     strategy:
       matrix:
         python-version: [3.7, 3.8]
+        llvm-version: [9]
     steps:
       - uses: actions/checkout@v2
 
@@ -19,13 +20,9 @@ jobs:
         run: |
           sudo apt-get update -y
           sudo apt install -y \
-            clang-9 \
-            git \
-            build-essential \
-            python3.7-dev \
-            python3-pip \
-            llvm-9-dev \
-            libclang-9-dev
+            clang-${{ matrix.llvm-version }} \
+            llvm-${{ matrix.llvm-version }}-dev \
+            libclang-${{ matrix.llvm-version }}-dev
 
       - name: python deps
         run: make dev
@@ -44,6 +41,7 @@ jobs:
     strategy:
       matrix:
         python-version: [3.7, 3.8]
+        llvm-version: [9]
     steps:
       - uses: actions/checkout@v2
 
@@ -52,7 +50,7 @@ jobs:
           python-version: ${{ matrix.python-version }}
 
       - name: system deps
-        run: brew install llvm@9
+        run: brew install llvm@${{ matrix.llvm-version }}
 
       - name: python deps
         run: make dev

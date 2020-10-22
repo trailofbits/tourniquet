@@ -18,7 +18,7 @@ jobs:
           python-version: "3.8"
 
       - name: deps
-        run: make dev
+        run: make deps
 
       - name: docs
         run: make doc
