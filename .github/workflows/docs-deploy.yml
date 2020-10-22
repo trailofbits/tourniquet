@@ -17,8 +17,13 @@ jobs:
         with:
           python-version: "3.8"
 
-      - name: deps
-        run: make dev
+      - name: system deps
+        run: |
+          sudo apt-get update -y
+          sudo apt install -y \
+            clang-9 \
+            llvm-9-dev \
+            libclang-9-dev
 
       - name: docs
         run: make doc

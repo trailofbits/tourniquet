@@ -18,7 +18,6 @@ dev: env
 	. env/bin/activate && \
 		pip install -r dev-requirements.txt
 
-
 .PHONY: build
 build: env
 	. env/bin/activate && \
@@ -56,7 +55,7 @@ test-cov: dev
 		pytest --cov=tourniquet/ tests/
 
 .PHONY: doc
-doc: dev
+doc: dev build
 	. env/bin/activate && \
 		PYTHONWARNINGS='error::UserWarning' pdoc --force --html tourniquet
 
