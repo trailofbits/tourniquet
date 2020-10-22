@@ -1,5 +1,7 @@
 # Tourniquet
 
+![CI](https://github.com/trailofbits/tourniquet/workflows/CI/badge.svg)
+
 A Python library for easy C/C++ syntax guided program transformation/repair.
 This is still very early in development.
 
@@ -130,6 +132,8 @@ demo.auto_patch(
 
 Auto patch will return `True` or `False` depending on if you successfully found a patch to fix all testcases. Eventually
 we will support having a test case directory etc, this is still early in development.
+
+Check out tourniquet's [API documentation](https://trailofbits.github.io/tourniquet) for more details.
 
 ## Development
 
