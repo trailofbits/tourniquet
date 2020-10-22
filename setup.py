@@ -10,6 +10,13 @@ from setuptools.command.build_ext import build_ext
 
 module_name = "extractor"
 
+version = {}
+with open("./tourniquet/version.py") as f:
+    exec(f.read(), version)
+
+with open("README.md") as f:
+    long_description = f.read()
+
 with open("dev-requirements.txt") as f:
     dev_requirements = f.readlines()
 
@@ -98,8 +105,12 @@ setup(
     author="Carson Harmon",
     author_email="carson.harmon@trailofbits.com",
     packages=find_packages(),
-    version="1.0",
+    version=version["__version__"],
     description="Syntax Guided Repair/Transformation Package",
+    long_description=long_description,
+    long_description_content_type="text/markdown",
+    url="https://github.com/trailofbits/tourniquet",
+    project_urls={"Documentation": "https://trailofbits.github.io/tourniquet/"},
     ext_package="tourniquet",
     ext_modules=[CMakeExtension(module_name)],
     cmdclass={"build_ext": CMakeBuild},
