@@ -25,7 +25,7 @@ message(STATUS "Found LLVM ${LLVM_PACKAGE_VERSION}")
 message(STATUS "Using LLVMConfig.cmake in: ${LLVM_DIR}")
 
 if(("${LLVM_PACKAGE_VERSION}" VERSION_LESS 9.0.0) OR ("${LLVM_PACKAGE_VERSION}"
-                                                      VERSION_GREATER 10.0.0))
+                                                      VERSION_GREATER 10.0))
   message(FATAL_ERROR "Unsupported LLVM version: ${LLVM_PACKAGE_VERSION}")
 endif()
 
