@@ -24,9 +24,6 @@ jobs:
             llvm-${{ matrix.llvm-version }}-dev \
             libclang-${{ matrix.llvm-version }}-dev
 
-      - name: python deps
-        run: make dev
-
       - name: lint
         run: make lint
 

@@ -10,9 +10,6 @@ from setuptools.command.build_ext import build_ext
 
 module_name = "extractor"
 
-with open("requirements.txt") as f:
-    requirements = f.readlines()
-
 with open("dev-requirements.txt") as f:
     dev_requirements = f.readlines()
 
@@ -107,6 +104,6 @@ setup(
     ext_modules=[CMakeExtension(module_name)],
     cmdclass={"build_ext": CMakeBuild},
     zip_safe=False,
-    install_requires=requirements,
+    install_requires=["sqlalchemy ~= 1.3"],
     extras_require={"dev": dev_requirements},
 )
