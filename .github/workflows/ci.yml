@@ -8,7 +8,7 @@ jobs:
     strategy:
       matrix:
         python-version: [3.7, 3.8]
-        llvm-version: [9]
+        llvm-version: [9, 10]
     steps:
       - uses: actions/checkout@v2
 
@@ -16,12 +16,15 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
 
-      - name: system deps
+      - name: llvm deps
         run: |
-          sudo apt-get update -y
-          sudo apt install -y \
-            clang-${{ matrix.llvm-version }} \
+          wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key | sudo apt-key add -
+          sudo add-apt-repository "deb http://apt.llvm.org/bionic/ llvm-toolchain-bionic-${{ matrix.llvm-version }} main"
+          sudo apt update
+          sudo apt install \
+            llvm-${{ matrix.llvm-version }} \
             llvm-${{ matrix.llvm-version }}-dev \
+            clang-${{ matrix.llvm-version }} \
             libclang-${{ matrix.llvm-version }}-dev
 
       - name: lint

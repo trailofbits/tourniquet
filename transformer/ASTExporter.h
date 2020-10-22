@@ -9,8 +9,14 @@
 
 #include "clang/AST/RecursiveASTVisitor.h"
 #include "clang/Frontend/CompilerInstance.h"
+
 #include "clang/Lex/Lexer.h"
+#if LLVM_VERSION_MAJOR <= 9
 #include "clang/Tooling/Refactoring/SourceCode.h"
+#else
+#include "clang/Tooling/Transformer/SourceCode.h"
+#endif
+
 #include "llvm/Support/JSON.h"
 #include <clang/ASTMatchers/ASTMatchFinder.h>
 #include <clang/Tooling/CommonOptionsParser.h>
@@ -88,6 +94,10 @@ public:
 
   explicit ASTExporterFrontendAction(PyObject *extract_results)
       : extract_results_{extract_results} {}
+
+  ASTExporterFrontendAction(const ASTExporterFrontendAction &) = delete;
+  ASTExporterFrontendAction &
+  operator=(const ASTExporterFrontendAction &) = delete;
 
 private:
   PyObject *extract_results_;

@@ -5,6 +5,7 @@
 #include <iostream>
 #include <memory>
 #include <sstream>
+#include <utility>
 
 static bool read_file_to_string(const std::string &filename,
                                 std::string &data) {
@@ -20,8 +21,9 @@ static bool read_file_to_string(const std::string &filename,
   return true;
 }
 
-static void run_clang_tool(FrontendAction *tool, std::string &data,
-                           int is_cxx) {
+template <class Tool, class... ToolArgs>
+static void run_clang_tool(std::string &data, int is_cxx,
+                           ToolArgs &&... tool_args) {
   std::vector<std::string> args{"-x"};
   if (is_cxx) {
     args.push_back("c++");
@@ -29,7 +31,12 @@ static void run_clang_tool(FrontendAction *tool, std::string &data,
     args.push_back("c");
   }
 
-  runToolOnCodeWithArgs(tool, data, args);
+#if LLVM_VERSION_MAJOR <= 9
+  runToolOnCodeWithArgs(new Tool(std::forward<ToolArgs>(tool_args)...), data,
+                        args);
+#else
+  runToolOnCodeWithArgs(std::make_unique<Tool>(tool_args...), data, args);
+#endif
 }
 
 static PyObject *extract_ast(PyObject *self, PyObject *args) {
@@ -58,7 +65,7 @@ static PyObject *extract_ast(PyObject *self, PyObject *args) {
   PyDict_SetItem(extract_results, PyUnicode_FromString("module_name"),
                  PyUnicode_FromString(filename.c_str()));
 
-  run_clang_tool(new ASTExporterFrontendAction(extract_results), data, is_cxx);
+  run_clang_tool<ASTExporterFrontendAction>(data, is_cxx, extract_results);
 
   // Return the python dictionary back to the python code.
   return extract_results;
@@ -84,9 +91,8 @@ static PyObject *transform(PyObject *self, PyObject *args) {
     return nullptr;
   }
 
-  run_clang_tool(new ASTPatchAction(start_line, start_col, end_line, end_col,
-                                    std::string(replacement), filename),
-                 data, is_cxx);
+  run_clang_tool<ASTPatchAction>(data, is_cxx, start_line, start_col, end_line,
+                                 end_col, std::string(replacement), filename);
 
   // The patching action might have failed (and set an appropriate Python
   // exception) on an I/O error. If so, return nullptr and allow the exception

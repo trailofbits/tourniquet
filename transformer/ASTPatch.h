@@ -11,7 +11,14 @@
 #include "clang/Frontend/CompilerInstance.h"
 #include "clang/Lex/Lexer.h"
 #include "clang/Rewrite/Core/Rewriter.h"
+
+#include "clang/Lex/Lexer.h"
+#if LLVM_VERSION_MAJOR <= 9
 #include "clang/Tooling/Refactoring/SourceCode.h"
+#else
+#include "clang/Tooling/Transformer/SourceCode.h"
+#endif
+
 #include "llvm/Support/JSON.h"
 #include <clang/ASTMatchers/ASTMatchFinder.h>
 #include <clang/Tooling/CommonOptionsParser.h>
@@ -49,10 +56,14 @@ public:
 
 class ASTPatchAction : public ASTFrontendAction {
 public:
-  ASTPatchAction(int start_line, int start_col, int end_line, int end_col,
-                 std::string replacement, std::string filepath)
+  explicit ASTPatchAction(int start_line, int start_col, int end_line,
+                          int end_col, std::string replacement,
+                          std::string filepath)
       : start_line(start_line), start_col(start_col), end_line(end_line),
         end_col(end_col), replacement(replacement), filepath(filepath) {}
+
+  ASTPatchAction(const ASTPatchAction &) = delete;
+  ASTPatchAction &operator=(const ASTPatchAction &) = delete;
 
   // TODO There is probably a better place to do this, HandleTranslationUnit
   // maybe?
