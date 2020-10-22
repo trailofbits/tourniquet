@@ -11,7 +11,14 @@
 #include "clang/Frontend/CompilerInstance.h"
 #include "clang/Lex/Lexer.h"
 #include "clang/Rewrite/Core/Rewriter.h"
+
+#include "clang/Lex/Lexer.h"
+#if LLVM_VERSION_MAJOR <= 9
 #include "clang/Tooling/Refactoring/SourceCode.h"
+#else
+#include "clang/Tooling/Transformer/SourceCode.h"
+#endif
+
 #include "llvm/Support/JSON.h"
 #include <clang/ASTMatchers/ASTMatchFinder.h>
 #include <clang/Tooling/CommonOptionsParser.h>
