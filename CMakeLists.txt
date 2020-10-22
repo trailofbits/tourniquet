@@ -1,6 +1,9 @@
 cmake_minimum_required(VERSION 3.10.2)
 project(transformer)
 
+set(CMAKE_FIND_PACKAGE_SORT_ORDER NATURAL)
+set(CMAKE_FIND_PACKAGE_SORT_DIRECTION DEC)
+
 set(SOURCE_DIR "transformer")
 include_directories(${SOURCE_DIR})
 
@@ -17,9 +20,15 @@ find_package(
 include_directories(${Python3_INCLUDE_DIRS})
 link_directories(${Python3_LIBRARY_DIRS})
 
-find_package(LLVM 9.0 REQUIRED CONFIG)
+find_package(LLVM REQUIRED CONFIG)
 message(STATUS "Found LLVM ${LLVM_PACKAGE_VERSION}")
 message(STATUS "Using LLVMConfig.cmake in: ${LLVM_DIR}")
+
+if(("${LLVM_PACKAGE_VERSION}" VERSION_LESS 9.0.0) OR ("${LLVM_PACKAGE_VERSION}"
+                                                      VERSION_GREATER 10.0.0))
+  message(FATAL_ERROR "Unsupported LLVM version: ${LLVM_PACKAGE_VERSION}")
+endif()
+
 include_directories(${LLVM_INCLUDE_DIRS})
 include_directories(${LLVM_BUILD_MAIN_SRC_DIR}/tools/clang/include)
 include_directories(${LLVM_BUILD_BINARY_DIR}/tools/clang/include)
@@ -54,10 +63,10 @@ set(LIBRARY_LIST
     clangFormat)
 
 if(NOT MACOSX)
-  # NOTE(ww): For reasons that are unclear to me, macOS does *not* want
-  # Python extensions to link to the Python development libraries directly.
-  # Instead, it expects to resolve them dynamically via dynamic_lookup.
-  # See target_link_options below.
+  # NOTE(ww): For reasons that are unclear to me, macOS does *not* want Python
+  # extensions to link to the Python development libraries directly. Instead, it
+  # expects to resolve them dynamically via dynamic_lookup. See
+  # target_link_options below.
   set(LIBRARY_LIST ${LIBRARY_LIST} ${Python3_LIBRARIES})
 endif()
 
