@@ -13,7 +13,7 @@ from tourniquet.patch_lang import (
     Lit,
     NodeStmt,
     PatchTemplate,
-    ReturnStmt
+    ReturnStmt,
 )
 
 
