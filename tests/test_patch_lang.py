@@ -12,7 +12,7 @@ from tourniquet.patch_lang import (
     NodeStmt,
     ReturnStmt,
     StaticBufferSize,
-    Variable
+    Variable,
 )
 
 
