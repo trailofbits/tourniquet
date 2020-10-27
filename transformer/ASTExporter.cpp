@@ -16,7 +16,7 @@ void ASTExporterVisitor::PyDictUpdateEntry(PyObject *dict, const char *key,
 }
 
 PyObject *ASTExporterVisitor::BuildStmtEntry(Stmt *stmt) {
-  std::string expr = getText(*stmt, *Context);
+  const auto expr = getText(*stmt, *Context).str();
 
   unsigned int start_line =
       Context->getSourceManager().getExpansionLineNumber(stmt->getBeginLoc());
@@ -139,7 +139,7 @@ bool ASTExporterVisitor::VisitCallExpr(CallExpr *call_expr) {
   // to __builtin_object_size. These don't appear anywhere in the source
   // so we skip them. There might be a better way to check for these,
   // like func->getBuiltinID() != 0.
-  std::string expr = getText(*call_expr, *Context);
+  const auto expr = getText(*call_expr, *Context).str();
   if (expr.empty()) {
     return true;
   }
