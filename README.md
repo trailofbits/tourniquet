@@ -5,9 +5,21 @@
 A Python library for easy C/C++ syntax guided program transformation/repair.
 This is still very early in development.
 
-## Quickstart
+## Installation
 
-Build the library with docker
+### PyPI
+
+Tourniquet is available via PyPI:
+
+```bash
+$ pip install tourniquet
+```
+
+You'll need a relatively recent CMake and LLVM (9, 10, and 11 are supported).
+
+### Docker
+
+Tourniquet can also be built and run within a Docker container:
 
 ```bash
 $ docker build -t trailofbits/tourniquet .
