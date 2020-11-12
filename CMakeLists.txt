@@ -21,14 +21,22 @@ include_directories(${Python3_INCLUDE_DIRS})
 link_directories(${Python3_LIBRARY_DIRS})
 add_link_options(${Python3_LINK_OPTIONS})
 
-find_package(LLVM REQUIRED CONFIG)
+find_package(LLVM 11 CONFIG)
+
+if(NOT LLVM_FOUND)
+  find_package(LLVM 10 CONFIG)
+endif()
+
+if(NOT LLVM_FOUND)
+  find_package(LLVM 9 CONFIG)
+endif()
+
+if(NOT LLVM_FOUND)
+  message(FATAL_ERROR "Missing or unsupported LLVM version.")
+endif()
+
 message(STATUS "Found LLVM ${LLVM_PACKAGE_VERSION}")
 message(STATUS "Using LLVMConfig.cmake in: ${LLVM_DIR}")
-
-if(("${LLVM_PACKAGE_VERSION}" VERSION_LESS 9.0.0)
-   OR ("${LLVM_PACKAGE_VERSION}" VERSION_GREATER_EQUAL 12))
-  message(FATAL_ERROR "Unsupported LLVM version: ${LLVM_PACKAGE_VERSION}")
-endif()
 
 include_directories(${LLVM_INCLUDE_DIRS})
 link_directories(${LLVM_LIBRARY_DIRS})
