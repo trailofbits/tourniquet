@@ -19,6 +19,7 @@ find_package(
   REQUIRED)
 include_directories(${Python3_INCLUDE_DIRS})
 link_directories(${Python3_LIBRARY_DIRS})
+add_link_options(${Python3_LINK_OPTIONS})
 
 find_package(LLVM REQUIRED CONFIG)
 message(STATUS "Found LLVM ${LLVM_PACKAGE_VERSION}")
@@ -30,10 +31,12 @@ if(("${LLVM_PACKAGE_VERSION}" VERSION_LESS 9.0.0)
 endif()
 
 include_directories(${LLVM_INCLUDE_DIRS})
-include_directories(${LLVM_BUILD_MAIN_SRC_DIR}/tools/clang/include)
-include_directories(${LLVM_BUILD_BINARY_DIR}/tools/clang/include)
 link_directories(${LLVM_LIBRARY_DIRS})
 add_definitions(${LLVM_DEFINITIONS})
+
+find_package(Clang REQUIRED CONFIG)
+include_directories(${CLANG_INCLUDE_DIRS})
+add_definitions(${CLANG_DEFINITIONS})
 
 set(LIBRARY_LIST
     clangAST
