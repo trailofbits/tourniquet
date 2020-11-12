@@ -19,6 +19,7 @@ find_package(
   REQUIRED)
 include_directories(${Python3_INCLUDE_DIRS})
 link_directories(${Python3_LIBRARY_DIRS})
+add_link_options(${Python3_LINK_OPTIONS})
 
 find_package(LLVM REQUIRED CONFIG)
 message(STATUS "Found LLVM ${LLVM_PACKAGE_VERSION}")
