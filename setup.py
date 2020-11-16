@@ -118,7 +118,6 @@ setup(
     ext_package="tourniquet",
     ext_modules=[CMakeExtension(module_name)],
     cmdclass={"build_ext": CMakeBuild},
-    zip_safe=False,
     install_requires=["sqlalchemy ~= 1.3"],
     extras_require={"dev": dev_requirements},
     classifiers=[
