@@ -25,7 +25,7 @@ RUN wget -O - https://apt.kitware.com/keys/kitware-archive-latest.asc 2>/dev/nul
 	apt-get update && \
 	apt-get install -y cmake
 
-RUN python3 -m pip install --upgrade pip
+RUN python3.7 -m pip install --upgrade pip
 
 WORKDIR /
 COPY . /tourniquet
