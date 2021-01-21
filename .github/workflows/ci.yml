@@ -3,6 +3,14 @@ name: CI
 on: push
 
 jobs:
+  docker:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: docker build
+        run: docker build -t tourniquet .
+
   tests-linux:
     runs-on: ubuntu-latest
     strategy:
