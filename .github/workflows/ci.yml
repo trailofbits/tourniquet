@@ -27,7 +27,7 @@ jobs:
       - name: llvm deps
         run: |
           wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key | sudo apt-key add -
-          sudo add-apt-repository "deb http://apt.llvm.org/bionic/ llvm-toolchain-bionic-${{ matrix.llvm-version }} main"
+          sudo add-apt-repository "deb http://apt.llvm.org/focal/ llvm-toolchain-focal-${{ matrix.llvm-version }} main"
           sudo apt update
           sudo apt install \
             llvm-${{ matrix.llvm-version }} \
@@ -42,7 +42,10 @@ jobs:
         run: make typecheck
 
       - name: test
-        run: make test
+        run: |
+          export LLVM_DIR=/usr/lib/llvm-${{ matrix.llvm-version }}/lib/cmake/llvm
+          export Clang_DIR=/usr/lib/llvm-${{ matrix.llvm-version }}/lib/cmake/clang
+          make test
 
   tests-macos:
     runs-on: macos-latest

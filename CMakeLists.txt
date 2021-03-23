@@ -35,6 +35,8 @@ link_directories(${LLVM_LIBRARY_DIRS})
 add_definitions(${LLVM_DEFINITIONS})
 
 find_package(Clang REQUIRED CONFIG)
+message(STATUS "Using ClangConfig.cmake in: ${Clang_DIR}")
+
 include_directories(${CLANG_INCLUDE_DIRS})
 add_definitions(${CLANG_DEFINITIONS})
 
