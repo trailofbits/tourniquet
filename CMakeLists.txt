@@ -35,13 +35,7 @@ link_directories(${LLVM_LIBRARY_DIRS})
 add_definitions(${LLVM_DEFINITIONS})
 
 find_package(Clang REQUIRED CONFIG)
-message(STATUS "Found Clang ${CLANG_PACKAGE_VERSION}")
 message(STATUS "Using ClangConfig.cmake in: ${Clang_DIR}")
-
-if(NOT "${CLANG_PACKAGE_VERSION}" MATCHES "${LLVM_PACKAGE_VERSION}")
-  message(FATAL_ERROR
-    "Mismatched LLVM/Clang versions: ${LLVM_PACKAGE_VERSION} ?= ${CLANG_PACKAGE_VERSION}")
-endif()
 
 include_directories(${CLANG_INCLUDE_DIRS})
 add_definitions(${CLANG_DEFINITIONS})
