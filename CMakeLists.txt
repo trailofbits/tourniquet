@@ -1,8 +1,8 @@
 cmake_minimum_required(VERSION 3.10.2)
 project(transformer)
 
-set(CMAKE_FIND_PACKAGE_SORT_ORDER NATURAL)
-set(CMAKE_FIND_PACKAGE_SORT_DIRECTION DEC)
+# set(CMAKE_FIND_PACKAGE_SORT_ORDER NATURAL)
+# set(CMAKE_FIND_PACKAGE_SORT_DIRECTION DEC)
 
 set(SOURCE_DIR "transformer")
 include_directories(${SOURCE_DIR})
