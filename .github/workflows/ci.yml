@@ -26,6 +26,7 @@ jobs:
 
       - name: llvm deps
         run: |
+          sudo apt autoremove llvm
           wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key | sudo apt-key add -
           sudo add-apt-repository "deb http://apt.llvm.org/focal/ llvm-toolchain-focal-${{ matrix.llvm-version }} main"
           sudo apt update
