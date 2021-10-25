@@ -23,7 +23,7 @@ static bool read_file_to_string(const std::string &filename,
 
 template <class Tool, class... ToolArgs>
 static void run_clang_tool(std::string &data, int is_cxx,
-                           ToolArgs &&... tool_args) {
+                           ToolArgs &&...tool_args) {
   std::vector<std::string> args{"-x"};
   if (is_cxx) {
     args.push_back("c++");
