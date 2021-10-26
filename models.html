@@ -1,0 +1,3349 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.10.0" />
+<title>tourniquet.models API documentation</title>
+<meta name="description" content="" />
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
+<link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js" integrity="sha256-Uv3H6lx7dJmRfRvH8TH6kJD1TSK1aFcwgx+mdg3epi8=" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => hljs.initHighlighting())</script>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>tourniquet.models</code></h1>
+</header>
+<section id="section-intro">
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">from pathlib import Path
+from typing import Optional
+
+from sqlalchemy import Boolean, Column, ForeignKey, Integer, String, create_engine
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import relationship, sessionmaker
+
+from .location import Location, SourceCoordinate
+
+Base = declarative_base()
+
+
+class Module(Base):
+    &#34;&#34;&#34;
+    Represents a C or C++ file, or &#34;module&#34; in Clang&#39;s terminology.
+    &#34;&#34;&#34;
+
+    __tablename__ = &#34;modules&#34;
+
+    id = Column(Integer, primary_key=True)
+    &#34;&#34;&#34;
+    This module&#39;s database ID.
+    &#34;&#34;&#34;
+
+    name = Column(String, unique=True, nullable=False)
+    &#34;&#34;&#34;
+    The name (i.e. source file) of this module.
+    &#34;&#34;&#34;
+
+    functions = relationship(&#34;Function&#34;, uselist=True)
+    &#34;&#34;&#34;
+    The `Function`s present in this module.
+    &#34;&#34;&#34;
+
+    global_variables = relationship(&#34;Global&#34;, uselist=True)
+    &#34;&#34;&#34;
+    The `Global`s present in this module.
+    &#34;&#34;&#34;
+
+    statements = relationship(&#34;Statement&#34;, uselist=True)
+    &#34;&#34;&#34;
+    The `Statement`s present in this module.
+    &#34;&#34;&#34;
+
+    calls = relationship(&#34;Call&#34;, uselist=True)
+    &#34;&#34;&#34;
+    The `Call`s present in this module.
+    &#34;&#34;&#34;
+
+    # TODO(ww): Module -&gt; [VarDecl] relationship
+
+    def __repr__(self):
+        return f&#34;&lt;Module {self.name}&gt;&#34;
+
+
+class Function(Base):
+    &#34;&#34;&#34;
+    Represents a single C or C++ function.
+    &#34;&#34;&#34;
+
+    __tablename__ = &#34;functions&#34;
+
+    id = Column(Integer, primary_key=True)
+    &#34;&#34;&#34;
+    This function&#39;s database ID.
+    &#34;&#34;&#34;
+
+    module_name = Column(String, ForeignKey(&#34;modules.name&#34;))
+    &#34;&#34;&#34;
+    The name of the `Module` that this function belongs to.
+    &#34;&#34;&#34;
+
+    module = relationship(&#34;Module&#34;, back_populates=&#34;functions&#34;)
+    &#34;&#34;&#34;
+    The `Module` that this function belongs to.
+    &#34;&#34;&#34;
+
+    name = Column(String, nullable=False)
+    &#34;&#34;&#34;
+    The name of this function.
+    &#34;&#34;&#34;
+
+    start_line = Column(Integer, nullable=False)
+    &#34;&#34;&#34;
+    The line that this function begins on.
+    &#34;&#34;&#34;
+
+    start_column = Column(Integer, nullable=False)
+    &#34;&#34;&#34;
+    The column that this function begins on.
+    &#34;&#34;&#34;
+
+    end_line = Column(Integer, nullable=False)
+    &#34;&#34;&#34;
+    The line that this function ends on.
+    &#34;&#34;&#34;
+
+    end_column = Column(Integer, nullable=False)
+    &#34;&#34;&#34;
+    The column that this function ends on.
+    &#34;&#34;&#34;
+
+    var_decls = relationship(&#34;VarDecl&#34;, uselist=True)
+    &#34;&#34;&#34;
+    The `VarDecl`s present in this function.
+    &#34;&#34;&#34;
+
+    calls = relationship(&#34;Call&#34;, uselist=True)
+    &#34;&#34;&#34;
+    The `Call`s present in this function.
+    &#34;&#34;&#34;
+
+    statements = relationship(&#34;Statement&#34;, uselist=True)
+    &#34;&#34;&#34;
+    The `Statement`s present in this function.
+    &#34;&#34;&#34;
+
+    @property
+    def start_coordinate(self):
+        &#34;&#34;&#34;
+        Returns a `SourceCoordinate` representing where this function
+        begins in its source file.
+        &#34;&#34;&#34;
+        return SourceCoordinate(self.start_line, self.start_column)
+
+    @property
+    def end_coordinate(self):
+        &#34;&#34;&#34;
+        Returns a `SourceCoordinate` representing where this function ends
+        in its source file.
+        &#34;&#34;&#34;
+        return SourceCoordinate(self.end_line, self.end_column)
+
+    @property
+    def location(self):
+        &#34;&#34;&#34;
+        Returns a `Location` representing this function&#39;s source file and start
+        coordinate.
+        &#34;&#34;&#34;
+        return Location(Path(self.module_name), self.start_coordinate)
+
+    def __repr__(self):
+        return f&#34;&lt;Function {self.name}&gt;&#34;
+
+
+class Global(Base):
+    &#34;&#34;&#34;
+    Represents a global variable declaration.
+    &#34;&#34;&#34;
+
+    __tablename__ = &#34;globals&#34;
+
+    id = Column(Integer, primary_key=True)
+    &#34;&#34;&#34;
+    This global&#39;s database ID.
+    &#34;&#34;&#34;
+
+    module_name = Column(String, ForeignKey(&#34;modules.name&#34;))
+    &#34;&#34;&#34;
+    The name of the `Module` that this global belongs to.
+    &#34;&#34;&#34;
+
+    module = relationship(&#34;Module&#34;, back_populates=&#34;global_variables&#34;)
+    &#34;&#34;&#34;
+    The `Module` that this global belongs to.
+    &#34;&#34;&#34;
+
+    name = Column(String, nullable=False)
+    &#34;&#34;&#34;
+    The declared name of this global.
+    &#34;&#34;&#34;
+
+    type_ = Column(String, nullable=False)
+    &#34;&#34;&#34;
+    The declared type of this global.
+    &#34;&#34;&#34;
+
+    start_line = Column(Integer, nullable=False)
+    &#34;&#34;&#34;
+    The line that this global begins on.
+    &#34;&#34;&#34;
+
+    start_column = Column(Integer, nullable=False)
+    &#34;&#34;&#34;
+    The column that this global begins on.
+    &#34;&#34;&#34;
+
+    end_line = Column(Integer, nullable=False)
+    &#34;&#34;&#34;
+    The line that this global ends on.
+    &#34;&#34;&#34;
+
+    end_column = Column(Integer, nullable=False)
+    &#34;&#34;&#34;
+    The column that this global ends on.
+    &#34;&#34;&#34;
+
+    is_array = Column(Boolean, nullable=False)
+    &#34;&#34;&#34;
+    Whether or not this global&#39;s declaration is for an array type.
+    &#34;&#34;&#34;
+
+    size = Column(Integer, nullable=False)
+    &#34;&#34;&#34;
+    The size of this global, in bytes.
+    &#34;&#34;&#34;
+
+    def __repr__(self):
+        return f&#34;&lt;Global {self.name}&gt;&#34;
+
+
+class VarDecl(Base):
+    &#34;&#34;&#34;
+    Represents a local variable or function parameter declaration.
+    &#34;&#34;&#34;
+
+    __tablename__ = &#34;var_decls&#34;
+
+    id = Column(Integer, primary_key=True)
+    &#34;&#34;&#34;
+    This declaration&#39;s database ID.
+    &#34;&#34;&#34;
+
+    function_id = Column(Integer, ForeignKey(&#34;functions.id&#34;))
+    &#34;&#34;&#34;
+    The ID of the `Function` that this declaration is present in.
+    &#34;&#34;&#34;
+
+    function = relationship(&#34;Function&#34;, back_populates=&#34;var_decls&#34;)
+    &#34;&#34;&#34;
+    The `Function` that this declaration is present in.
+    &#34;&#34;&#34;
+
+    name = Column(String, nullable=False)
+    &#34;&#34;&#34;
+    The name of this declared variable.
+    &#34;&#34;&#34;
+
+    type_ = Column(String, nullable=False)
+    &#34;&#34;&#34;
+    The type of this declared variable.
+    &#34;&#34;&#34;
+
+    start_line = Column(Integer, nullable=False)
+    &#34;&#34;&#34;
+    The line that this declaration begins on.
+    &#34;&#34;&#34;
+
+    start_column = Column(Integer, nullable=False)
+    &#34;&#34;&#34;
+    The column that this declaration begins on.
+    &#34;&#34;&#34;
+
+    end_line = Column(Integer, nullable=False)
+    &#34;&#34;&#34;
+    The line that this declaration ends on.
+    &#34;&#34;&#34;
+
+    end_column = Column(Integer, nullable=False)
+    &#34;&#34;&#34;
+    The column that this declaration ends on.
+    &#34;&#34;&#34;
+
+    is_array = Column(Boolean, nullable=False)
+    &#34;&#34;&#34;
+    Whether or not this declaration is for an array type.
+    &#34;&#34;&#34;
+
+    size = Column(Integer, nullable=False)
+    &#34;&#34;&#34;
+    The size of the declared variable, in bytes.
+    &#34;&#34;&#34;
+
+    def __repr__(self):
+        return f&#34;&lt;VarDecl {self.type_} {self.name}&gt;&#34;
+
+
+class Call(Base):
+    &#34;&#34;&#34;
+    Represents a function call.
+    &#34;&#34;&#34;
+
+    __tablename__ = &#34;calls&#34;
+
+    id = Column(Integer, primary_key=True)
+    &#34;&#34;&#34;
+    This call&#39;s database ID.
+    &#34;&#34;&#34;
+
+    module_name = Column(String, ForeignKey(&#34;modules.name&#34;))
+    &#34;&#34;&#34;
+    The name of the `Module` that this statement is in.
+    &#34;&#34;&#34;
+
+    module = relationship(&#34;Module&#34;, back_populates=&#34;calls&#34;)
+    &#34;&#34;&#34;
+    The `Module` that this statement is in.
+    &#34;&#34;&#34;
+
+    function_id = Column(Integer, ForeignKey(&#34;functions.id&#34;))
+    &#34;&#34;&#34;
+    The ID of the `Function` that this call is present in.
+    &#34;&#34;&#34;
+
+    function = relationship(&#34;Function&#34;, back_populates=&#34;calls&#34;)
+    &#34;&#34;&#34;
+    The `Function` that this call is present in.
+    &#34;&#34;&#34;
+
+    expr = Column(String, nullable=False)
+    &#34;&#34;&#34;
+    The call expression itself.
+    &#34;&#34;&#34;
+
+    name = Column(String, nullable=False)
+    &#34;&#34;&#34;
+    The name of the callee.
+    &#34;&#34;&#34;
+
+    start_line = Column(Integer, nullable=False)
+    &#34;&#34;&#34;
+    The line that this call begins on.
+    &#34;&#34;&#34;
+
+    start_column = Column(Integer, nullable=False)
+    &#34;&#34;&#34;
+    The column that this call begins on.
+    &#34;&#34;&#34;
+
+    end_line = Column(Integer, nullable=False)
+    &#34;&#34;&#34;
+    The line that this call ends on.
+    &#34;&#34;&#34;
+
+    end_column = Column(Integer, nullable=False)
+    &#34;&#34;&#34;
+    The column that this call ends on.
+    &#34;&#34;&#34;
+
+    arguments = relationship(&#34;Argument&#34;, uselist=True)
+    &#34;&#34;&#34;
+    The `Argument`s associated with this call.
+    &#34;&#34;&#34;
+
+    @property
+    def start_coordinate(self):
+        &#34;&#34;&#34;
+        Returns a `SourceCoordinate` representing where this call
+        begins in its source file.
+        &#34;&#34;&#34;
+        return SourceCoordinate(self.start_line, self.start_column)
+
+    @property
+    def end_coordinate(self):
+        &#34;&#34;&#34;
+        Returns a `SourceCoordinate` representing where this call ends
+        in its source file.
+        &#34;&#34;&#34;
+        return SourceCoordinate(self.end_line, self.end_column)
+
+    @property
+    def location(self):
+        &#34;&#34;&#34;
+        Returns a `Location` representing this call&#39;s source file and start
+        coordinate.
+        &#34;&#34;&#34;
+        return Location(Path(self.module_name), self.start_coordinate)
+
+    def __repr__(self):
+        return f&#34;&lt;Call {self.expr}&gt;&#34;
+
+
+class Argument(Base):
+    &#34;&#34;&#34;
+    Represents an argument to a function call.
+    &#34;&#34;&#34;
+
+    __tablename__ = &#34;call_arguments&#34;
+
+    id = Column(Integer, primary_key=True)
+    &#34;&#34;&#34;
+    This argument&#39;s database ID.
+    &#34;&#34;&#34;
+
+    call_id = Column(Integer, ForeignKey(&#34;calls.id&#34;))
+    &#34;&#34;&#34;
+    The ID of the `Call` that this argument is in.
+    &#34;&#34;&#34;
+
+    call = relationship(&#34;Call&#34;, back_populates=&#34;arguments&#34;)
+    &#34;&#34;&#34;
+    The `Call` that this argument is in.
+    &#34;&#34;&#34;
+
+    name = Column(String, nullable=False)
+    &#34;&#34;&#34;
+    The name of the argument.
+    &#34;&#34;&#34;
+
+    type_ = Column(String, nullable=False)
+    &#34;&#34;&#34;
+    The type of the argument.
+    &#34;&#34;&#34;
+
+    def __repr__(self):
+        return f&#34;&lt;Argument {self.type_} {self.name}&gt;&#34;
+
+
+class Statement(Base):
+    &#34;&#34;&#34;
+    Represents a primitive (i.e., non-compound) C or C++ statement.
+    &#34;&#34;&#34;
+
+    __tablename__ = &#34;statements&#34;
+
+    id = Column(Integer, primary_key=True)
+    &#34;&#34;&#34;
+    This statement&#39;s database ID.
+    &#34;&#34;&#34;
+
+    module_name = Column(String, ForeignKey(&#34;modules.name&#34;))
+    &#34;&#34;&#34;
+    The name of the `Module` that this statement is in.
+    &#34;&#34;&#34;
+
+    module = relationship(&#34;Module&#34;, back_populates=&#34;statements&#34;)
+    &#34;&#34;&#34;
+    The `Module` that this statement is in.
+    &#34;&#34;&#34;
+
+    function_id = Column(Integer, ForeignKey(&#34;functions.id&#34;))
+    &#34;&#34;&#34;
+    The ID of the `Function` that this statement is in.
+    &#34;&#34;&#34;
+
+    function = relationship(&#34;Function&#34;, back_populates=&#34;statements&#34;)
+    &#34;&#34;&#34;
+    The `Function` that this statement is in.
+    &#34;&#34;&#34;
+
+    start_line = Column(Integer, nullable=False)
+    &#34;&#34;&#34;
+    The line that this statement begins on.
+    &#34;&#34;&#34;
+
+    start_column = Column(Integer, nullable=False)
+    &#34;&#34;&#34;
+    The column that this statement begins on.
+    &#34;&#34;&#34;
+
+    end_line = Column(Integer, nullable=False)
+    &#34;&#34;&#34;
+    The line that this statement ends on.
+    &#34;&#34;&#34;
+
+    end_column = Column(Integer, nullable=False)
+    &#34;&#34;&#34;
+    The column that this statement ends on.
+    &#34;&#34;&#34;
+
+    expr = Column(String, nullable=False)
+    &#34;&#34;&#34;
+    The expression text of this statement.
+    &#34;&#34;&#34;
+
+    @property
+    def start_coordinate(self):
+        &#34;&#34;&#34;
+        Returns a `SourceCoordinate` representing where this statement
+        begins in its source file.
+        &#34;&#34;&#34;
+        return SourceCoordinate(self.start_line, self.start_column)
+
+    @property
+    def end_coordinate(self):
+        &#34;&#34;&#34;
+        Returns a `SourceCoordinate` representing where this statement ends
+        in its source file.
+        &#34;&#34;&#34;
+        return SourceCoordinate(self.end_line, self.end_column)
+
+    @property
+    def location(self):
+        &#34;&#34;&#34;
+        Returns a `Location` representing this statement&#39;s source file and start
+        coordinate.
+        &#34;&#34;&#34;
+        return Location(Path(self.module_name), self.start_coordinate)
+
+    def __repr__(self):
+        return f&#34;&lt;Statement {self.expr}&gt;&#34;
+
+
+class DB:
+    &#34;&#34;&#34;
+    A convenience class for querying the database.
+    &#34;&#34;&#34;
+
+    @classmethod
+    def create(cls, db_path, echo=False):
+        &#34;&#34;&#34;
+        Creates a new database at the given path.
+        &#34;&#34;&#34;
+
+        engine = create_engine(f&#34;sqlite:///{db_path}&#34;, echo=echo)
+
+        session = sessionmaker(bind=engine)()
+        Base.metadata.create_all(engine)
+
+        return cls(session, db_path)
+
+    def __init__(self, session, db_path):
+        self.session = session
+        self.db_path = db_path
+
+    def query(self, *args, **kwargs):
+        &#34;&#34;&#34;
+        Forwards a SQLAlchemy-style `query` to the database.
+        &#34;&#34;&#34;
+
+        return self.session.query(*args, **kwargs)
+
+    def function_at(self, location: Location) -&gt; Optional[Function]:
+        return (
+            self.query(Function)
+            .filter(
+                (str(location.filename) == Function.module_name)
+                &amp; (location.line &gt;= Function.start_line)
+                &amp; (location.column &gt;= Function.start_column)
+                &amp; (
+                    (
+                        (location.line == Function.end_line)
+                        &amp; (location.column &lt;= Function.end_column)
+                    )
+                    | ((location.line &lt; Function.end_line))
+                )
+            )
+            .one_or_none()
+        )
+
+    def statement_at(self, location: Location) -&gt; Optional[Statement]:
+        statement = (
+            self.query(Statement)
+            .filter(
+                (Statement.module_name == str(location.filename))
+                &amp; (Statement.start_line == location.line)
+                &amp; (Statement.start_column == location.column)
+            )
+            .one_or_none()
+        )
+
+        return statement</code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-classes">Classes</h2>
+<dl>
+<dt id="tourniquet.models.Argument"><code class="flex name class">
+<span>class <span class="ident">Argument</span></span>
+<span>(</span><span>**kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Represents an argument to a function call.</p>
+<p>A simple constructor that allows initialization from kwargs.</p>
+<p>Sets attributes on the constructed instance using the names and
+values in <code>kwargs</code>.</p>
+<p>Only keys that are present as
+attributes of the instance's class are allowed. These could be,
+for example, any mapped columns or relationships.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Argument(Base):
+    &#34;&#34;&#34;
+    Represents an argument to a function call.
+    &#34;&#34;&#34;
+
+    __tablename__ = &#34;call_arguments&#34;
+
+    id = Column(Integer, primary_key=True)
+    &#34;&#34;&#34;
+    This argument&#39;s database ID.
+    &#34;&#34;&#34;
+
+    call_id = Column(Integer, ForeignKey(&#34;calls.id&#34;))
+    &#34;&#34;&#34;
+    The ID of the `Call` that this argument is in.
+    &#34;&#34;&#34;
+
+    call = relationship(&#34;Call&#34;, back_populates=&#34;arguments&#34;)
+    &#34;&#34;&#34;
+    The `Call` that this argument is in.
+    &#34;&#34;&#34;
+
+    name = Column(String, nullable=False)
+    &#34;&#34;&#34;
+    The name of the argument.
+    &#34;&#34;&#34;
+
+    type_ = Column(String, nullable=False)
+    &#34;&#34;&#34;
+    The type of the argument.
+    &#34;&#34;&#34;
+
+    def __repr__(self):
+        return f&#34;&lt;Argument {self.type_} {self.name}&gt;&#34;</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>sqlalchemy.orm.decl_api.Base</li>
+</ul>
+<h3>Instance variables</h3>
+<dl>
+<dt id="tourniquet.models.Argument.call"><code class="name">var <span class="ident">call</span></code></dt>
+<dd>
+<div class="desc"><p>The <code><a title="tourniquet.models.Call" href="#tourniquet.models.Call">Call</a></code> that this argument is in.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        try:
+            state = instance_state(instance)
+        except AttributeError as err:
+            util.raise_(
+                orm_exc.UnmappedInstanceError(instance),
+                replace_context=err,
+            )
+        return self.impl.get(state, dict_)</code></pre>
+</details>
+</dd>
+<dt id="tourniquet.models.Argument.call_id"><code class="name">var <span class="ident">call_id</span></code></dt>
+<dd>
+<div class="desc"><p>The ID of the <code><a title="tourniquet.models.Call" href="#tourniquet.models.Call">Call</a></code> that this argument is in.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        try:
+            state = instance_state(instance)
+        except AttributeError as err:
+            util.raise_(
+                orm_exc.UnmappedInstanceError(instance),
+                replace_context=err,
+            )
+        return self.impl.get(state, dict_)</code></pre>
+</details>
+</dd>
+<dt id="tourniquet.models.Argument.id"><code class="name">var <span class="ident">id</span></code></dt>
+<dd>
+<div class="desc"><p>This argument's database ID.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        try:
+            state = instance_state(instance)
+        except AttributeError as err:
+            util.raise_(
+                orm_exc.UnmappedInstanceError(instance),
+                replace_context=err,
+            )
+        return self.impl.get(state, dict_)</code></pre>
+</details>
+</dd>
+<dt id="tourniquet.models.Argument.name"><code class="name">var <span class="ident">name</span></code></dt>
+<dd>
+<div class="desc"><p>The name of the argument.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        try:
+            state = instance_state(instance)
+        except AttributeError as err:
+            util.raise_(
+                orm_exc.UnmappedInstanceError(instance),
+                replace_context=err,
+            )
+        return self.impl.get(state, dict_)</code></pre>
+</details>
+</dd>
+<dt id="tourniquet.models.Argument.type_"><code class="name">var <span class="ident">type_</span></code></dt>
+<dd>
+<div class="desc"><p>The type of the argument.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        try:
+            state = instance_state(instance)
+        except AttributeError as err:
+            util.raise_(
+                orm_exc.UnmappedInstanceError(instance),
+                replace_context=err,
+            )
+        return self.impl.get(state, dict_)</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="tourniquet.models.Call"><code class="flex name class">
+<span>class <span class="ident">Call</span></span>
+<span>(</span><span>**kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Represents a function call.</p>
+<p>A simple constructor that allows initialization from kwargs.</p>
+<p>Sets attributes on the constructed instance using the names and
+values in <code>kwargs</code>.</p>
+<p>Only keys that are present as
+attributes of the instance's class are allowed. These could be,
+for example, any mapped columns or relationships.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Call(Base):
+    &#34;&#34;&#34;
+    Represents a function call.
+    &#34;&#34;&#34;
+
+    __tablename__ = &#34;calls&#34;
+
+    id = Column(Integer, primary_key=True)
+    &#34;&#34;&#34;
+    This call&#39;s database ID.
+    &#34;&#34;&#34;
+
+    module_name = Column(String, ForeignKey(&#34;modules.name&#34;))
+    &#34;&#34;&#34;
+    The name of the `Module` that this statement is in.
+    &#34;&#34;&#34;
+
+    module = relationship(&#34;Module&#34;, back_populates=&#34;calls&#34;)
+    &#34;&#34;&#34;
+    The `Module` that this statement is in.
+    &#34;&#34;&#34;
+
+    function_id = Column(Integer, ForeignKey(&#34;functions.id&#34;))
+    &#34;&#34;&#34;
+    The ID of the `Function` that this call is present in.
+    &#34;&#34;&#34;
+
+    function = relationship(&#34;Function&#34;, back_populates=&#34;calls&#34;)
+    &#34;&#34;&#34;
+    The `Function` that this call is present in.
+    &#34;&#34;&#34;
+
+    expr = Column(String, nullable=False)
+    &#34;&#34;&#34;
+    The call expression itself.
+    &#34;&#34;&#34;
+
+    name = Column(String, nullable=False)
+    &#34;&#34;&#34;
+    The name of the callee.
+    &#34;&#34;&#34;
+
+    start_line = Column(Integer, nullable=False)
+    &#34;&#34;&#34;
+    The line that this call begins on.
+    &#34;&#34;&#34;
+
+    start_column = Column(Integer, nullable=False)
+    &#34;&#34;&#34;
+    The column that this call begins on.
+    &#34;&#34;&#34;
+
+    end_line = Column(Integer, nullable=False)
+    &#34;&#34;&#34;
+    The line that this call ends on.
+    &#34;&#34;&#34;
+
+    end_column = Column(Integer, nullable=False)
+    &#34;&#34;&#34;
+    The column that this call ends on.
+    &#34;&#34;&#34;
+
+    arguments = relationship(&#34;Argument&#34;, uselist=True)
+    &#34;&#34;&#34;
+    The `Argument`s associated with this call.
+    &#34;&#34;&#34;
+
+    @property
+    def start_coordinate(self):
+        &#34;&#34;&#34;
+        Returns a `SourceCoordinate` representing where this call
+        begins in its source file.
+        &#34;&#34;&#34;
+        return SourceCoordinate(self.start_line, self.start_column)
+
+    @property
+    def end_coordinate(self):
+        &#34;&#34;&#34;
+        Returns a `SourceCoordinate` representing where this call ends
+        in its source file.
+        &#34;&#34;&#34;
+        return SourceCoordinate(self.end_line, self.end_column)
+
+    @property
+    def location(self):
+        &#34;&#34;&#34;
+        Returns a `Location` representing this call&#39;s source file and start
+        coordinate.
+        &#34;&#34;&#34;
+        return Location(Path(self.module_name), self.start_coordinate)
+
+    def __repr__(self):
+        return f&#34;&lt;Call {self.expr}&gt;&#34;</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>sqlalchemy.orm.decl_api.Base</li>
+</ul>
+<h3>Instance variables</h3>
+<dl>
+<dt id="tourniquet.models.Call.arguments"><code class="name">var <span class="ident">arguments</span></code></dt>
+<dd>
+<div class="desc"><p>The <code><a title="tourniquet.models.Argument" href="#tourniquet.models.Argument">Argument</a></code>s associated with this call.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        try:
+            state = instance_state(instance)
+        except AttributeError as err:
+            util.raise_(
+                orm_exc.UnmappedInstanceError(instance),
+                replace_context=err,
+            )
+        return self.impl.get(state, dict_)</code></pre>
+</details>
+</dd>
+<dt id="tourniquet.models.Call.end_column"><code class="name">var <span class="ident">end_column</span></code></dt>
+<dd>
+<div class="desc"><p>The column that this call ends on.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        try:
+            state = instance_state(instance)
+        except AttributeError as err:
+            util.raise_(
+                orm_exc.UnmappedInstanceError(instance),
+                replace_context=err,
+            )
+        return self.impl.get(state, dict_)</code></pre>
+</details>
+</dd>
+<dt id="tourniquet.models.Call.end_coordinate"><code class="name">var <span class="ident">end_coordinate</span></code></dt>
+<dd>
+<div class="desc"><p>Returns a <code>SourceCoordinate</code> representing where this call ends
+in its source file.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def end_coordinate(self):
+    &#34;&#34;&#34;
+    Returns a `SourceCoordinate` representing where this call ends
+    in its source file.
+    &#34;&#34;&#34;
+    return SourceCoordinate(self.end_line, self.end_column)</code></pre>
+</details>
+</dd>
+<dt id="tourniquet.models.Call.end_line"><code class="name">var <span class="ident">end_line</span></code></dt>
+<dd>
+<div class="desc"><p>The line that this call ends on.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        try:
+            state = instance_state(instance)
+        except AttributeError as err:
+            util.raise_(
+                orm_exc.UnmappedInstanceError(instance),
+                replace_context=err,
+            )
+        return self.impl.get(state, dict_)</code></pre>
+</details>
+</dd>
+<dt id="tourniquet.models.Call.expr"><code class="name">var <span class="ident">expr</span></code></dt>
+<dd>
+<div class="desc"><p>The call expression itself.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        try:
+            state = instance_state(instance)
+        except AttributeError as err:
+            util.raise_(
+                orm_exc.UnmappedInstanceError(instance),
+                replace_context=err,
+            )
+        return self.impl.get(state, dict_)</code></pre>
+</details>
+</dd>
+<dt id="tourniquet.models.Call.function"><code class="name">var <span class="ident">function</span></code></dt>
+<dd>
+<div class="desc"><p>The <code><a title="tourniquet.models.Function" href="#tourniquet.models.Function">Function</a></code> that this call is present in.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        try:
+            state = instance_state(instance)
+        except AttributeError as err:
+            util.raise_(
+                orm_exc.UnmappedInstanceError(instance),
+                replace_context=err,
+            )
+        return self.impl.get(state, dict_)</code></pre>
+</details>
+</dd>
+<dt id="tourniquet.models.Call.function_id"><code class="name">var <span class="ident">function_id</span></code></dt>
+<dd>
+<div class="desc"><p>The ID of the <code><a title="tourniquet.models.Function" href="#tourniquet.models.Function">Function</a></code> that this call is present in.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        try:
+            state = instance_state(instance)
+        except AttributeError as err:
+            util.raise_(
+                orm_exc.UnmappedInstanceError(instance),
+                replace_context=err,
+            )
+        return self.impl.get(state, dict_)</code></pre>
+</details>
+</dd>
+<dt id="tourniquet.models.Call.id"><code class="name">var <span class="ident">id</span></code></dt>
+<dd>
+<div class="desc"><p>This call's database ID.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        try:
+            state = instance_state(instance)
+        except AttributeError as err:
+            util.raise_(
+                orm_exc.UnmappedInstanceError(instance),
+                replace_context=err,
+            )
+        return self.impl.get(state, dict_)</code></pre>
+</details>
+</dd>
+<dt id="tourniquet.models.Call.location"><code class="name">var <span class="ident">location</span></code></dt>
+<dd>
+<div class="desc"><p>Returns a <code>Location</code> representing this call's source file and start
+coordinate.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def location(self):
+    &#34;&#34;&#34;
+    Returns a `Location` representing this call&#39;s source file and start
+    coordinate.
+    &#34;&#34;&#34;
+    return Location(Path(self.module_name), self.start_coordinate)</code></pre>
+</details>
+</dd>
+<dt id="tourniquet.models.Call.module"><code class="name">var <span class="ident">module</span></code></dt>
+<dd>
+<div class="desc"><p>The <code><a title="tourniquet.models.Module" href="#tourniquet.models.Module">Module</a></code> that this statement is in.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        try:
+            state = instance_state(instance)
+        except AttributeError as err:
+            util.raise_(
+                orm_exc.UnmappedInstanceError(instance),
+                replace_context=err,
+            )
+        return self.impl.get(state, dict_)</code></pre>
+</details>
+</dd>
+<dt id="tourniquet.models.Call.module_name"><code class="name">var <span class="ident">module_name</span></code></dt>
+<dd>
+<div class="desc"><p>The name of the <code><a title="tourniquet.models.Module" href="#tourniquet.models.Module">Module</a></code> that this statement is in.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        try:
+            state = instance_state(instance)
+        except AttributeError as err:
+            util.raise_(
+                orm_exc.UnmappedInstanceError(instance),
+                replace_context=err,
+            )
+        return self.impl.get(state, dict_)</code></pre>
+</details>
+</dd>
+<dt id="tourniquet.models.Call.name"><code class="name">var <span class="ident">name</span></code></dt>
+<dd>
+<div class="desc"><p>The name of the callee.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        try:
+            state = instance_state(instance)
+        except AttributeError as err:
+            util.raise_(
+                orm_exc.UnmappedInstanceError(instance),
+                replace_context=err,
+            )
+        return self.impl.get(state, dict_)</code></pre>
+</details>
+</dd>
+<dt id="tourniquet.models.Call.start_column"><code class="name">var <span class="ident">start_column</span></code></dt>
+<dd>
+<div class="desc"><p>The column that this call begins on.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        try:
+            state = instance_state(instance)
+        except AttributeError as err:
+            util.raise_(
+                orm_exc.UnmappedInstanceError(instance),
+                replace_context=err,
+            )
+        return self.impl.get(state, dict_)</code></pre>
+</details>
+</dd>
+<dt id="tourniquet.models.Call.start_coordinate"><code class="name">var <span class="ident">start_coordinate</span></code></dt>
+<dd>
+<div class="desc"><p>Returns a <code>SourceCoordinate</code> representing where this call
+begins in its source file.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def start_coordinate(self):
+    &#34;&#34;&#34;
+    Returns a `SourceCoordinate` representing where this call
+    begins in its source file.
+    &#34;&#34;&#34;
+    return SourceCoordinate(self.start_line, self.start_column)</code></pre>
+</details>
+</dd>
+<dt id="tourniquet.models.Call.start_line"><code class="name">var <span class="ident">start_line</span></code></dt>
+<dd>
+<div class="desc"><p>The line that this call begins on.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        try:
+            state = instance_state(instance)
+        except AttributeError as err:
+            util.raise_(
+                orm_exc.UnmappedInstanceError(instance),
+                replace_context=err,
+            )
+        return self.impl.get(state, dict_)</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="tourniquet.models.DB"><code class="flex name class">
+<span>class <span class="ident">DB</span></span>
+<span>(</span><span>session, db_path)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>A convenience class for querying the database.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class DB:
+    &#34;&#34;&#34;
+    A convenience class for querying the database.
+    &#34;&#34;&#34;
+
+    @classmethod
+    def create(cls, db_path, echo=False):
+        &#34;&#34;&#34;
+        Creates a new database at the given path.
+        &#34;&#34;&#34;
+
+        engine = create_engine(f&#34;sqlite:///{db_path}&#34;, echo=echo)
+
+        session = sessionmaker(bind=engine)()
+        Base.metadata.create_all(engine)
+
+        return cls(session, db_path)
+
+    def __init__(self, session, db_path):
+        self.session = session
+        self.db_path = db_path
+
+    def query(self, *args, **kwargs):
+        &#34;&#34;&#34;
+        Forwards a SQLAlchemy-style `query` to the database.
+        &#34;&#34;&#34;
+
+        return self.session.query(*args, **kwargs)
+
+    def function_at(self, location: Location) -&gt; Optional[Function]:
+        return (
+            self.query(Function)
+            .filter(
+                (str(location.filename) == Function.module_name)
+                &amp; (location.line &gt;= Function.start_line)
+                &amp; (location.column &gt;= Function.start_column)
+                &amp; (
+                    (
+                        (location.line == Function.end_line)
+                        &amp; (location.column &lt;= Function.end_column)
+                    )
+                    | ((location.line &lt; Function.end_line))
+                )
+            )
+            .one_or_none()
+        )
+
+    def statement_at(self, location: Location) -&gt; Optional[Statement]:
+        statement = (
+            self.query(Statement)
+            .filter(
+                (Statement.module_name == str(location.filename))
+                &amp; (Statement.start_line == location.line)
+                &amp; (Statement.start_column == location.column)
+            )
+            .one_or_none()
+        )
+
+        return statement</code></pre>
+</details>
+<h3>Static methods</h3>
+<dl>
+<dt id="tourniquet.models.DB.create"><code class="name flex">
+<span>def <span class="ident">create</span></span>(<span>db_path, echo=False)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Creates a new database at the given path.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@classmethod
+def create(cls, db_path, echo=False):
+    &#34;&#34;&#34;
+    Creates a new database at the given path.
+    &#34;&#34;&#34;
+
+    engine = create_engine(f&#34;sqlite:///{db_path}&#34;, echo=echo)
+
+    session = sessionmaker(bind=engine)()
+    Base.metadata.create_all(engine)
+
+    return cls(session, db_path)</code></pre>
+</details>
+</dd>
+</dl>
+<h3>Methods</h3>
+<dl>
+<dt id="tourniquet.models.DB.function_at"><code class="name flex">
+<span>def <span class="ident">function_at</span></span>(<span>self, location: <a title="tourniquet.location.Location" href="location.html#tourniquet.location.Location">Location</a>) ‑> Optional[<a title="tourniquet.models.Function" href="#tourniquet.models.Function">Function</a>]</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def function_at(self, location: Location) -&gt; Optional[Function]:
+    return (
+        self.query(Function)
+        .filter(
+            (str(location.filename) == Function.module_name)
+            &amp; (location.line &gt;= Function.start_line)
+            &amp; (location.column &gt;= Function.start_column)
+            &amp; (
+                (
+                    (location.line == Function.end_line)
+                    &amp; (location.column &lt;= Function.end_column)
+                )
+                | ((location.line &lt; Function.end_line))
+            )
+        )
+        .one_or_none()
+    )</code></pre>
+</details>
+</dd>
+<dt id="tourniquet.models.DB.query"><code class="name flex">
+<span>def <span class="ident">query</span></span>(<span>self, *args, **kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Forwards a SQLAlchemy-style <code>query</code> to the database.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def query(self, *args, **kwargs):
+    &#34;&#34;&#34;
+    Forwards a SQLAlchemy-style `query` to the database.
+    &#34;&#34;&#34;
+
+    return self.session.query(*args, **kwargs)</code></pre>
+</details>
+</dd>
+<dt id="tourniquet.models.DB.statement_at"><code class="name flex">
+<span>def <span class="ident">statement_at</span></span>(<span>self, location: <a title="tourniquet.location.Location" href="location.html#tourniquet.location.Location">Location</a>) ‑> Optional[<a title="tourniquet.models.Statement" href="#tourniquet.models.Statement">Statement</a>]</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def statement_at(self, location: Location) -&gt; Optional[Statement]:
+    statement = (
+        self.query(Statement)
+        .filter(
+            (Statement.module_name == str(location.filename))
+            &amp; (Statement.start_line == location.line)
+            &amp; (Statement.start_column == location.column)
+        )
+        .one_or_none()
+    )
+
+    return statement</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="tourniquet.models.Function"><code class="flex name class">
+<span>class <span class="ident">Function</span></span>
+<span>(</span><span>**kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Represents a single C or C++ function.</p>
+<p>A simple constructor that allows initialization from kwargs.</p>
+<p>Sets attributes on the constructed instance using the names and
+values in <code>kwargs</code>.</p>
+<p>Only keys that are present as
+attributes of the instance's class are allowed. These could be,
+for example, any mapped columns or relationships.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Function(Base):
+    &#34;&#34;&#34;
+    Represents a single C or C++ function.
+    &#34;&#34;&#34;
+
+    __tablename__ = &#34;functions&#34;
+
+    id = Column(Integer, primary_key=True)
+    &#34;&#34;&#34;
+    This function&#39;s database ID.
+    &#34;&#34;&#34;
+
+    module_name = Column(String, ForeignKey(&#34;modules.name&#34;))
+    &#34;&#34;&#34;
+    The name of the `Module` that this function belongs to.
+    &#34;&#34;&#34;
+
+    module = relationship(&#34;Module&#34;, back_populates=&#34;functions&#34;)
+    &#34;&#34;&#34;
+    The `Module` that this function belongs to.
+    &#34;&#34;&#34;
+
+    name = Column(String, nullable=False)
+    &#34;&#34;&#34;
+    The name of this function.
+    &#34;&#34;&#34;
+
+    start_line = Column(Integer, nullable=False)
+    &#34;&#34;&#34;
+    The line that this function begins on.
+    &#34;&#34;&#34;
+
+    start_column = Column(Integer, nullable=False)
+    &#34;&#34;&#34;
+    The column that this function begins on.
+    &#34;&#34;&#34;
+
+    end_line = Column(Integer, nullable=False)
+    &#34;&#34;&#34;
+    The line that this function ends on.
+    &#34;&#34;&#34;
+
+    end_column = Column(Integer, nullable=False)
+    &#34;&#34;&#34;
+    The column that this function ends on.
+    &#34;&#34;&#34;
+
+    var_decls = relationship(&#34;VarDecl&#34;, uselist=True)
+    &#34;&#34;&#34;
+    The `VarDecl`s present in this function.
+    &#34;&#34;&#34;
+
+    calls = relationship(&#34;Call&#34;, uselist=True)
+    &#34;&#34;&#34;
+    The `Call`s present in this function.
+    &#34;&#34;&#34;
+
+    statements = relationship(&#34;Statement&#34;, uselist=True)
+    &#34;&#34;&#34;
+    The `Statement`s present in this function.
+    &#34;&#34;&#34;
+
+    @property
+    def start_coordinate(self):
+        &#34;&#34;&#34;
+        Returns a `SourceCoordinate` representing where this function
+        begins in its source file.
+        &#34;&#34;&#34;
+        return SourceCoordinate(self.start_line, self.start_column)
+
+    @property
+    def end_coordinate(self):
+        &#34;&#34;&#34;
+        Returns a `SourceCoordinate` representing where this function ends
+        in its source file.
+        &#34;&#34;&#34;
+        return SourceCoordinate(self.end_line, self.end_column)
+
+    @property
+    def location(self):
+        &#34;&#34;&#34;
+        Returns a `Location` representing this function&#39;s source file and start
+        coordinate.
+        &#34;&#34;&#34;
+        return Location(Path(self.module_name), self.start_coordinate)
+
+    def __repr__(self):
+        return f&#34;&lt;Function {self.name}&gt;&#34;</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>sqlalchemy.orm.decl_api.Base</li>
+</ul>
+<h3>Instance variables</h3>
+<dl>
+<dt id="tourniquet.models.Function.calls"><code class="name">var <span class="ident">calls</span></code></dt>
+<dd>
+<div class="desc"><p>The <code><a title="tourniquet.models.Call" href="#tourniquet.models.Call">Call</a></code>s present in this function.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        try:
+            state = instance_state(instance)
+        except AttributeError as err:
+            util.raise_(
+                orm_exc.UnmappedInstanceError(instance),
+                replace_context=err,
+            )
+        return self.impl.get(state, dict_)</code></pre>
+</details>
+</dd>
+<dt id="tourniquet.models.Function.end_column"><code class="name">var <span class="ident">end_column</span></code></dt>
+<dd>
+<div class="desc"><p>The column that this function ends on.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        try:
+            state = instance_state(instance)
+        except AttributeError as err:
+            util.raise_(
+                orm_exc.UnmappedInstanceError(instance),
+                replace_context=err,
+            )
+        return self.impl.get(state, dict_)</code></pre>
+</details>
+</dd>
+<dt id="tourniquet.models.Function.end_coordinate"><code class="name">var <span class="ident">end_coordinate</span></code></dt>
+<dd>
+<div class="desc"><p>Returns a <code>SourceCoordinate</code> representing where this function ends
+in its source file.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def end_coordinate(self):
+    &#34;&#34;&#34;
+    Returns a `SourceCoordinate` representing where this function ends
+    in its source file.
+    &#34;&#34;&#34;
+    return SourceCoordinate(self.end_line, self.end_column)</code></pre>
+</details>
+</dd>
+<dt id="tourniquet.models.Function.end_line"><code class="name">var <span class="ident">end_line</span></code></dt>
+<dd>
+<div class="desc"><p>The line that this function ends on.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        try:
+            state = instance_state(instance)
+        except AttributeError as err:
+            util.raise_(
+                orm_exc.UnmappedInstanceError(instance),
+                replace_context=err,
+            )
+        return self.impl.get(state, dict_)</code></pre>
+</details>
+</dd>
+<dt id="tourniquet.models.Function.id"><code class="name">var <span class="ident">id</span></code></dt>
+<dd>
+<div class="desc"><p>This function's database ID.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        try:
+            state = instance_state(instance)
+        except AttributeError as err:
+            util.raise_(
+                orm_exc.UnmappedInstanceError(instance),
+                replace_context=err,
+            )
+        return self.impl.get(state, dict_)</code></pre>
+</details>
+</dd>
+<dt id="tourniquet.models.Function.location"><code class="name">var <span class="ident">location</span></code></dt>
+<dd>
+<div class="desc"><p>Returns a <code>Location</code> representing this function's source file and start
+coordinate.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def location(self):
+    &#34;&#34;&#34;
+    Returns a `Location` representing this function&#39;s source file and start
+    coordinate.
+    &#34;&#34;&#34;
+    return Location(Path(self.module_name), self.start_coordinate)</code></pre>
+</details>
+</dd>
+<dt id="tourniquet.models.Function.module"><code class="name">var <span class="ident">module</span></code></dt>
+<dd>
+<div class="desc"><p>The <code><a title="tourniquet.models.Module" href="#tourniquet.models.Module">Module</a></code> that this function belongs to.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        try:
+            state = instance_state(instance)
+        except AttributeError as err:
+            util.raise_(
+                orm_exc.UnmappedInstanceError(instance),
+                replace_context=err,
+            )
+        return self.impl.get(state, dict_)</code></pre>
+</details>
+</dd>
+<dt id="tourniquet.models.Function.module_name"><code class="name">var <span class="ident">module_name</span></code></dt>
+<dd>
+<div class="desc"><p>The name of the <code><a title="tourniquet.models.Module" href="#tourniquet.models.Module">Module</a></code> that this function belongs to.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        try:
+            state = instance_state(instance)
+        except AttributeError as err:
+            util.raise_(
+                orm_exc.UnmappedInstanceError(instance),
+                replace_context=err,
+            )
+        return self.impl.get(state, dict_)</code></pre>
+</details>
+</dd>
+<dt id="tourniquet.models.Function.name"><code class="name">var <span class="ident">name</span></code></dt>
+<dd>
+<div class="desc"><p>The name of this function.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        try:
+            state = instance_state(instance)
+        except AttributeError as err:
+            util.raise_(
+                orm_exc.UnmappedInstanceError(instance),
+                replace_context=err,
+            )
+        return self.impl.get(state, dict_)</code></pre>
+</details>
+</dd>
+<dt id="tourniquet.models.Function.start_column"><code class="name">var <span class="ident">start_column</span></code></dt>
+<dd>
+<div class="desc"><p>The column that this function begins on.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        try:
+            state = instance_state(instance)
+        except AttributeError as err:
+            util.raise_(
+                orm_exc.UnmappedInstanceError(instance),
+                replace_context=err,
+            )
+        return self.impl.get(state, dict_)</code></pre>
+</details>
+</dd>
+<dt id="tourniquet.models.Function.start_coordinate"><code class="name">var <span class="ident">start_coordinate</span></code></dt>
+<dd>
+<div class="desc"><p>Returns a <code>SourceCoordinate</code> representing where this function
+begins in its source file.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def start_coordinate(self):
+    &#34;&#34;&#34;
+    Returns a `SourceCoordinate` representing where this function
+    begins in its source file.
+    &#34;&#34;&#34;
+    return SourceCoordinate(self.start_line, self.start_column)</code></pre>
+</details>
+</dd>
+<dt id="tourniquet.models.Function.start_line"><code class="name">var <span class="ident">start_line</span></code></dt>
+<dd>
+<div class="desc"><p>The line that this function begins on.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        try:
+            state = instance_state(instance)
+        except AttributeError as err:
+            util.raise_(
+                orm_exc.UnmappedInstanceError(instance),
+                replace_context=err,
+            )
+        return self.impl.get(state, dict_)</code></pre>
+</details>
+</dd>
+<dt id="tourniquet.models.Function.statements"><code class="name">var <span class="ident">statements</span></code></dt>
+<dd>
+<div class="desc"><p>The <code><a title="tourniquet.models.Statement" href="#tourniquet.models.Statement">Statement</a></code>s present in this function.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        try:
+            state = instance_state(instance)
+        except AttributeError as err:
+            util.raise_(
+                orm_exc.UnmappedInstanceError(instance),
+                replace_context=err,
+            )
+        return self.impl.get(state, dict_)</code></pre>
+</details>
+</dd>
+<dt id="tourniquet.models.Function.var_decls"><code class="name">var <span class="ident">var_decls</span></code></dt>
+<dd>
+<div class="desc"><p>The <code><a title="tourniquet.models.VarDecl" href="#tourniquet.models.VarDecl">VarDecl</a></code>s present in this function.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        try:
+            state = instance_state(instance)
+        except AttributeError as err:
+            util.raise_(
+                orm_exc.UnmappedInstanceError(instance),
+                replace_context=err,
+            )
+        return self.impl.get(state, dict_)</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="tourniquet.models.Global"><code class="flex name class">
+<span>class <span class="ident">Global</span></span>
+<span>(</span><span>**kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Represents a global variable declaration.</p>
+<p>A simple constructor that allows initialization from kwargs.</p>
+<p>Sets attributes on the constructed instance using the names and
+values in <code>kwargs</code>.</p>
+<p>Only keys that are present as
+attributes of the instance's class are allowed. These could be,
+for example, any mapped columns or relationships.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Global(Base):
+    &#34;&#34;&#34;
+    Represents a global variable declaration.
+    &#34;&#34;&#34;
+
+    __tablename__ = &#34;globals&#34;
+
+    id = Column(Integer, primary_key=True)
+    &#34;&#34;&#34;
+    This global&#39;s database ID.
+    &#34;&#34;&#34;
+
+    module_name = Column(String, ForeignKey(&#34;modules.name&#34;))
+    &#34;&#34;&#34;
+    The name of the `Module` that this global belongs to.
+    &#34;&#34;&#34;
+
+    module = relationship(&#34;Module&#34;, back_populates=&#34;global_variables&#34;)
+    &#34;&#34;&#34;
+    The `Module` that this global belongs to.
+    &#34;&#34;&#34;
+
+    name = Column(String, nullable=False)
+    &#34;&#34;&#34;
+    The declared name of this global.
+    &#34;&#34;&#34;
+
+    type_ = Column(String, nullable=False)
+    &#34;&#34;&#34;
+    The declared type of this global.
+    &#34;&#34;&#34;
+
+    start_line = Column(Integer, nullable=False)
+    &#34;&#34;&#34;
+    The line that this global begins on.
+    &#34;&#34;&#34;
+
+    start_column = Column(Integer, nullable=False)
+    &#34;&#34;&#34;
+    The column that this global begins on.
+    &#34;&#34;&#34;
+
+    end_line = Column(Integer, nullable=False)
+    &#34;&#34;&#34;
+    The line that this global ends on.
+    &#34;&#34;&#34;
+
+    end_column = Column(Integer, nullable=False)
+    &#34;&#34;&#34;
+    The column that this global ends on.
+    &#34;&#34;&#34;
+
+    is_array = Column(Boolean, nullable=False)
+    &#34;&#34;&#34;
+    Whether or not this global&#39;s declaration is for an array type.
+    &#34;&#34;&#34;
+
+    size = Column(Integer, nullable=False)
+    &#34;&#34;&#34;
+    The size of this global, in bytes.
+    &#34;&#34;&#34;
+
+    def __repr__(self):
+        return f&#34;&lt;Global {self.name}&gt;&#34;</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>sqlalchemy.orm.decl_api.Base</li>
+</ul>
+<h3>Instance variables</h3>
+<dl>
+<dt id="tourniquet.models.Global.end_column"><code class="name">var <span class="ident">end_column</span></code></dt>
+<dd>
+<div class="desc"><p>The column that this global ends on.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        try:
+            state = instance_state(instance)
+        except AttributeError as err:
+            util.raise_(
+                orm_exc.UnmappedInstanceError(instance),
+                replace_context=err,
+            )
+        return self.impl.get(state, dict_)</code></pre>
+</details>
+</dd>
+<dt id="tourniquet.models.Global.end_line"><code class="name">var <span class="ident">end_line</span></code></dt>
+<dd>
+<div class="desc"><p>The line that this global ends on.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        try:
+            state = instance_state(instance)
+        except AttributeError as err:
+            util.raise_(
+                orm_exc.UnmappedInstanceError(instance),
+                replace_context=err,
+            )
+        return self.impl.get(state, dict_)</code></pre>
+</details>
+</dd>
+<dt id="tourniquet.models.Global.id"><code class="name">var <span class="ident">id</span></code></dt>
+<dd>
+<div class="desc"><p>This global's database ID.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        try:
+            state = instance_state(instance)
+        except AttributeError as err:
+            util.raise_(
+                orm_exc.UnmappedInstanceError(instance),
+                replace_context=err,
+            )
+        return self.impl.get(state, dict_)</code></pre>
+</details>
+</dd>
+<dt id="tourniquet.models.Global.is_array"><code class="name">var <span class="ident">is_array</span></code></dt>
+<dd>
+<div class="desc"><p>Whether or not this global's declaration is for an array type.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        try:
+            state = instance_state(instance)
+        except AttributeError as err:
+            util.raise_(
+                orm_exc.UnmappedInstanceError(instance),
+                replace_context=err,
+            )
+        return self.impl.get(state, dict_)</code></pre>
+</details>
+</dd>
+<dt id="tourniquet.models.Global.module"><code class="name">var <span class="ident">module</span></code></dt>
+<dd>
+<div class="desc"><p>The <code><a title="tourniquet.models.Module" href="#tourniquet.models.Module">Module</a></code> that this global belongs to.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        try:
+            state = instance_state(instance)
+        except AttributeError as err:
+            util.raise_(
+                orm_exc.UnmappedInstanceError(instance),
+                replace_context=err,
+            )
+        return self.impl.get(state, dict_)</code></pre>
+</details>
+</dd>
+<dt id="tourniquet.models.Global.module_name"><code class="name">var <span class="ident">module_name</span></code></dt>
+<dd>
+<div class="desc"><p>The name of the <code><a title="tourniquet.models.Module" href="#tourniquet.models.Module">Module</a></code> that this global belongs to.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        try:
+            state = instance_state(instance)
+        except AttributeError as err:
+            util.raise_(
+                orm_exc.UnmappedInstanceError(instance),
+                replace_context=err,
+            )
+        return self.impl.get(state, dict_)</code></pre>
+</details>
+</dd>
+<dt id="tourniquet.models.Global.name"><code class="name">var <span class="ident">name</span></code></dt>
+<dd>
+<div class="desc"><p>The declared name of this global.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        try:
+            state = instance_state(instance)
+        except AttributeError as err:
+            util.raise_(
+                orm_exc.UnmappedInstanceError(instance),
+                replace_context=err,
+            )
+        return self.impl.get(state, dict_)</code></pre>
+</details>
+</dd>
+<dt id="tourniquet.models.Global.size"><code class="name">var <span class="ident">size</span></code></dt>
+<dd>
+<div class="desc"><p>The size of this global, in bytes.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        try:
+            state = instance_state(instance)
+        except AttributeError as err:
+            util.raise_(
+                orm_exc.UnmappedInstanceError(instance),
+                replace_context=err,
+            )
+        return self.impl.get(state, dict_)</code></pre>
+</details>
+</dd>
+<dt id="tourniquet.models.Global.start_column"><code class="name">var <span class="ident">start_column</span></code></dt>
+<dd>
+<div class="desc"><p>The column that this global begins on.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        try:
+            state = instance_state(instance)
+        except AttributeError as err:
+            util.raise_(
+                orm_exc.UnmappedInstanceError(instance),
+                replace_context=err,
+            )
+        return self.impl.get(state, dict_)</code></pre>
+</details>
+</dd>
+<dt id="tourniquet.models.Global.start_line"><code class="name">var <span class="ident">start_line</span></code></dt>
+<dd>
+<div class="desc"><p>The line that this global begins on.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        try:
+            state = instance_state(instance)
+        except AttributeError as err:
+            util.raise_(
+                orm_exc.UnmappedInstanceError(instance),
+                replace_context=err,
+            )
+        return self.impl.get(state, dict_)</code></pre>
+</details>
+</dd>
+<dt id="tourniquet.models.Global.type_"><code class="name">var <span class="ident">type_</span></code></dt>
+<dd>
+<div class="desc"><p>The declared type of this global.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        try:
+            state = instance_state(instance)
+        except AttributeError as err:
+            util.raise_(
+                orm_exc.UnmappedInstanceError(instance),
+                replace_context=err,
+            )
+        return self.impl.get(state, dict_)</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="tourniquet.models.Module"><code class="flex name class">
+<span>class <span class="ident">Module</span></span>
+<span>(</span><span>**kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Represents a C or C++ file, or "module" in Clang's terminology.</p>
+<p>A simple constructor that allows initialization from kwargs.</p>
+<p>Sets attributes on the constructed instance using the names and
+values in <code>kwargs</code>.</p>
+<p>Only keys that are present as
+attributes of the instance's class are allowed. These could be,
+for example, any mapped columns or relationships.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Module(Base):
+    &#34;&#34;&#34;
+    Represents a C or C++ file, or &#34;module&#34; in Clang&#39;s terminology.
+    &#34;&#34;&#34;
+
+    __tablename__ = &#34;modules&#34;
+
+    id = Column(Integer, primary_key=True)
+    &#34;&#34;&#34;
+    This module&#39;s database ID.
+    &#34;&#34;&#34;
+
+    name = Column(String, unique=True, nullable=False)
+    &#34;&#34;&#34;
+    The name (i.e. source file) of this module.
+    &#34;&#34;&#34;
+
+    functions = relationship(&#34;Function&#34;, uselist=True)
+    &#34;&#34;&#34;
+    The `Function`s present in this module.
+    &#34;&#34;&#34;
+
+    global_variables = relationship(&#34;Global&#34;, uselist=True)
+    &#34;&#34;&#34;
+    The `Global`s present in this module.
+    &#34;&#34;&#34;
+
+    statements = relationship(&#34;Statement&#34;, uselist=True)
+    &#34;&#34;&#34;
+    The `Statement`s present in this module.
+    &#34;&#34;&#34;
+
+    calls = relationship(&#34;Call&#34;, uselist=True)
+    &#34;&#34;&#34;
+    The `Call`s present in this module.
+    &#34;&#34;&#34;
+
+    # TODO(ww): Module -&gt; [VarDecl] relationship
+
+    def __repr__(self):
+        return f&#34;&lt;Module {self.name}&gt;&#34;</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>sqlalchemy.orm.decl_api.Base</li>
+</ul>
+<h3>Instance variables</h3>
+<dl>
+<dt id="tourniquet.models.Module.calls"><code class="name">var <span class="ident">calls</span></code></dt>
+<dd>
+<div class="desc"><p>The <code><a title="tourniquet.models.Call" href="#tourniquet.models.Call">Call</a></code>s present in this module.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        try:
+            state = instance_state(instance)
+        except AttributeError as err:
+            util.raise_(
+                orm_exc.UnmappedInstanceError(instance),
+                replace_context=err,
+            )
+        return self.impl.get(state, dict_)</code></pre>
+</details>
+</dd>
+<dt id="tourniquet.models.Module.functions"><code class="name">var <span class="ident">functions</span></code></dt>
+<dd>
+<div class="desc"><p>The <code><a title="tourniquet.models.Function" href="#tourniquet.models.Function">Function</a></code>s present in this module.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        try:
+            state = instance_state(instance)
+        except AttributeError as err:
+            util.raise_(
+                orm_exc.UnmappedInstanceError(instance),
+                replace_context=err,
+            )
+        return self.impl.get(state, dict_)</code></pre>
+</details>
+</dd>
+<dt id="tourniquet.models.Module.global_variables"><code class="name">var <span class="ident">global_variables</span></code></dt>
+<dd>
+<div class="desc"><p>The <code><a title="tourniquet.models.Global" href="#tourniquet.models.Global">Global</a></code>s present in this module.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        try:
+            state = instance_state(instance)
+        except AttributeError as err:
+            util.raise_(
+                orm_exc.UnmappedInstanceError(instance),
+                replace_context=err,
+            )
+        return self.impl.get(state, dict_)</code></pre>
+</details>
+</dd>
+<dt id="tourniquet.models.Module.id"><code class="name">var <span class="ident">id</span></code></dt>
+<dd>
+<div class="desc"><p>This module's database ID.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        try:
+            state = instance_state(instance)
+        except AttributeError as err:
+            util.raise_(
+                orm_exc.UnmappedInstanceError(instance),
+                replace_context=err,
+            )
+        return self.impl.get(state, dict_)</code></pre>
+</details>
+</dd>
+<dt id="tourniquet.models.Module.name"><code class="name">var <span class="ident">name</span></code></dt>
+<dd>
+<div class="desc"><p>The name (i.e. source file) of this module.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        try:
+            state = instance_state(instance)
+        except AttributeError as err:
+            util.raise_(
+                orm_exc.UnmappedInstanceError(instance),
+                replace_context=err,
+            )
+        return self.impl.get(state, dict_)</code></pre>
+</details>
+</dd>
+<dt id="tourniquet.models.Module.statements"><code class="name">var <span class="ident">statements</span></code></dt>
+<dd>
+<div class="desc"><p>The <code><a title="tourniquet.models.Statement" href="#tourniquet.models.Statement">Statement</a></code>s present in this module.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        try:
+            state = instance_state(instance)
+        except AttributeError as err:
+            util.raise_(
+                orm_exc.UnmappedInstanceError(instance),
+                replace_context=err,
+            )
+        return self.impl.get(state, dict_)</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="tourniquet.models.Statement"><code class="flex name class">
+<span>class <span class="ident">Statement</span></span>
+<span>(</span><span>**kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Represents a primitive (i.e., non-compound) C or C++ statement.</p>
+<p>A simple constructor that allows initialization from kwargs.</p>
+<p>Sets attributes on the constructed instance using the names and
+values in <code>kwargs</code>.</p>
+<p>Only keys that are present as
+attributes of the instance's class are allowed. These could be,
+for example, any mapped columns or relationships.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Statement(Base):
+    &#34;&#34;&#34;
+    Represents a primitive (i.e., non-compound) C or C++ statement.
+    &#34;&#34;&#34;
+
+    __tablename__ = &#34;statements&#34;
+
+    id = Column(Integer, primary_key=True)
+    &#34;&#34;&#34;
+    This statement&#39;s database ID.
+    &#34;&#34;&#34;
+
+    module_name = Column(String, ForeignKey(&#34;modules.name&#34;))
+    &#34;&#34;&#34;
+    The name of the `Module` that this statement is in.
+    &#34;&#34;&#34;
+
+    module = relationship(&#34;Module&#34;, back_populates=&#34;statements&#34;)
+    &#34;&#34;&#34;
+    The `Module` that this statement is in.
+    &#34;&#34;&#34;
+
+    function_id = Column(Integer, ForeignKey(&#34;functions.id&#34;))
+    &#34;&#34;&#34;
+    The ID of the `Function` that this statement is in.
+    &#34;&#34;&#34;
+
+    function = relationship(&#34;Function&#34;, back_populates=&#34;statements&#34;)
+    &#34;&#34;&#34;
+    The `Function` that this statement is in.
+    &#34;&#34;&#34;
+
+    start_line = Column(Integer, nullable=False)
+    &#34;&#34;&#34;
+    The line that this statement begins on.
+    &#34;&#34;&#34;
+
+    start_column = Column(Integer, nullable=False)
+    &#34;&#34;&#34;
+    The column that this statement begins on.
+    &#34;&#34;&#34;
+
+    end_line = Column(Integer, nullable=False)
+    &#34;&#34;&#34;
+    The line that this statement ends on.
+    &#34;&#34;&#34;
+
+    end_column = Column(Integer, nullable=False)
+    &#34;&#34;&#34;
+    The column that this statement ends on.
+    &#34;&#34;&#34;
+
+    expr = Column(String, nullable=False)
+    &#34;&#34;&#34;
+    The expression text of this statement.
+    &#34;&#34;&#34;
+
+    @property
+    def start_coordinate(self):
+        &#34;&#34;&#34;
+        Returns a `SourceCoordinate` representing where this statement
+        begins in its source file.
+        &#34;&#34;&#34;
+        return SourceCoordinate(self.start_line, self.start_column)
+
+    @property
+    def end_coordinate(self):
+        &#34;&#34;&#34;
+        Returns a `SourceCoordinate` representing where this statement ends
+        in its source file.
+        &#34;&#34;&#34;
+        return SourceCoordinate(self.end_line, self.end_column)
+
+    @property
+    def location(self):
+        &#34;&#34;&#34;
+        Returns a `Location` representing this statement&#39;s source file and start
+        coordinate.
+        &#34;&#34;&#34;
+        return Location(Path(self.module_name), self.start_coordinate)
+
+    def __repr__(self):
+        return f&#34;&lt;Statement {self.expr}&gt;&#34;</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>sqlalchemy.orm.decl_api.Base</li>
+</ul>
+<h3>Instance variables</h3>
+<dl>
+<dt id="tourniquet.models.Statement.end_column"><code class="name">var <span class="ident">end_column</span></code></dt>
+<dd>
+<div class="desc"><p>The column that this statement ends on.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        try:
+            state = instance_state(instance)
+        except AttributeError as err:
+            util.raise_(
+                orm_exc.UnmappedInstanceError(instance),
+                replace_context=err,
+            )
+        return self.impl.get(state, dict_)</code></pre>
+</details>
+</dd>
+<dt id="tourniquet.models.Statement.end_coordinate"><code class="name">var <span class="ident">end_coordinate</span></code></dt>
+<dd>
+<div class="desc"><p>Returns a <code>SourceCoordinate</code> representing where this statement ends
+in its source file.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def end_coordinate(self):
+    &#34;&#34;&#34;
+    Returns a `SourceCoordinate` representing where this statement ends
+    in its source file.
+    &#34;&#34;&#34;
+    return SourceCoordinate(self.end_line, self.end_column)</code></pre>
+</details>
+</dd>
+<dt id="tourniquet.models.Statement.end_line"><code class="name">var <span class="ident">end_line</span></code></dt>
+<dd>
+<div class="desc"><p>The line that this statement ends on.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        try:
+            state = instance_state(instance)
+        except AttributeError as err:
+            util.raise_(
+                orm_exc.UnmappedInstanceError(instance),
+                replace_context=err,
+            )
+        return self.impl.get(state, dict_)</code></pre>
+</details>
+</dd>
+<dt id="tourniquet.models.Statement.expr"><code class="name">var <span class="ident">expr</span></code></dt>
+<dd>
+<div class="desc"><p>The expression text of this statement.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        try:
+            state = instance_state(instance)
+        except AttributeError as err:
+            util.raise_(
+                orm_exc.UnmappedInstanceError(instance),
+                replace_context=err,
+            )
+        return self.impl.get(state, dict_)</code></pre>
+</details>
+</dd>
+<dt id="tourniquet.models.Statement.function"><code class="name">var <span class="ident">function</span></code></dt>
+<dd>
+<div class="desc"><p>The <code><a title="tourniquet.models.Function" href="#tourniquet.models.Function">Function</a></code> that this statement is in.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        try:
+            state = instance_state(instance)
+        except AttributeError as err:
+            util.raise_(
+                orm_exc.UnmappedInstanceError(instance),
+                replace_context=err,
+            )
+        return self.impl.get(state, dict_)</code></pre>
+</details>
+</dd>
+<dt id="tourniquet.models.Statement.function_id"><code class="name">var <span class="ident">function_id</span></code></dt>
+<dd>
+<div class="desc"><p>The ID of the <code><a title="tourniquet.models.Function" href="#tourniquet.models.Function">Function</a></code> that this statement is in.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        try:
+            state = instance_state(instance)
+        except AttributeError as err:
+            util.raise_(
+                orm_exc.UnmappedInstanceError(instance),
+                replace_context=err,
+            )
+        return self.impl.get(state, dict_)</code></pre>
+</details>
+</dd>
+<dt id="tourniquet.models.Statement.id"><code class="name">var <span class="ident">id</span></code></dt>
+<dd>
+<div class="desc"><p>This statement's database ID.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        try:
+            state = instance_state(instance)
+        except AttributeError as err:
+            util.raise_(
+                orm_exc.UnmappedInstanceError(instance),
+                replace_context=err,
+            )
+        return self.impl.get(state, dict_)</code></pre>
+</details>
+</dd>
+<dt id="tourniquet.models.Statement.location"><code class="name">var <span class="ident">location</span></code></dt>
+<dd>
+<div class="desc"><p>Returns a <code>Location</code> representing this statement's source file and start
+coordinate.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def location(self):
+    &#34;&#34;&#34;
+    Returns a `Location` representing this statement&#39;s source file and start
+    coordinate.
+    &#34;&#34;&#34;
+    return Location(Path(self.module_name), self.start_coordinate)</code></pre>
+</details>
+</dd>
+<dt id="tourniquet.models.Statement.module"><code class="name">var <span class="ident">module</span></code></dt>
+<dd>
+<div class="desc"><p>The <code><a title="tourniquet.models.Module" href="#tourniquet.models.Module">Module</a></code> that this statement is in.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        try:
+            state = instance_state(instance)
+        except AttributeError as err:
+            util.raise_(
+                orm_exc.UnmappedInstanceError(instance),
+                replace_context=err,
+            )
+        return self.impl.get(state, dict_)</code></pre>
+</details>
+</dd>
+<dt id="tourniquet.models.Statement.module_name"><code class="name">var <span class="ident">module_name</span></code></dt>
+<dd>
+<div class="desc"><p>The name of the <code><a title="tourniquet.models.Module" href="#tourniquet.models.Module">Module</a></code> that this statement is in.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        try:
+            state = instance_state(instance)
+        except AttributeError as err:
+            util.raise_(
+                orm_exc.UnmappedInstanceError(instance),
+                replace_context=err,
+            )
+        return self.impl.get(state, dict_)</code></pre>
+</details>
+</dd>
+<dt id="tourniquet.models.Statement.start_column"><code class="name">var <span class="ident">start_column</span></code></dt>
+<dd>
+<div class="desc"><p>The column that this statement begins on.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        try:
+            state = instance_state(instance)
+        except AttributeError as err:
+            util.raise_(
+                orm_exc.UnmappedInstanceError(instance),
+                replace_context=err,
+            )
+        return self.impl.get(state, dict_)</code></pre>
+</details>
+</dd>
+<dt id="tourniquet.models.Statement.start_coordinate"><code class="name">var <span class="ident">start_coordinate</span></code></dt>
+<dd>
+<div class="desc"><p>Returns a <code>SourceCoordinate</code> representing where this statement
+begins in its source file.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def start_coordinate(self):
+    &#34;&#34;&#34;
+    Returns a `SourceCoordinate` representing where this statement
+    begins in its source file.
+    &#34;&#34;&#34;
+    return SourceCoordinate(self.start_line, self.start_column)</code></pre>
+</details>
+</dd>
+<dt id="tourniquet.models.Statement.start_line"><code class="name">var <span class="ident">start_line</span></code></dt>
+<dd>
+<div class="desc"><p>The line that this statement begins on.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        try:
+            state = instance_state(instance)
+        except AttributeError as err:
+            util.raise_(
+                orm_exc.UnmappedInstanceError(instance),
+                replace_context=err,
+            )
+        return self.impl.get(state, dict_)</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="tourniquet.models.VarDecl"><code class="flex name class">
+<span>class <span class="ident">VarDecl</span></span>
+<span>(</span><span>**kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Represents a local variable or function parameter declaration.</p>
+<p>A simple constructor that allows initialization from kwargs.</p>
+<p>Sets attributes on the constructed instance using the names and
+values in <code>kwargs</code>.</p>
+<p>Only keys that are present as
+attributes of the instance's class are allowed. These could be,
+for example, any mapped columns or relationships.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class VarDecl(Base):
+    &#34;&#34;&#34;
+    Represents a local variable or function parameter declaration.
+    &#34;&#34;&#34;
+
+    __tablename__ = &#34;var_decls&#34;
+
+    id = Column(Integer, primary_key=True)
+    &#34;&#34;&#34;
+    This declaration&#39;s database ID.
+    &#34;&#34;&#34;
+
+    function_id = Column(Integer, ForeignKey(&#34;functions.id&#34;))
+    &#34;&#34;&#34;
+    The ID of the `Function` that this declaration is present in.
+    &#34;&#34;&#34;
+
+    function = relationship(&#34;Function&#34;, back_populates=&#34;var_decls&#34;)
+    &#34;&#34;&#34;
+    The `Function` that this declaration is present in.
+    &#34;&#34;&#34;
+
+    name = Column(String, nullable=False)
+    &#34;&#34;&#34;
+    The name of this declared variable.
+    &#34;&#34;&#34;
+
+    type_ = Column(String, nullable=False)
+    &#34;&#34;&#34;
+    The type of this declared variable.
+    &#34;&#34;&#34;
+
+    start_line = Column(Integer, nullable=False)
+    &#34;&#34;&#34;
+    The line that this declaration begins on.
+    &#34;&#34;&#34;
+
+    start_column = Column(Integer, nullable=False)
+    &#34;&#34;&#34;
+    The column that this declaration begins on.
+    &#34;&#34;&#34;
+
+    end_line = Column(Integer, nullable=False)
+    &#34;&#34;&#34;
+    The line that this declaration ends on.
+    &#34;&#34;&#34;
+
+    end_column = Column(Integer, nullable=False)
+    &#34;&#34;&#34;
+    The column that this declaration ends on.
+    &#34;&#34;&#34;
+
+    is_array = Column(Boolean, nullable=False)
+    &#34;&#34;&#34;
+    Whether or not this declaration is for an array type.
+    &#34;&#34;&#34;
+
+    size = Column(Integer, nullable=False)
+    &#34;&#34;&#34;
+    The size of the declared variable, in bytes.
+    &#34;&#34;&#34;
+
+    def __repr__(self):
+        return f&#34;&lt;VarDecl {self.type_} {self.name}&gt;&#34;</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>sqlalchemy.orm.decl_api.Base</li>
+</ul>
+<h3>Instance variables</h3>
+<dl>
+<dt id="tourniquet.models.VarDecl.end_column"><code class="name">var <span class="ident">end_column</span></code></dt>
+<dd>
+<div class="desc"><p>The column that this declaration ends on.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        try:
+            state = instance_state(instance)
+        except AttributeError as err:
+            util.raise_(
+                orm_exc.UnmappedInstanceError(instance),
+                replace_context=err,
+            )
+        return self.impl.get(state, dict_)</code></pre>
+</details>
+</dd>
+<dt id="tourniquet.models.VarDecl.end_line"><code class="name">var <span class="ident">end_line</span></code></dt>
+<dd>
+<div class="desc"><p>The line that this declaration ends on.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        try:
+            state = instance_state(instance)
+        except AttributeError as err:
+            util.raise_(
+                orm_exc.UnmappedInstanceError(instance),
+                replace_context=err,
+            )
+        return self.impl.get(state, dict_)</code></pre>
+</details>
+</dd>
+<dt id="tourniquet.models.VarDecl.function"><code class="name">var <span class="ident">function</span></code></dt>
+<dd>
+<div class="desc"><p>The <code><a title="tourniquet.models.Function" href="#tourniquet.models.Function">Function</a></code> that this declaration is present in.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        try:
+            state = instance_state(instance)
+        except AttributeError as err:
+            util.raise_(
+                orm_exc.UnmappedInstanceError(instance),
+                replace_context=err,
+            )
+        return self.impl.get(state, dict_)</code></pre>
+</details>
+</dd>
+<dt id="tourniquet.models.VarDecl.function_id"><code class="name">var <span class="ident">function_id</span></code></dt>
+<dd>
+<div class="desc"><p>The ID of the <code><a title="tourniquet.models.Function" href="#tourniquet.models.Function">Function</a></code> that this declaration is present in.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        try:
+            state = instance_state(instance)
+        except AttributeError as err:
+            util.raise_(
+                orm_exc.UnmappedInstanceError(instance),
+                replace_context=err,
+            )
+        return self.impl.get(state, dict_)</code></pre>
+</details>
+</dd>
+<dt id="tourniquet.models.VarDecl.id"><code class="name">var <span class="ident">id</span></code></dt>
+<dd>
+<div class="desc"><p>This declaration's database ID.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        try:
+            state = instance_state(instance)
+        except AttributeError as err:
+            util.raise_(
+                orm_exc.UnmappedInstanceError(instance),
+                replace_context=err,
+            )
+        return self.impl.get(state, dict_)</code></pre>
+</details>
+</dd>
+<dt id="tourniquet.models.VarDecl.is_array"><code class="name">var <span class="ident">is_array</span></code></dt>
+<dd>
+<div class="desc"><p>Whether or not this declaration is for an array type.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        try:
+            state = instance_state(instance)
+        except AttributeError as err:
+            util.raise_(
+                orm_exc.UnmappedInstanceError(instance),
+                replace_context=err,
+            )
+        return self.impl.get(state, dict_)</code></pre>
+</details>
+</dd>
+<dt id="tourniquet.models.VarDecl.name"><code class="name">var <span class="ident">name</span></code></dt>
+<dd>
+<div class="desc"><p>The name of this declared variable.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        try:
+            state = instance_state(instance)
+        except AttributeError as err:
+            util.raise_(
+                orm_exc.UnmappedInstanceError(instance),
+                replace_context=err,
+            )
+        return self.impl.get(state, dict_)</code></pre>
+</details>
+</dd>
+<dt id="tourniquet.models.VarDecl.size"><code class="name">var <span class="ident">size</span></code></dt>
+<dd>
+<div class="desc"><p>The size of the declared variable, in bytes.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        try:
+            state = instance_state(instance)
+        except AttributeError as err:
+            util.raise_(
+                orm_exc.UnmappedInstanceError(instance),
+                replace_context=err,
+            )
+        return self.impl.get(state, dict_)</code></pre>
+</details>
+</dd>
+<dt id="tourniquet.models.VarDecl.start_column"><code class="name">var <span class="ident">start_column</span></code></dt>
+<dd>
+<div class="desc"><p>The column that this declaration begins on.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        try:
+            state = instance_state(instance)
+        except AttributeError as err:
+            util.raise_(
+                orm_exc.UnmappedInstanceError(instance),
+                replace_context=err,
+            )
+        return self.impl.get(state, dict_)</code></pre>
+</details>
+</dd>
+<dt id="tourniquet.models.VarDecl.start_line"><code class="name">var <span class="ident">start_line</span></code></dt>
+<dd>
+<div class="desc"><p>The line that this declaration begins on.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        try:
+            state = instance_state(instance)
+        except AttributeError as err:
+            util.raise_(
+                orm_exc.UnmappedInstanceError(instance),
+                replace_context=err,
+            )
+        return self.impl.get(state, dict_)</code></pre>
+</details>
+</dd>
+<dt id="tourniquet.models.VarDecl.type_"><code class="name">var <span class="ident">type_</span></code></dt>
+<dd>
+<div class="desc"><p>The type of this declared variable.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def __get__(self, instance, owner):
+    if instance is None:
+        return self
+
+    dict_ = instance_dict(instance)
+    if self._supports_population and self.key in dict_:
+        return dict_[self.key]
+    else:
+        try:
+            state = instance_state(instance)
+        except AttributeError as err:
+            util.raise_(
+                orm_exc.UnmappedInstanceError(instance),
+                replace_context=err,
+            )
+        return self.impl.get(state, dict_)</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+</dl>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="tourniquet" href="index.html">tourniquet</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-classes">Classes</a></h3>
+<ul>
+<li>
+<h4><code><a title="tourniquet.models.Argument" href="#tourniquet.models.Argument">Argument</a></code></h4>
+<ul class="">
+<li><code><a title="tourniquet.models.Argument.call" href="#tourniquet.models.Argument.call">call</a></code></li>
+<li><code><a title="tourniquet.models.Argument.call_id" href="#tourniquet.models.Argument.call_id">call_id</a></code></li>
+<li><code><a title="tourniquet.models.Argument.id" href="#tourniquet.models.Argument.id">id</a></code></li>
+<li><code><a title="tourniquet.models.Argument.name" href="#tourniquet.models.Argument.name">name</a></code></li>
+<li><code><a title="tourniquet.models.Argument.type_" href="#tourniquet.models.Argument.type_">type_</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="tourniquet.models.Call" href="#tourniquet.models.Call">Call</a></code></h4>
+<ul class="two-column">
+<li><code><a title="tourniquet.models.Call.arguments" href="#tourniquet.models.Call.arguments">arguments</a></code></li>
+<li><code><a title="tourniquet.models.Call.end_column" href="#tourniquet.models.Call.end_column">end_column</a></code></li>
+<li><code><a title="tourniquet.models.Call.end_coordinate" href="#tourniquet.models.Call.end_coordinate">end_coordinate</a></code></li>
+<li><code><a title="tourniquet.models.Call.end_line" href="#tourniquet.models.Call.end_line">end_line</a></code></li>
+<li><code><a title="tourniquet.models.Call.expr" href="#tourniquet.models.Call.expr">expr</a></code></li>
+<li><code><a title="tourniquet.models.Call.function" href="#tourniquet.models.Call.function">function</a></code></li>
+<li><code><a title="tourniquet.models.Call.function_id" href="#tourniquet.models.Call.function_id">function_id</a></code></li>
+<li><code><a title="tourniquet.models.Call.id" href="#tourniquet.models.Call.id">id</a></code></li>
+<li><code><a title="tourniquet.models.Call.location" href="#tourniquet.models.Call.location">location</a></code></li>
+<li><code><a title="tourniquet.models.Call.module" href="#tourniquet.models.Call.module">module</a></code></li>
+<li><code><a title="tourniquet.models.Call.module_name" href="#tourniquet.models.Call.module_name">module_name</a></code></li>
+<li><code><a title="tourniquet.models.Call.name" href="#tourniquet.models.Call.name">name</a></code></li>
+<li><code><a title="tourniquet.models.Call.start_column" href="#tourniquet.models.Call.start_column">start_column</a></code></li>
+<li><code><a title="tourniquet.models.Call.start_coordinate" href="#tourniquet.models.Call.start_coordinate">start_coordinate</a></code></li>
+<li><code><a title="tourniquet.models.Call.start_line" href="#tourniquet.models.Call.start_line">start_line</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="tourniquet.models.DB" href="#tourniquet.models.DB">DB</a></code></h4>
+<ul class="">
+<li><code><a title="tourniquet.models.DB.create" href="#tourniquet.models.DB.create">create</a></code></li>
+<li><code><a title="tourniquet.models.DB.function_at" href="#tourniquet.models.DB.function_at">function_at</a></code></li>
+<li><code><a title="tourniquet.models.DB.query" href="#tourniquet.models.DB.query">query</a></code></li>
+<li><code><a title="tourniquet.models.DB.statement_at" href="#tourniquet.models.DB.statement_at">statement_at</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="tourniquet.models.Function" href="#tourniquet.models.Function">Function</a></code></h4>
+<ul class="two-column">
+<li><code><a title="tourniquet.models.Function.calls" href="#tourniquet.models.Function.calls">calls</a></code></li>
+<li><code><a title="tourniquet.models.Function.end_column" href="#tourniquet.models.Function.end_column">end_column</a></code></li>
+<li><code><a title="tourniquet.models.Function.end_coordinate" href="#tourniquet.models.Function.end_coordinate">end_coordinate</a></code></li>
+<li><code><a title="tourniquet.models.Function.end_line" href="#tourniquet.models.Function.end_line">end_line</a></code></li>
+<li><code><a title="tourniquet.models.Function.id" href="#tourniquet.models.Function.id">id</a></code></li>
+<li><code><a title="tourniquet.models.Function.location" href="#tourniquet.models.Function.location">location</a></code></li>
+<li><code><a title="tourniquet.models.Function.module" href="#tourniquet.models.Function.module">module</a></code></li>
+<li><code><a title="tourniquet.models.Function.module_name" href="#tourniquet.models.Function.module_name">module_name</a></code></li>
+<li><code><a title="tourniquet.models.Function.name" href="#tourniquet.models.Function.name">name</a></code></li>
+<li><code><a title="tourniquet.models.Function.start_column" href="#tourniquet.models.Function.start_column">start_column</a></code></li>
+<li><code><a title="tourniquet.models.Function.start_coordinate" href="#tourniquet.models.Function.start_coordinate">start_coordinate</a></code></li>
+<li><code><a title="tourniquet.models.Function.start_line" href="#tourniquet.models.Function.start_line">start_line</a></code></li>
+<li><code><a title="tourniquet.models.Function.statements" href="#tourniquet.models.Function.statements">statements</a></code></li>
+<li><code><a title="tourniquet.models.Function.var_decls" href="#tourniquet.models.Function.var_decls">var_decls</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="tourniquet.models.Global" href="#tourniquet.models.Global">Global</a></code></h4>
+<ul class="two-column">
+<li><code><a title="tourniquet.models.Global.end_column" href="#tourniquet.models.Global.end_column">end_column</a></code></li>
+<li><code><a title="tourniquet.models.Global.end_line" href="#tourniquet.models.Global.end_line">end_line</a></code></li>
+<li><code><a title="tourniquet.models.Global.id" href="#tourniquet.models.Global.id">id</a></code></li>
+<li><code><a title="tourniquet.models.Global.is_array" href="#tourniquet.models.Global.is_array">is_array</a></code></li>
+<li><code><a title="tourniquet.models.Global.module" href="#tourniquet.models.Global.module">module</a></code></li>
+<li><code><a title="tourniquet.models.Global.module_name" href="#tourniquet.models.Global.module_name">module_name</a></code></li>
+<li><code><a title="tourniquet.models.Global.name" href="#tourniquet.models.Global.name">name</a></code></li>
+<li><code><a title="tourniquet.models.Global.size" href="#tourniquet.models.Global.size">size</a></code></li>
+<li><code><a title="tourniquet.models.Global.start_column" href="#tourniquet.models.Global.start_column">start_column</a></code></li>
+<li><code><a title="tourniquet.models.Global.start_line" href="#tourniquet.models.Global.start_line">start_line</a></code></li>
+<li><code><a title="tourniquet.models.Global.type_" href="#tourniquet.models.Global.type_">type_</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="tourniquet.models.Module" href="#tourniquet.models.Module">Module</a></code></h4>
+<ul class="two-column">
+<li><code><a title="tourniquet.models.Module.calls" href="#tourniquet.models.Module.calls">calls</a></code></li>
+<li><code><a title="tourniquet.models.Module.functions" href="#tourniquet.models.Module.functions">functions</a></code></li>
+<li><code><a title="tourniquet.models.Module.global_variables" href="#tourniquet.models.Module.global_variables">global_variables</a></code></li>
+<li><code><a title="tourniquet.models.Module.id" href="#tourniquet.models.Module.id">id</a></code></li>
+<li><code><a title="tourniquet.models.Module.name" href="#tourniquet.models.Module.name">name</a></code></li>
+<li><code><a title="tourniquet.models.Module.statements" href="#tourniquet.models.Module.statements">statements</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="tourniquet.models.Statement" href="#tourniquet.models.Statement">Statement</a></code></h4>
+<ul class="two-column">
+<li><code><a title="tourniquet.models.Statement.end_column" href="#tourniquet.models.Statement.end_column">end_column</a></code></li>
+<li><code><a title="tourniquet.models.Statement.end_coordinate" href="#tourniquet.models.Statement.end_coordinate">end_coordinate</a></code></li>
+<li><code><a title="tourniquet.models.Statement.end_line" href="#tourniquet.models.Statement.end_line">end_line</a></code></li>
+<li><code><a title="tourniquet.models.Statement.expr" href="#tourniquet.models.Statement.expr">expr</a></code></li>
+<li><code><a title="tourniquet.models.Statement.function" href="#tourniquet.models.Statement.function">function</a></code></li>
+<li><code><a title="tourniquet.models.Statement.function_id" href="#tourniquet.models.Statement.function_id">function_id</a></code></li>
+<li><code><a title="tourniquet.models.Statement.id" href="#tourniquet.models.Statement.id">id</a></code></li>
+<li><code><a title="tourniquet.models.Statement.location" href="#tourniquet.models.Statement.location">location</a></code></li>
+<li><code><a title="tourniquet.models.Statement.module" href="#tourniquet.models.Statement.module">module</a></code></li>
+<li><code><a title="tourniquet.models.Statement.module_name" href="#tourniquet.models.Statement.module_name">module_name</a></code></li>
+<li><code><a title="tourniquet.models.Statement.start_column" href="#tourniquet.models.Statement.start_column">start_column</a></code></li>
+<li><code><a title="tourniquet.models.Statement.start_coordinate" href="#tourniquet.models.Statement.start_coordinate">start_coordinate</a></code></li>
+<li><code><a title="tourniquet.models.Statement.start_line" href="#tourniquet.models.Statement.start_line">start_line</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="tourniquet.models.VarDecl" href="#tourniquet.models.VarDecl">VarDecl</a></code></h4>
+<ul class="two-column">
+<li><code><a title="tourniquet.models.VarDecl.end_column" href="#tourniquet.models.VarDecl.end_column">end_column</a></code></li>
+<li><code><a title="tourniquet.models.VarDecl.end_line" href="#tourniquet.models.VarDecl.end_line">end_line</a></code></li>
+<li><code><a title="tourniquet.models.VarDecl.function" href="#tourniquet.models.VarDecl.function">function</a></code></li>
+<li><code><a title="tourniquet.models.VarDecl.function_id" href="#tourniquet.models.VarDecl.function_id">function_id</a></code></li>
+<li><code><a title="tourniquet.models.VarDecl.id" href="#tourniquet.models.VarDecl.id">id</a></code></li>
+<li><code><a title="tourniquet.models.VarDecl.is_array" href="#tourniquet.models.VarDecl.is_array">is_array</a></code></li>
+<li><code><a title="tourniquet.models.VarDecl.name" href="#tourniquet.models.VarDecl.name">name</a></code></li>
+<li><code><a title="tourniquet.models.VarDecl.size" href="#tourniquet.models.VarDecl.size">size</a></code></li>
+<li><code><a title="tourniquet.models.VarDecl.start_column" href="#tourniquet.models.VarDecl.start_column">start_column</a></code></li>
+<li><code><a title="tourniquet.models.VarDecl.start_line" href="#tourniquet.models.VarDecl.start_line">start_line</a></code></li>
+<li><code><a title="tourniquet.models.VarDecl.type_" href="#tourniquet.models.VarDecl.type_">type_</a></code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.10.0</a>.</p>
+</footer>
+</body>
+</html>

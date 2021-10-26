@@ -1,0 +1,2370 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.10.0" />
+<title>tourniquet.patch_lang API documentation</title>
+<meta name="description" content="" />
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
+<link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js" integrity="sha256-Uv3H6lx7dJmRfRvH8TH6kJD1TSK1aFcwgx+mdg3epi8=" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => hljs.initHighlighting())</script>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>tourniquet.patch_lang</code></h1>
+</header>
+<section id="section-intro">
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">import itertools
+from abc import ABC, abstractmethod
+from typing import Callable, Iterator, List, Optional
+
+from . import models
+from .error import PatchConcretizationError
+from .location import Location
+
+
+class Expression(ABC):
+    &#34;&#34;&#34;
+    Represents an abstract source &#34;expression&#34;.
+
+    `Expression` is an abstract base class whose interfaces should be consumed via
+    specific derived classes.
+    &#34;&#34;&#34;
+
+    @abstractmethod
+    def concretize(self, db: models.DB, location: Location) -&gt; Iterator[str]:
+        yield from ()
+
+    def view(self, db: models.DB, location: Location) -&gt; str:
+        return &#34;Expression()&#34;
+
+
+class Lit(Expression):
+    &#34;&#34;&#34;
+    Represents a literal source string.
+
+    Template authors can use this to insert pre-formed source code, or code that doesn&#39;t need
+    to be concretized by location.
+    &#34;&#34;&#34;
+
+    def __init__(self, expr: str):
+        &#34;&#34;&#34;
+        Create a new `Lit` with the given source string.
+
+        Args:
+            expr: The source literal
+        &#34;&#34;&#34;
+        self.expr = expr
+
+    def concretize(self, _db, _location) -&gt; Iterator[str]:
+        &#34;&#34;&#34;
+        Concretize this literal into its underlying source string.
+        &#34;&#34;&#34;
+        yield self.expr
+
+    def view(self, _db, _location):
+        return f&#34;Lit({self.expr})&#34;
+
+
+class Variable(Expression):
+    &#34;&#34;&#34;
+    Represents an abstract source variable.
+    &#34;&#34;&#34;
+
+    # NOTE(ww): This is probably slightly unsound, in terms of concretizations
+    # produced: the set of variables in a function is not the set of variables
+    # guaranteed to be in scope at a line number.
+    def concretize(self, db: models.DB, location: Location) -&gt; Iterator[str]:
+        &#34;&#34;&#34;
+        Concretize this `Variable` into its potential names.
+
+        Args:
+            db: The AST database to concretize against
+            location: The location to concretize at
+
+        Returns:
+            A generator of strings, each of which is a concrete variable name
+
+        Raises:
+            PatchConcretizationError: If the scope of the variable can&#39;t be resolved
+        &#34;&#34;&#34;
+
+        # TODO(ww): We should also concretize with the available globals.
+        function = db.function_at(location)
+        if function is None:
+            raise PatchConcretizationError(
+                f&#34;no function contains ({location.line}, {location.column})&#34;
+            )
+
+        for var_decl in function.var_decls:
+            yield var_decl.name
+
+    def view(self, _db, _location) -&gt; str:
+        return &#34;Variable()&#34;
+
+
+class StaticBufferSize(Expression):
+    &#34;&#34;&#34;
+    Represents an abstract &#34;sizeof(...)&#34; expression.
+    &#34;&#34;&#34;
+
+    # Query for all static array types and return list of sizeof()..
+    def concretize(self, db: models.DB, location: Location) -&gt; Iterator[str]:
+        &#34;&#34;&#34;
+        Concretize this `StaticBufferSize` into its potential sizes.
+
+        Args:
+            db: The AST database to concretize against
+            location: The location to concretize at
+
+        Returns:
+            A generator of strings, each of which is a concrete `sizeof(...)` expression
+
+        Raises:
+            PatchConcretizationError: If the scope of the location is not a function
+        &#34;&#34;&#34;
+
+        # TODO(ww): We should also concretize with available globals.
+        function = db.function_at(location)
+
+        if function is None:
+            raise PatchConcretizationError(
+                f&#34;no function contains ({location.line}, {location.column})&#34;
+            )
+
+        for var_decl in function.var_decls:
+            if not var_decl.is_array:
+                continue
+            yield f&#34;sizeof({var_decl.name})&#34;
+
+    def view(self, _db, _location) -&gt; str:
+        return &#34;StaticBufferSize()&#34;
+
+
+class BinaryMathOperator(Expression):
+    &#34;&#34;&#34;
+    Represents the possible binary math operators, along with their lhs and rhs expressions.
+    &#34;&#34;&#34;
+
+    def __init__(self, lhs: Expression, rhs: Expression):
+        &#34;&#34;&#34;
+        Create a new `BinaryMathOperator` with the given `lhs` and `rhs`.
+
+        Args:
+            lhs: An `Expression` to use for the left-hand side
+            rhs: An `Expression` to use for the right-hand side
+        &#34;&#34;&#34;
+        self.lhs = lhs
+        self.rhs = rhs
+
+    def concretize(self, db: models.DB, location: Location) -&gt; Iterator[str]:
+        &#34;&#34;&#34;
+        Concretize this `BinaryMathOperator` into its possible operator expressions.
+
+        Args:
+            db: The AST database to concretize against
+            location: The location to concretize at
+
+        Returns:
+            A generator of strings, each of which is a concrete binary math expression
+        &#34;&#34;&#34;
+        lhs_exprs = self.lhs.concretize(db, location)
+        rhs_exprs = self.rhs.concretize(db, location)
+        for (lhs, rhs) in itertools.product(lhs_exprs, rhs_exprs):
+            yield f&#34;{lhs} + {rhs}&#34;
+            yield f&#34;{lhs} - {rhs}&#34;
+            yield f&#34;{lhs} / {rhs}&#34;
+            yield f&#34;{lhs} * {rhs}&#34;
+            yield f&#34;{lhs} &lt;&lt; {rhs}&#34;
+            # TODO(ww): Missing for unknown reasons: &gt;&gt;, &amp;, |, ^, %
+
+    def view(self, db: models.DB, location: Location) -&gt; str:
+        return f&#34;BinaryMathOperator({self.lhs.view(db, location)}, {self.lhs.view(db, location)})&#34;
+
+
+class BinaryBoolOperator(Expression):
+    &#34;&#34;&#34;
+    Represents the possible binary boolean operators, along with their lhs and rhs expressions.
+    &#34;&#34;&#34;
+
+    def __init__(self, lhs: Expression, rhs: Expression):
+        &#34;&#34;&#34;
+        Create a new `BinaryBoolOperator` with the given `lhs` and `rhs`.
+
+        Args:
+            lhs: An `Expression` to use for the left-hand side
+            rhs: An `Expression` to use for the right-hand side
+        &#34;&#34;&#34;
+        self.lhs = lhs
+        self.rhs = rhs
+
+    def concretize(self, db: models.DB, location: Location) -&gt; Iterator[str]:
+        &#34;&#34;&#34;
+        Concretize this `BinaryBoolOperator` into its possible operator expressions.
+
+        Args:
+            db: The AST database to concretize against
+            location: The location to concretize at
+
+        Returns:
+            A generator of strings, each of which is a concrete binary boolean expression
+        &#34;&#34;&#34;
+        lhs_exprs = self.lhs.concretize(db, location)
+        rhs_exprs = self.rhs.concretize(db, location)
+        for (lhs, rhs) in itertools.product(lhs_exprs, rhs_exprs):
+            yield f&#34;{lhs} == {rhs}&#34;
+            yield f&#34;{lhs} != {rhs}&#34;
+            yield f&#34;{lhs} &lt;= {rhs}&#34;
+            yield f&#34;{lhs} &lt; {rhs}&#34;
+            yield f&#34;{lhs} &gt;= {rhs}&#34;
+            yield f&#34;{lhs} &gt; {rhs}&#34;
+            # TODO(ww): If location is in a C++ source file, maybe add &lt;=&gt;
+
+    def view(self, db: models.DB, location: Location) -&gt; str:
+        return f&#34;BinaryBoolOperator({self.lhs.view(db, location)}, {self.rhs.view(db, location)})&#34;
+
+
+class LessThanExpr(Expression):
+    &#34;&#34;&#34;
+    Represents the less-than boolean operator, along with its lhs and rhs expressions.
+    &#34;&#34;&#34;
+
+    def __init__(self, lhs: Expression, rhs: Expression):
+        &#34;&#34;&#34;
+        Create a new `LessThanExpr` with the given `lhs` and `rhs`.
+
+        Args:
+            lhs: An `Expression` to use for the left-hand side.
+            rhs: An `Expression` to use for the right-hand side.
+        &#34;&#34;&#34;
+        self.lhs = lhs
+        self.rhs = rhs
+
+    def concretize(self, db: models.DB, location: Location) -&gt; Iterator[str]:
+        &#34;&#34;&#34;
+        Concretize this `LessThanExpr` into its possible operator expressions.
+
+        Args:
+            db: The AST database to concretize against
+            location: The location to concretize at
+
+        Returns:
+            A generator of strings, each of which is a concrete less-than boolean expression
+        &#34;&#34;&#34;
+
+        lhs_exprs = self.lhs.concretize(db, location)
+        rhs_exprs = self.rhs.concretize(db, location)
+        for (lhs, rhs) in itertools.product(lhs_exprs, rhs_exprs):
+            yield f&#34;{lhs} &lt; {rhs}&#34;
+
+    def view(self, db: models.DB, location: Location):
+        self.lhs.view(db, location) + &#34; &lt; &#34; + self.rhs.view(db, location)
+
+
+class Statement(ABC):
+    &#34;&#34;&#34;
+    Represents an source &#34;statement&#34;.
+
+    `Statement` is an abstract base whose interfaces should be consumed via specific
+    derived classes.
+    &#34;&#34;&#34;
+
+    @abstractmethod
+    def concretize(self, db: models.DB, location: Location) -&gt; Iterator[str]:
+        pass
+
+    @abstractmethod
+    def view(self, db: models.DB, location: Location):
+        pass
+
+
+class StatementList:
+    &#34;&#34;&#34;
+    Represents a sequence of statements.
+    &#34;&#34;&#34;
+
+    def __init__(self, *args):
+        self.statements: List[Statement] = args
+
+    def concretize(self, db: models.DB, location: Location) -&gt; Iterator[str]:
+        &#34;&#34;&#34;
+        Concretize this `StatementList` into its possible statement seqences.
+
+        This involves concretizing each statement and taking their unique
+        product, such that every possible permutation of statements in the list
+        is produced.
+
+        Args:
+            db: The AST database to concretize against
+            locaton: The location to concretize at
+
+        Returns:
+            A generator of strings, each of which is a concreqte sequence of statements
+        &#34;&#34;&#34;
+        concretized = [stmt.concretize(db, location) for stmt in self.statements]
+        for items in set(itertools.product(*concretized)):
+            yield &#34;\n&#34;.join(items)
+
+    def view(self, db: models.DB, location: Location) -&gt; str:
+        final_str = &#34;&#34;
+        for stmt in self.statements:
+            final_str += stmt.view(db, location) + &#34;\n&#34;
+        return final_str
+
+
+class IfStmt(Statement):
+    &#34;&#34;&#34;
+    Represents an `if(...) { ... }` statement.
+    &#34;&#34;&#34;
+
+    def __init__(self, cond_expr: Expression, *args: List[Statement]):
+        &#34;&#34;&#34;
+        Creates a new `IfStmt`.
+
+        Args:
+            cond_expr: The expression to evaluate
+            args: The statements to use in the body of the `if`
+        &#34;&#34;&#34;
+        self.cond_expr = cond_expr
+        self.statement_list = StatementList(*args)
+
+    def concretize(self, db: models.DB, location: Location) -&gt; Iterator[str]:
+        &#34;&#34;&#34;
+        Concretize this `IfStmt` into its possible statements.
+
+        Args:
+            db: The AST database to concretize against
+            location: The location to concretize at
+
+        Returns:
+            A generator of strings, each of which is an `if` statement
+        &#34;&#34;&#34;
+        cond_list = self.cond_expr.concretize(db, location)
+        stmt_list = self.statement_list.concretize(db, location)
+        for (cond, stmt) in itertools.product(cond_list, stmt_list):
+            cand_str = &#34;if (&#34; + cond + &#34;) {\n&#34; + stmt + &#34;\n}\n&#34;
+            yield cand_str
+
+    def view(self, db: models.DB, location: Location) -&gt; str:
+        if_str = &#34;if (&#34; + self.cond_expr.view(db, location) + &#34;) {\n&#34;
+        if_str += self.statement_list.view(db, location)
+        if_str += &#34;\n}\n&#34;
+        return if_str
+
+
+class ElseStmt(Statement):
+    &#34;&#34;&#34;
+    Represents an `else { ... }` statement.
+    &#34;&#34;&#34;
+
+    def __init__(self, *args: List[Statement]):
+        &#34;&#34;&#34;
+        Creates a new `ElseStmt`.
+
+        Args:
+            args: The statements to use in the body of the `else`
+        &#34;&#34;&#34;
+
+        self.statement_list = StatementList(*args)
+
+    def concretize(self, db: models.DB, location: Location) -&gt; Iterator[str]:
+        &#34;&#34;&#34;
+        Concretize this `ElseStmt` into its possible statements.
+
+        Args:
+            db: The AST database to concretize against
+            location: The location to concretize at
+
+        Returns:
+            A generator of strings, each of which is an `else` statement
+        &#34;&#34;&#34;
+        stmt_list = self.statement_list.concretize(db, location)
+        for stmt in stmt_list:
+            cand_str = &#34;else {\n&#34; + stmt + &#34;\n}\n&#34;
+            yield cand_str
+
+    def view(self, db: models.DB, location: Location) -&gt; str:
+        return &#34;else {\n&#34; + self.statement_list.view(db, location) + &#34;\n}\n&#34;
+
+
+class ReturnStmt(Statement):
+    &#34;&#34;&#34;
+    Represents a `return ...;` statement.
+    &#34;&#34;&#34;
+
+    def __init__(self, expr: Expression):
+        &#34;&#34;&#34;
+        Creates a new `ReturnStmt`.
+
+        Args:
+            expr: The expression to concretize for the `return`
+        &#34;&#34;&#34;
+        self.expr = expr
+
+    def concretize(self, db: models.DB, location: Location) -&gt; Iterator[str]:
+        &#34;&#34;&#34;
+        Concretize this `ReturnStmt` into its possible statements.
+
+        Args:
+            db: The AST database to concretize against
+            location: The location to concretize at
+
+        Returns:
+            A generator of strings, each of which is an `return` statement
+        &#34;&#34;&#34;
+        expr_list = self.expr.concretize(db, location)
+        for exp in expr_list:
+            candidate_str = f&#34;return {exp};&#34;
+            yield candidate_str
+
+    def view(self, db: models.DB, location: Location):
+        return f&#34;return {self.expr.view(db, location)};&#34;
+
+
+# TODO This should take a Node, which is something from... the DB? Maybe?
+# TODO(ww): This should probably be renamed to ASTStmt or similar.
+class NodeStmt(Statement):
+    &#34;&#34;&#34;
+    Represents a statement from the AST database, identified by location.
+    &#34;&#34;&#34;
+
+    def concretize(self, db: models.DB, location: Location) -&gt; Iterator[str]:
+        &#34;&#34;&#34;
+        Concretize this `NodeStmt` into its concrete statement.
+
+        Args:
+            db: The AST database to concretize against
+            location: The statement&#39;s location
+
+        Returns:
+            A generator of strings, whose single item is the extracted AST statement
+        &#34;&#34;&#34;
+        source_info = self.fetch_node(db, location)
+        yield source_info
+
+    def view(self, db, location) -&gt; str:
+        # Fetch and create a node.
+        source_info = self.fetch_node(db, location)
+        return source_info
+
+    def fetch_node(self, db, location) -&gt; str:
+        &#34;&#34;&#34;
+        Fetches the statement at the given location.
+
+        Args:
+            db: The AST database to query against.
+            location: The location of the statement.
+
+        Returns:
+            The statement, including trailing semicolon.
+
+        Raises:
+            PatchConcretizationError: If there is no statement at the supplied location.
+        &#34;&#34;&#34;
+        statement = db.statement_at(location)
+        if statement is None:
+            raise PatchConcretizationError(f&#34;no statement at ({location.line}, {location.column})&#34;)
+
+        if statement.expr.endswith(&#34;;&#34;):
+            return statement.expr
+        else:
+            return f&#34;{statement.expr};&#34;
+
+
+class FixPattern:
+    &#34;&#34;&#34;
+    Represents a program &#34;fix&#34; that can be concretized into a sequence of candidate patches.
+    &#34;&#34;&#34;
+
+    def __init__(self, *args: List[Statement]):
+        &#34;&#34;&#34;
+        Create a new `FixPattern`.
+
+        Args:
+            args: The statements to use in the fix
+        &#34;&#34;&#34;
+        self.statement_list = StatementList(*args)
+
+    def concretize(self, db: models.DB, location: Location) -&gt; Iterator[str]:
+        &#34;&#34;&#34;
+        Concretize this `FixPattern` into a sequence of candidate patches.
+
+        Args:
+            db: The AST database to concretize against
+            location: The location to concretize at
+
+        Returns:
+            A generator of strings, each of which is a candidate patch
+        &#34;&#34;&#34;
+        yield from self.statement_list.concretize(db, location)
+
+    def view(self, db: models.DB, location: Location) -&gt; str:
+        return self.statement_list.view(db, location)
+
+
+class PatchTemplate:
+    &#34;&#34;&#34;
+    Represents a templatized patch, including a matcher callable.
+    &#34;&#34;&#34;
+
+    def __init__(
+        self, fix_pattern: FixPattern, matcher_func: Optional[Callable[[int, int], bool]] = None
+    ):
+        &#34;&#34;&#34;
+        Create a new `PatchTemplate`.
+
+        Args:
+            fix_pattern: The fix pattern to concretize into patches
+            matcher_func: The callable to filter patch locations with, if any
+        &#34;&#34;&#34;
+        self.matcher_func = matcher_func
+        self.fix_pattern = fix_pattern
+
+    def matches(self, line: int, col: int) -&gt; bool:
+        &#34;&#34;&#34;
+        Returns whether the given line and column is suitable for patch situation.
+
+        Calls `self.matcher_func` internally, if supplied.
+
+        Args:
+            line: The line to patch on
+            column: The column to patch on
+
+        Returns:
+            `True` if `matcher_func` was not supplied or returns `True`, `False` otherwise
+        &#34;&#34;&#34;
+        if self.matcher_func is None:
+            return True
+        return self.matcher_func(line, col)
+
+    def concretize(self, db: models.DB, location: Location) -&gt; Iterator[str]:
+        &#34;&#34;&#34;
+        Concretize the inner `FixPattern` into a sequence of patch candidates.
+
+        Args:
+            db: The AST database to concretize against
+            location: The location to concretize at
+
+        Returns:
+            A generator of strings, each of which is a candidate patch
+        &#34;&#34;&#34;
+
+        yield from self.fix_pattern.concretize(db, location)
+
+    def view(self, db: models.DB, location: Location) -&gt; str:
+        return self.fix_pattern.view(db, location)</code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-classes">Classes</h2>
+<dl>
+<dt id="tourniquet.patch_lang.BinaryBoolOperator"><code class="flex name class">
+<span>class <span class="ident">BinaryBoolOperator</span></span>
+<span>(</span><span>lhs: <a title="tourniquet.patch_lang.Expression" href="#tourniquet.patch_lang.Expression">Expression</a>, rhs: <a title="tourniquet.patch_lang.Expression" href="#tourniquet.patch_lang.Expression">Expression</a>)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Represents the possible binary boolean operators, along with their lhs and rhs expressions.</p>
+<p>Create a new <code><a title="tourniquet.patch_lang.BinaryBoolOperator" href="#tourniquet.patch_lang.BinaryBoolOperator">BinaryBoolOperator</a></code> with the given <code>lhs</code> and <code>rhs</code>.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>lhs</code></strong></dt>
+<dd>An <code><a title="tourniquet.patch_lang.Expression" href="#tourniquet.patch_lang.Expression">Expression</a></code> to use for the left-hand side</dd>
+<dt><strong><code>rhs</code></strong></dt>
+<dd>An <code><a title="tourniquet.patch_lang.Expression" href="#tourniquet.patch_lang.Expression">Expression</a></code> to use for the right-hand side</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class BinaryBoolOperator(Expression):
+    &#34;&#34;&#34;
+    Represents the possible binary boolean operators, along with their lhs and rhs expressions.
+    &#34;&#34;&#34;
+
+    def __init__(self, lhs: Expression, rhs: Expression):
+        &#34;&#34;&#34;
+        Create a new `BinaryBoolOperator` with the given `lhs` and `rhs`.
+
+        Args:
+            lhs: An `Expression` to use for the left-hand side
+            rhs: An `Expression` to use for the right-hand side
+        &#34;&#34;&#34;
+        self.lhs = lhs
+        self.rhs = rhs
+
+    def concretize(self, db: models.DB, location: Location) -&gt; Iterator[str]:
+        &#34;&#34;&#34;
+        Concretize this `BinaryBoolOperator` into its possible operator expressions.
+
+        Args:
+            db: The AST database to concretize against
+            location: The location to concretize at
+
+        Returns:
+            A generator of strings, each of which is a concrete binary boolean expression
+        &#34;&#34;&#34;
+        lhs_exprs = self.lhs.concretize(db, location)
+        rhs_exprs = self.rhs.concretize(db, location)
+        for (lhs, rhs) in itertools.product(lhs_exprs, rhs_exprs):
+            yield f&#34;{lhs} == {rhs}&#34;
+            yield f&#34;{lhs} != {rhs}&#34;
+            yield f&#34;{lhs} &lt;= {rhs}&#34;
+            yield f&#34;{lhs} &lt; {rhs}&#34;
+            yield f&#34;{lhs} &gt;= {rhs}&#34;
+            yield f&#34;{lhs} &gt; {rhs}&#34;
+            # TODO(ww): If location is in a C++ source file, maybe add &lt;=&gt;
+
+    def view(self, db: models.DB, location: Location) -&gt; str:
+        return f&#34;BinaryBoolOperator({self.lhs.view(db, location)}, {self.rhs.view(db, location)})&#34;</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="tourniquet.patch_lang.Expression" href="#tourniquet.patch_lang.Expression">Expression</a></li>
+<li>abc.ABC</li>
+</ul>
+<h3>Methods</h3>
+<dl>
+<dt id="tourniquet.patch_lang.BinaryBoolOperator.concretize"><code class="name flex">
+<span>def <span class="ident">concretize</span></span>(<span>self, db: <a title="tourniquet.models.DB" href="models.html#tourniquet.models.DB">DB</a>, location: <a title="tourniquet.location.Location" href="location.html#tourniquet.location.Location">Location</a>) ‑> Iterator[str]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Concretize this <code><a title="tourniquet.patch_lang.BinaryBoolOperator" href="#tourniquet.patch_lang.BinaryBoolOperator">BinaryBoolOperator</a></code> into its possible operator expressions.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>db</code></strong></dt>
+<dd>The AST database to concretize against</dd>
+<dt><strong><code>location</code></strong></dt>
+<dd>The location to concretize at</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>A generator of strings, each of which is a concrete binary boolean expression</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def concretize(self, db: models.DB, location: Location) -&gt; Iterator[str]:
+    &#34;&#34;&#34;
+    Concretize this `BinaryBoolOperator` into its possible operator expressions.
+
+    Args:
+        db: The AST database to concretize against
+        location: The location to concretize at
+
+    Returns:
+        A generator of strings, each of which is a concrete binary boolean expression
+    &#34;&#34;&#34;
+    lhs_exprs = self.lhs.concretize(db, location)
+    rhs_exprs = self.rhs.concretize(db, location)
+    for (lhs, rhs) in itertools.product(lhs_exprs, rhs_exprs):
+        yield f&#34;{lhs} == {rhs}&#34;
+        yield f&#34;{lhs} != {rhs}&#34;
+        yield f&#34;{lhs} &lt;= {rhs}&#34;
+        yield f&#34;{lhs} &lt; {rhs}&#34;
+        yield f&#34;{lhs} &gt;= {rhs}&#34;
+        yield f&#34;{lhs} &gt; {rhs}&#34;
+        # TODO(ww): If location is in a C++ source file, maybe add &lt;=&gt;</code></pre>
+</details>
+</dd>
+<dt id="tourniquet.patch_lang.BinaryBoolOperator.view"><code class="name flex">
+<span>def <span class="ident">view</span></span>(<span>self, db: <a title="tourniquet.models.DB" href="models.html#tourniquet.models.DB">DB</a>, location: <a title="tourniquet.location.Location" href="location.html#tourniquet.location.Location">Location</a>) ‑> str</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def view(self, db: models.DB, location: Location) -&gt; str:
+    return f&#34;BinaryBoolOperator({self.lhs.view(db, location)}, {self.rhs.view(db, location)})&#34;</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="tourniquet.patch_lang.BinaryMathOperator"><code class="flex name class">
+<span>class <span class="ident">BinaryMathOperator</span></span>
+<span>(</span><span>lhs: <a title="tourniquet.patch_lang.Expression" href="#tourniquet.patch_lang.Expression">Expression</a>, rhs: <a title="tourniquet.patch_lang.Expression" href="#tourniquet.patch_lang.Expression">Expression</a>)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Represents the possible binary math operators, along with their lhs and rhs expressions.</p>
+<p>Create a new <code><a title="tourniquet.patch_lang.BinaryMathOperator" href="#tourniquet.patch_lang.BinaryMathOperator">BinaryMathOperator</a></code> with the given <code>lhs</code> and <code>rhs</code>.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>lhs</code></strong></dt>
+<dd>An <code><a title="tourniquet.patch_lang.Expression" href="#tourniquet.patch_lang.Expression">Expression</a></code> to use for the left-hand side</dd>
+<dt><strong><code>rhs</code></strong></dt>
+<dd>An <code><a title="tourniquet.patch_lang.Expression" href="#tourniquet.patch_lang.Expression">Expression</a></code> to use for the right-hand side</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class BinaryMathOperator(Expression):
+    &#34;&#34;&#34;
+    Represents the possible binary math operators, along with their lhs and rhs expressions.
+    &#34;&#34;&#34;
+
+    def __init__(self, lhs: Expression, rhs: Expression):
+        &#34;&#34;&#34;
+        Create a new `BinaryMathOperator` with the given `lhs` and `rhs`.
+
+        Args:
+            lhs: An `Expression` to use for the left-hand side
+            rhs: An `Expression` to use for the right-hand side
+        &#34;&#34;&#34;
+        self.lhs = lhs
+        self.rhs = rhs
+
+    def concretize(self, db: models.DB, location: Location) -&gt; Iterator[str]:
+        &#34;&#34;&#34;
+        Concretize this `BinaryMathOperator` into its possible operator expressions.
+
+        Args:
+            db: The AST database to concretize against
+            location: The location to concretize at
+
+        Returns:
+            A generator of strings, each of which is a concrete binary math expression
+        &#34;&#34;&#34;
+        lhs_exprs = self.lhs.concretize(db, location)
+        rhs_exprs = self.rhs.concretize(db, location)
+        for (lhs, rhs) in itertools.product(lhs_exprs, rhs_exprs):
+            yield f&#34;{lhs} + {rhs}&#34;
+            yield f&#34;{lhs} - {rhs}&#34;
+            yield f&#34;{lhs} / {rhs}&#34;
+            yield f&#34;{lhs} * {rhs}&#34;
+            yield f&#34;{lhs} &lt;&lt; {rhs}&#34;
+            # TODO(ww): Missing for unknown reasons: &gt;&gt;, &amp;, |, ^, %
+
+    def view(self, db: models.DB, location: Location) -&gt; str:
+        return f&#34;BinaryMathOperator({self.lhs.view(db, location)}, {self.lhs.view(db, location)})&#34;</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="tourniquet.patch_lang.Expression" href="#tourniquet.patch_lang.Expression">Expression</a></li>
+<li>abc.ABC</li>
+</ul>
+<h3>Methods</h3>
+<dl>
+<dt id="tourniquet.patch_lang.BinaryMathOperator.concretize"><code class="name flex">
+<span>def <span class="ident">concretize</span></span>(<span>self, db: <a title="tourniquet.models.DB" href="models.html#tourniquet.models.DB">DB</a>, location: <a title="tourniquet.location.Location" href="location.html#tourniquet.location.Location">Location</a>) ‑> Iterator[str]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Concretize this <code><a title="tourniquet.patch_lang.BinaryMathOperator" href="#tourniquet.patch_lang.BinaryMathOperator">BinaryMathOperator</a></code> into its possible operator expressions.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>db</code></strong></dt>
+<dd>The AST database to concretize against</dd>
+<dt><strong><code>location</code></strong></dt>
+<dd>The location to concretize at</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>A generator of strings, each of which is a concrete binary math expression</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def concretize(self, db: models.DB, location: Location) -&gt; Iterator[str]:
+    &#34;&#34;&#34;
+    Concretize this `BinaryMathOperator` into its possible operator expressions.
+
+    Args:
+        db: The AST database to concretize against
+        location: The location to concretize at
+
+    Returns:
+        A generator of strings, each of which is a concrete binary math expression
+    &#34;&#34;&#34;
+    lhs_exprs = self.lhs.concretize(db, location)
+    rhs_exprs = self.rhs.concretize(db, location)
+    for (lhs, rhs) in itertools.product(lhs_exprs, rhs_exprs):
+        yield f&#34;{lhs} + {rhs}&#34;
+        yield f&#34;{lhs} - {rhs}&#34;
+        yield f&#34;{lhs} / {rhs}&#34;
+        yield f&#34;{lhs} * {rhs}&#34;
+        yield f&#34;{lhs} &lt;&lt; {rhs}&#34;
+        # TODO(ww): Missing for unknown reasons: &gt;&gt;, &amp;, |, ^, %</code></pre>
+</details>
+</dd>
+<dt id="tourniquet.patch_lang.BinaryMathOperator.view"><code class="name flex">
+<span>def <span class="ident">view</span></span>(<span>self, db: <a title="tourniquet.models.DB" href="models.html#tourniquet.models.DB">DB</a>, location: <a title="tourniquet.location.Location" href="location.html#tourniquet.location.Location">Location</a>) ‑> str</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def view(self, db: models.DB, location: Location) -&gt; str:
+    return f&#34;BinaryMathOperator({self.lhs.view(db, location)}, {self.lhs.view(db, location)})&#34;</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="tourniquet.patch_lang.ElseStmt"><code class="flex name class">
+<span>class <span class="ident">ElseStmt</span></span>
+<span>(</span><span>*args: List[<a title="tourniquet.patch_lang.Statement" href="#tourniquet.patch_lang.Statement">Statement</a>])</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Represents an <code>else { ... }</code> statement.</p>
+<p>Creates a new <code><a title="tourniquet.patch_lang.ElseStmt" href="#tourniquet.patch_lang.ElseStmt">ElseStmt</a></code>.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>args</code></strong></dt>
+<dd>The statements to use in the body of the <code>else</code></dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class ElseStmt(Statement):
+    &#34;&#34;&#34;
+    Represents an `else { ... }` statement.
+    &#34;&#34;&#34;
+
+    def __init__(self, *args: List[Statement]):
+        &#34;&#34;&#34;
+        Creates a new `ElseStmt`.
+
+        Args:
+            args: The statements to use in the body of the `else`
+        &#34;&#34;&#34;
+
+        self.statement_list = StatementList(*args)
+
+    def concretize(self, db: models.DB, location: Location) -&gt; Iterator[str]:
+        &#34;&#34;&#34;
+        Concretize this `ElseStmt` into its possible statements.
+
+        Args:
+            db: The AST database to concretize against
+            location: The location to concretize at
+
+        Returns:
+            A generator of strings, each of which is an `else` statement
+        &#34;&#34;&#34;
+        stmt_list = self.statement_list.concretize(db, location)
+        for stmt in stmt_list:
+            cand_str = &#34;else {\n&#34; + stmt + &#34;\n}\n&#34;
+            yield cand_str
+
+    def view(self, db: models.DB, location: Location) -&gt; str:
+        return &#34;else {\n&#34; + self.statement_list.view(db, location) + &#34;\n}\n&#34;</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="tourniquet.patch_lang.Statement" href="#tourniquet.patch_lang.Statement">Statement</a></li>
+<li>abc.ABC</li>
+</ul>
+<h3>Methods</h3>
+<dl>
+<dt id="tourniquet.patch_lang.ElseStmt.concretize"><code class="name flex">
+<span>def <span class="ident">concretize</span></span>(<span>self, db: <a title="tourniquet.models.DB" href="models.html#tourniquet.models.DB">DB</a>, location: <a title="tourniquet.location.Location" href="location.html#tourniquet.location.Location">Location</a>) ‑> Iterator[str]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Concretize this <code><a title="tourniquet.patch_lang.ElseStmt" href="#tourniquet.patch_lang.ElseStmt">ElseStmt</a></code> into its possible statements.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>db</code></strong></dt>
+<dd>The AST database to concretize against</dd>
+<dt><strong><code>location</code></strong></dt>
+<dd>The location to concretize at</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>A generator of strings, each of which is an <code>else</code> statement</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def concretize(self, db: models.DB, location: Location) -&gt; Iterator[str]:
+    &#34;&#34;&#34;
+    Concretize this `ElseStmt` into its possible statements.
+
+    Args:
+        db: The AST database to concretize against
+        location: The location to concretize at
+
+    Returns:
+        A generator of strings, each of which is an `else` statement
+    &#34;&#34;&#34;
+    stmt_list = self.statement_list.concretize(db, location)
+    for stmt in stmt_list:
+        cand_str = &#34;else {\n&#34; + stmt + &#34;\n}\n&#34;
+        yield cand_str</code></pre>
+</details>
+</dd>
+<dt id="tourniquet.patch_lang.ElseStmt.view"><code class="name flex">
+<span>def <span class="ident">view</span></span>(<span>self, db: <a title="tourniquet.models.DB" href="models.html#tourniquet.models.DB">DB</a>, location: <a title="tourniquet.location.Location" href="location.html#tourniquet.location.Location">Location</a>) ‑> str</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def view(self, db: models.DB, location: Location) -&gt; str:
+    return &#34;else {\n&#34; + self.statement_list.view(db, location) + &#34;\n}\n&#34;</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="tourniquet.patch_lang.Expression"><code class="flex name class">
+<span>class <span class="ident">Expression</span></span>
+</code></dt>
+<dd>
+<div class="desc"><p>Represents an abstract source "expression".</p>
+<p><code><a title="tourniquet.patch_lang.Expression" href="#tourniquet.patch_lang.Expression">Expression</a></code> is an abstract base class whose interfaces should be consumed via
+specific derived classes.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Expression(ABC):
+    &#34;&#34;&#34;
+    Represents an abstract source &#34;expression&#34;.
+
+    `Expression` is an abstract base class whose interfaces should be consumed via
+    specific derived classes.
+    &#34;&#34;&#34;
+
+    @abstractmethod
+    def concretize(self, db: models.DB, location: Location) -&gt; Iterator[str]:
+        yield from ()
+
+    def view(self, db: models.DB, location: Location) -&gt; str:
+        return &#34;Expression()&#34;</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>abc.ABC</li>
+</ul>
+<h3>Subclasses</h3>
+<ul class="hlist">
+<li><a title="tourniquet.patch_lang.BinaryBoolOperator" href="#tourniquet.patch_lang.BinaryBoolOperator">BinaryBoolOperator</a></li>
+<li><a title="tourniquet.patch_lang.BinaryMathOperator" href="#tourniquet.patch_lang.BinaryMathOperator">BinaryMathOperator</a></li>
+<li><a title="tourniquet.patch_lang.LessThanExpr" href="#tourniquet.patch_lang.LessThanExpr">LessThanExpr</a></li>
+<li><a title="tourniquet.patch_lang.Lit" href="#tourniquet.patch_lang.Lit">Lit</a></li>
+<li><a title="tourniquet.patch_lang.StaticBufferSize" href="#tourniquet.patch_lang.StaticBufferSize">StaticBufferSize</a></li>
+<li><a title="tourniquet.patch_lang.Variable" href="#tourniquet.patch_lang.Variable">Variable</a></li>
+</ul>
+<h3>Methods</h3>
+<dl>
+<dt id="tourniquet.patch_lang.Expression.concretize"><code class="name flex">
+<span>def <span class="ident">concretize</span></span>(<span>self, db: <a title="tourniquet.models.DB" href="models.html#tourniquet.models.DB">DB</a>, location: <a title="tourniquet.location.Location" href="location.html#tourniquet.location.Location">Location</a>) ‑> Iterator[str]</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@abstractmethod
+def concretize(self, db: models.DB, location: Location) -&gt; Iterator[str]:
+    yield from ()</code></pre>
+</details>
+</dd>
+<dt id="tourniquet.patch_lang.Expression.view"><code class="name flex">
+<span>def <span class="ident">view</span></span>(<span>self, db: <a title="tourniquet.models.DB" href="models.html#tourniquet.models.DB">DB</a>, location: <a title="tourniquet.location.Location" href="location.html#tourniquet.location.Location">Location</a>) ‑> str</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def view(self, db: models.DB, location: Location) -&gt; str:
+    return &#34;Expression()&#34;</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="tourniquet.patch_lang.FixPattern"><code class="flex name class">
+<span>class <span class="ident">FixPattern</span></span>
+<span>(</span><span>*args: List[<a title="tourniquet.patch_lang.Statement" href="#tourniquet.patch_lang.Statement">Statement</a>])</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Represents a program "fix" that can be concretized into a sequence of candidate patches.</p>
+<p>Create a new <code><a title="tourniquet.patch_lang.FixPattern" href="#tourniquet.patch_lang.FixPattern">FixPattern</a></code>.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>args</code></strong></dt>
+<dd>The statements to use in the fix</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class FixPattern:
+    &#34;&#34;&#34;
+    Represents a program &#34;fix&#34; that can be concretized into a sequence of candidate patches.
+    &#34;&#34;&#34;
+
+    def __init__(self, *args: List[Statement]):
+        &#34;&#34;&#34;
+        Create a new `FixPattern`.
+
+        Args:
+            args: The statements to use in the fix
+        &#34;&#34;&#34;
+        self.statement_list = StatementList(*args)
+
+    def concretize(self, db: models.DB, location: Location) -&gt; Iterator[str]:
+        &#34;&#34;&#34;
+        Concretize this `FixPattern` into a sequence of candidate patches.
+
+        Args:
+            db: The AST database to concretize against
+            location: The location to concretize at
+
+        Returns:
+            A generator of strings, each of which is a candidate patch
+        &#34;&#34;&#34;
+        yield from self.statement_list.concretize(db, location)
+
+    def view(self, db: models.DB, location: Location) -&gt; str:
+        return self.statement_list.view(db, location)</code></pre>
+</details>
+<h3>Methods</h3>
+<dl>
+<dt id="tourniquet.patch_lang.FixPattern.concretize"><code class="name flex">
+<span>def <span class="ident">concretize</span></span>(<span>self, db: <a title="tourniquet.models.DB" href="models.html#tourniquet.models.DB">DB</a>, location: <a title="tourniquet.location.Location" href="location.html#tourniquet.location.Location">Location</a>) ‑> Iterator[str]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Concretize this <code><a title="tourniquet.patch_lang.FixPattern" href="#tourniquet.patch_lang.FixPattern">FixPattern</a></code> into a sequence of candidate patches.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>db</code></strong></dt>
+<dd>The AST database to concretize against</dd>
+<dt><strong><code>location</code></strong></dt>
+<dd>The location to concretize at</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>A generator of strings, each of which is a candidate patch</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def concretize(self, db: models.DB, location: Location) -&gt; Iterator[str]:
+    &#34;&#34;&#34;
+    Concretize this `FixPattern` into a sequence of candidate patches.
+
+    Args:
+        db: The AST database to concretize against
+        location: The location to concretize at
+
+    Returns:
+        A generator of strings, each of which is a candidate patch
+    &#34;&#34;&#34;
+    yield from self.statement_list.concretize(db, location)</code></pre>
+</details>
+</dd>
+<dt id="tourniquet.patch_lang.FixPattern.view"><code class="name flex">
+<span>def <span class="ident">view</span></span>(<span>self, db: <a title="tourniquet.models.DB" href="models.html#tourniquet.models.DB">DB</a>, location: <a title="tourniquet.location.Location" href="location.html#tourniquet.location.Location">Location</a>) ‑> str</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def view(self, db: models.DB, location: Location) -&gt; str:
+    return self.statement_list.view(db, location)</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="tourniquet.patch_lang.IfStmt"><code class="flex name class">
+<span>class <span class="ident">IfStmt</span></span>
+<span>(</span><span>cond_expr: <a title="tourniquet.patch_lang.Expression" href="#tourniquet.patch_lang.Expression">Expression</a>, *args: List[<a title="tourniquet.patch_lang.Statement" href="#tourniquet.patch_lang.Statement">Statement</a>])</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Represents an <code>if(...) { ... }</code> statement.</p>
+<p>Creates a new <code><a title="tourniquet.patch_lang.IfStmt" href="#tourniquet.patch_lang.IfStmt">IfStmt</a></code>.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>cond_expr</code></strong></dt>
+<dd>The expression to evaluate</dd>
+<dt><strong><code>args</code></strong></dt>
+<dd>The statements to use in the body of the <code>if</code></dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class IfStmt(Statement):
+    &#34;&#34;&#34;
+    Represents an `if(...) { ... }` statement.
+    &#34;&#34;&#34;
+
+    def __init__(self, cond_expr: Expression, *args: List[Statement]):
+        &#34;&#34;&#34;
+        Creates a new `IfStmt`.
+
+        Args:
+            cond_expr: The expression to evaluate
+            args: The statements to use in the body of the `if`
+        &#34;&#34;&#34;
+        self.cond_expr = cond_expr
+        self.statement_list = StatementList(*args)
+
+    def concretize(self, db: models.DB, location: Location) -&gt; Iterator[str]:
+        &#34;&#34;&#34;
+        Concretize this `IfStmt` into its possible statements.
+
+        Args:
+            db: The AST database to concretize against
+            location: The location to concretize at
+
+        Returns:
+            A generator of strings, each of which is an `if` statement
+        &#34;&#34;&#34;
+        cond_list = self.cond_expr.concretize(db, location)
+        stmt_list = self.statement_list.concretize(db, location)
+        for (cond, stmt) in itertools.product(cond_list, stmt_list):
+            cand_str = &#34;if (&#34; + cond + &#34;) {\n&#34; + stmt + &#34;\n}\n&#34;
+            yield cand_str
+
+    def view(self, db: models.DB, location: Location) -&gt; str:
+        if_str = &#34;if (&#34; + self.cond_expr.view(db, location) + &#34;) {\n&#34;
+        if_str += self.statement_list.view(db, location)
+        if_str += &#34;\n}\n&#34;
+        return if_str</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="tourniquet.patch_lang.Statement" href="#tourniquet.patch_lang.Statement">Statement</a></li>
+<li>abc.ABC</li>
+</ul>
+<h3>Methods</h3>
+<dl>
+<dt id="tourniquet.patch_lang.IfStmt.concretize"><code class="name flex">
+<span>def <span class="ident">concretize</span></span>(<span>self, db: <a title="tourniquet.models.DB" href="models.html#tourniquet.models.DB">DB</a>, location: <a title="tourniquet.location.Location" href="location.html#tourniquet.location.Location">Location</a>) ‑> Iterator[str]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Concretize this <code><a title="tourniquet.patch_lang.IfStmt" href="#tourniquet.patch_lang.IfStmt">IfStmt</a></code> into its possible statements.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>db</code></strong></dt>
+<dd>The AST database to concretize against</dd>
+<dt><strong><code>location</code></strong></dt>
+<dd>The location to concretize at</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>A generator of strings, each of which is an <code>if</code> statement</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def concretize(self, db: models.DB, location: Location) -&gt; Iterator[str]:
+    &#34;&#34;&#34;
+    Concretize this `IfStmt` into its possible statements.
+
+    Args:
+        db: The AST database to concretize against
+        location: The location to concretize at
+
+    Returns:
+        A generator of strings, each of which is an `if` statement
+    &#34;&#34;&#34;
+    cond_list = self.cond_expr.concretize(db, location)
+    stmt_list = self.statement_list.concretize(db, location)
+    for (cond, stmt) in itertools.product(cond_list, stmt_list):
+        cand_str = &#34;if (&#34; + cond + &#34;) {\n&#34; + stmt + &#34;\n}\n&#34;
+        yield cand_str</code></pre>
+</details>
+</dd>
+<dt id="tourniquet.patch_lang.IfStmt.view"><code class="name flex">
+<span>def <span class="ident">view</span></span>(<span>self, db: <a title="tourniquet.models.DB" href="models.html#tourniquet.models.DB">DB</a>, location: <a title="tourniquet.location.Location" href="location.html#tourniquet.location.Location">Location</a>) ‑> str</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def view(self, db: models.DB, location: Location) -&gt; str:
+    if_str = &#34;if (&#34; + self.cond_expr.view(db, location) + &#34;) {\n&#34;
+    if_str += self.statement_list.view(db, location)
+    if_str += &#34;\n}\n&#34;
+    return if_str</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="tourniquet.patch_lang.LessThanExpr"><code class="flex name class">
+<span>class <span class="ident">LessThanExpr</span></span>
+<span>(</span><span>lhs: <a title="tourniquet.patch_lang.Expression" href="#tourniquet.patch_lang.Expression">Expression</a>, rhs: <a title="tourniquet.patch_lang.Expression" href="#tourniquet.patch_lang.Expression">Expression</a>)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Represents the less-than boolean operator, along with its lhs and rhs expressions.</p>
+<p>Create a new <code><a title="tourniquet.patch_lang.LessThanExpr" href="#tourniquet.patch_lang.LessThanExpr">LessThanExpr</a></code> with the given <code>lhs</code> and <code>rhs</code>.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>lhs</code></strong></dt>
+<dd>An <code><a title="tourniquet.patch_lang.Expression" href="#tourniquet.patch_lang.Expression">Expression</a></code> to use for the left-hand side.</dd>
+<dt><strong><code>rhs</code></strong></dt>
+<dd>An <code><a title="tourniquet.patch_lang.Expression" href="#tourniquet.patch_lang.Expression">Expression</a></code> to use for the right-hand side.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class LessThanExpr(Expression):
+    &#34;&#34;&#34;
+    Represents the less-than boolean operator, along with its lhs and rhs expressions.
+    &#34;&#34;&#34;
+
+    def __init__(self, lhs: Expression, rhs: Expression):
+        &#34;&#34;&#34;
+        Create a new `LessThanExpr` with the given `lhs` and `rhs`.
+
+        Args:
+            lhs: An `Expression` to use for the left-hand side.
+            rhs: An `Expression` to use for the right-hand side.
+        &#34;&#34;&#34;
+        self.lhs = lhs
+        self.rhs = rhs
+
+    def concretize(self, db: models.DB, location: Location) -&gt; Iterator[str]:
+        &#34;&#34;&#34;
+        Concretize this `LessThanExpr` into its possible operator expressions.
+
+        Args:
+            db: The AST database to concretize against
+            location: The location to concretize at
+
+        Returns:
+            A generator of strings, each of which is a concrete less-than boolean expression
+        &#34;&#34;&#34;
+
+        lhs_exprs = self.lhs.concretize(db, location)
+        rhs_exprs = self.rhs.concretize(db, location)
+        for (lhs, rhs) in itertools.product(lhs_exprs, rhs_exprs):
+            yield f&#34;{lhs} &lt; {rhs}&#34;
+
+    def view(self, db: models.DB, location: Location):
+        self.lhs.view(db, location) + &#34; &lt; &#34; + self.rhs.view(db, location)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="tourniquet.patch_lang.Expression" href="#tourniquet.patch_lang.Expression">Expression</a></li>
+<li>abc.ABC</li>
+</ul>
+<h3>Methods</h3>
+<dl>
+<dt id="tourniquet.patch_lang.LessThanExpr.concretize"><code class="name flex">
+<span>def <span class="ident">concretize</span></span>(<span>self, db: <a title="tourniquet.models.DB" href="models.html#tourniquet.models.DB">DB</a>, location: <a title="tourniquet.location.Location" href="location.html#tourniquet.location.Location">Location</a>) ‑> Iterator[str]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Concretize this <code><a title="tourniquet.patch_lang.LessThanExpr" href="#tourniquet.patch_lang.LessThanExpr">LessThanExpr</a></code> into its possible operator expressions.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>db</code></strong></dt>
+<dd>The AST database to concretize against</dd>
+<dt><strong><code>location</code></strong></dt>
+<dd>The location to concretize at</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>A generator of strings, each of which is a concrete less-than boolean expression</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def concretize(self, db: models.DB, location: Location) -&gt; Iterator[str]:
+    &#34;&#34;&#34;
+    Concretize this `LessThanExpr` into its possible operator expressions.
+
+    Args:
+        db: The AST database to concretize against
+        location: The location to concretize at
+
+    Returns:
+        A generator of strings, each of which is a concrete less-than boolean expression
+    &#34;&#34;&#34;
+
+    lhs_exprs = self.lhs.concretize(db, location)
+    rhs_exprs = self.rhs.concretize(db, location)
+    for (lhs, rhs) in itertools.product(lhs_exprs, rhs_exprs):
+        yield f&#34;{lhs} &lt; {rhs}&#34;</code></pre>
+</details>
+</dd>
+<dt id="tourniquet.patch_lang.LessThanExpr.view"><code class="name flex">
+<span>def <span class="ident">view</span></span>(<span>self, db: <a title="tourniquet.models.DB" href="models.html#tourniquet.models.DB">DB</a>, location: <a title="tourniquet.location.Location" href="location.html#tourniquet.location.Location">Location</a>)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def view(self, db: models.DB, location: Location):
+    self.lhs.view(db, location) + &#34; &lt; &#34; + self.rhs.view(db, location)</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="tourniquet.patch_lang.Lit"><code class="flex name class">
+<span>class <span class="ident">Lit</span></span>
+<span>(</span><span>expr: str)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Represents a literal source string.</p>
+<p>Template authors can use this to insert pre-formed source code, or code that doesn't need
+to be concretized by location.</p>
+<p>Create a new <code><a title="tourniquet.patch_lang.Lit" href="#tourniquet.patch_lang.Lit">Lit</a></code> with the given source string.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>expr</code></strong></dt>
+<dd>The source literal</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Lit(Expression):
+    &#34;&#34;&#34;
+    Represents a literal source string.
+
+    Template authors can use this to insert pre-formed source code, or code that doesn&#39;t need
+    to be concretized by location.
+    &#34;&#34;&#34;
+
+    def __init__(self, expr: str):
+        &#34;&#34;&#34;
+        Create a new `Lit` with the given source string.
+
+        Args:
+            expr: The source literal
+        &#34;&#34;&#34;
+        self.expr = expr
+
+    def concretize(self, _db, _location) -&gt; Iterator[str]:
+        &#34;&#34;&#34;
+        Concretize this literal into its underlying source string.
+        &#34;&#34;&#34;
+        yield self.expr
+
+    def view(self, _db, _location):
+        return f&#34;Lit({self.expr})&#34;</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="tourniquet.patch_lang.Expression" href="#tourniquet.patch_lang.Expression">Expression</a></li>
+<li>abc.ABC</li>
+</ul>
+<h3>Methods</h3>
+<dl>
+<dt id="tourniquet.patch_lang.Lit.concretize"><code class="name flex">
+<span>def <span class="ident">concretize</span></span>(<span>self, _db, _location) ‑> Iterator[str]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Concretize this literal into its underlying source string.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def concretize(self, _db, _location) -&gt; Iterator[str]:
+    &#34;&#34;&#34;
+    Concretize this literal into its underlying source string.
+    &#34;&#34;&#34;
+    yield self.expr</code></pre>
+</details>
+</dd>
+<dt id="tourniquet.patch_lang.Lit.view"><code class="name flex">
+<span>def <span class="ident">view</span></span>(<span>self, _db, _location)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def view(self, _db, _location):
+    return f&#34;Lit({self.expr})&#34;</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="tourniquet.patch_lang.NodeStmt"><code class="flex name class">
+<span>class <span class="ident">NodeStmt</span></span>
+</code></dt>
+<dd>
+<div class="desc"><p>Represents a statement from the AST database, identified by location.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class NodeStmt(Statement):
+    &#34;&#34;&#34;
+    Represents a statement from the AST database, identified by location.
+    &#34;&#34;&#34;
+
+    def concretize(self, db: models.DB, location: Location) -&gt; Iterator[str]:
+        &#34;&#34;&#34;
+        Concretize this `NodeStmt` into its concrete statement.
+
+        Args:
+            db: The AST database to concretize against
+            location: The statement&#39;s location
+
+        Returns:
+            A generator of strings, whose single item is the extracted AST statement
+        &#34;&#34;&#34;
+        source_info = self.fetch_node(db, location)
+        yield source_info
+
+    def view(self, db, location) -&gt; str:
+        # Fetch and create a node.
+        source_info = self.fetch_node(db, location)
+        return source_info
+
+    def fetch_node(self, db, location) -&gt; str:
+        &#34;&#34;&#34;
+        Fetches the statement at the given location.
+
+        Args:
+            db: The AST database to query against.
+            location: The location of the statement.
+
+        Returns:
+            The statement, including trailing semicolon.
+
+        Raises:
+            PatchConcretizationError: If there is no statement at the supplied location.
+        &#34;&#34;&#34;
+        statement = db.statement_at(location)
+        if statement is None:
+            raise PatchConcretizationError(f&#34;no statement at ({location.line}, {location.column})&#34;)
+
+        if statement.expr.endswith(&#34;;&#34;):
+            return statement.expr
+        else:
+            return f&#34;{statement.expr};&#34;</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="tourniquet.patch_lang.Statement" href="#tourniquet.patch_lang.Statement">Statement</a></li>
+<li>abc.ABC</li>
+</ul>
+<h3>Methods</h3>
+<dl>
+<dt id="tourniquet.patch_lang.NodeStmt.concretize"><code class="name flex">
+<span>def <span class="ident">concretize</span></span>(<span>self, db: <a title="tourniquet.models.DB" href="models.html#tourniquet.models.DB">DB</a>, location: <a title="tourniquet.location.Location" href="location.html#tourniquet.location.Location">Location</a>) ‑> Iterator[str]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Concretize this <code><a title="tourniquet.patch_lang.NodeStmt" href="#tourniquet.patch_lang.NodeStmt">NodeStmt</a></code> into its concrete statement.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>db</code></strong></dt>
+<dd>The AST database to concretize against</dd>
+<dt><strong><code>location</code></strong></dt>
+<dd>The statement's location</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>A generator of strings, whose single item is the extracted AST statement</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def concretize(self, db: models.DB, location: Location) -&gt; Iterator[str]:
+    &#34;&#34;&#34;
+    Concretize this `NodeStmt` into its concrete statement.
+
+    Args:
+        db: The AST database to concretize against
+        location: The statement&#39;s location
+
+    Returns:
+        A generator of strings, whose single item is the extracted AST statement
+    &#34;&#34;&#34;
+    source_info = self.fetch_node(db, location)
+    yield source_info</code></pre>
+</details>
+</dd>
+<dt id="tourniquet.patch_lang.NodeStmt.fetch_node"><code class="name flex">
+<span>def <span class="ident">fetch_node</span></span>(<span>self, db, location) ‑> str</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Fetches the statement at the given location.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>db</code></strong></dt>
+<dd>The AST database to query against.</dd>
+<dt><strong><code>location</code></strong></dt>
+<dd>The location of the statement.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>The statement, including trailing semicolon.</p>
+<h2 id="raises">Raises</h2>
+<dl>
+<dt><code>PatchConcretizationError</code></dt>
+<dd>If there is no statement at the supplied location.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def fetch_node(self, db, location) -&gt; str:
+    &#34;&#34;&#34;
+    Fetches the statement at the given location.
+
+    Args:
+        db: The AST database to query against.
+        location: The location of the statement.
+
+    Returns:
+        The statement, including trailing semicolon.
+
+    Raises:
+        PatchConcretizationError: If there is no statement at the supplied location.
+    &#34;&#34;&#34;
+    statement = db.statement_at(location)
+    if statement is None:
+        raise PatchConcretizationError(f&#34;no statement at ({location.line}, {location.column})&#34;)
+
+    if statement.expr.endswith(&#34;;&#34;):
+        return statement.expr
+    else:
+        return f&#34;{statement.expr};&#34;</code></pre>
+</details>
+</dd>
+<dt id="tourniquet.patch_lang.NodeStmt.view"><code class="name flex">
+<span>def <span class="ident">view</span></span>(<span>self, db, location) ‑> str</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def view(self, db, location) -&gt; str:
+    # Fetch and create a node.
+    source_info = self.fetch_node(db, location)
+    return source_info</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="tourniquet.patch_lang.PatchTemplate"><code class="flex name class">
+<span>class <span class="ident">PatchTemplate</span></span>
+<span>(</span><span>fix_pattern: <a title="tourniquet.patch_lang.FixPattern" href="#tourniquet.patch_lang.FixPattern">FixPattern</a>, matcher_func: Optional[Callable[[int, int], bool]] = None)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Represents a templatized patch, including a matcher callable.</p>
+<p>Create a new <code><a title="tourniquet.patch_lang.PatchTemplate" href="#tourniquet.patch_lang.PatchTemplate">PatchTemplate</a></code>.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>fix_pattern</code></strong></dt>
+<dd>The fix pattern to concretize into patches</dd>
+<dt><strong><code>matcher_func</code></strong></dt>
+<dd>The callable to filter patch locations with, if any</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class PatchTemplate:
+    &#34;&#34;&#34;
+    Represents a templatized patch, including a matcher callable.
+    &#34;&#34;&#34;
+
+    def __init__(
+        self, fix_pattern: FixPattern, matcher_func: Optional[Callable[[int, int], bool]] = None
+    ):
+        &#34;&#34;&#34;
+        Create a new `PatchTemplate`.
+
+        Args:
+            fix_pattern: The fix pattern to concretize into patches
+            matcher_func: The callable to filter patch locations with, if any
+        &#34;&#34;&#34;
+        self.matcher_func = matcher_func
+        self.fix_pattern = fix_pattern
+
+    def matches(self, line: int, col: int) -&gt; bool:
+        &#34;&#34;&#34;
+        Returns whether the given line and column is suitable for patch situation.
+
+        Calls `self.matcher_func` internally, if supplied.
+
+        Args:
+            line: The line to patch on
+            column: The column to patch on
+
+        Returns:
+            `True` if `matcher_func` was not supplied or returns `True`, `False` otherwise
+        &#34;&#34;&#34;
+        if self.matcher_func is None:
+            return True
+        return self.matcher_func(line, col)
+
+    def concretize(self, db: models.DB, location: Location) -&gt; Iterator[str]:
+        &#34;&#34;&#34;
+        Concretize the inner `FixPattern` into a sequence of patch candidates.
+
+        Args:
+            db: The AST database to concretize against
+            location: The location to concretize at
+
+        Returns:
+            A generator of strings, each of which is a candidate patch
+        &#34;&#34;&#34;
+
+        yield from self.fix_pattern.concretize(db, location)
+
+    def view(self, db: models.DB, location: Location) -&gt; str:
+        return self.fix_pattern.view(db, location)</code></pre>
+</details>
+<h3>Methods</h3>
+<dl>
+<dt id="tourniquet.patch_lang.PatchTemplate.concretize"><code class="name flex">
+<span>def <span class="ident">concretize</span></span>(<span>self, db: <a title="tourniquet.models.DB" href="models.html#tourniquet.models.DB">DB</a>, location: <a title="tourniquet.location.Location" href="location.html#tourniquet.location.Location">Location</a>) ‑> Iterator[str]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Concretize the inner <code><a title="tourniquet.patch_lang.FixPattern" href="#tourniquet.patch_lang.FixPattern">FixPattern</a></code> into a sequence of patch candidates.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>db</code></strong></dt>
+<dd>The AST database to concretize against</dd>
+<dt><strong><code>location</code></strong></dt>
+<dd>The location to concretize at</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>A generator of strings, each of which is a candidate patch</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def concretize(self, db: models.DB, location: Location) -&gt; Iterator[str]:
+    &#34;&#34;&#34;
+    Concretize the inner `FixPattern` into a sequence of patch candidates.
+
+    Args:
+        db: The AST database to concretize against
+        location: The location to concretize at
+
+    Returns:
+        A generator of strings, each of which is a candidate patch
+    &#34;&#34;&#34;
+
+    yield from self.fix_pattern.concretize(db, location)</code></pre>
+</details>
+</dd>
+<dt id="tourniquet.patch_lang.PatchTemplate.matches"><code class="name flex">
+<span>def <span class="ident">matches</span></span>(<span>self, line: int, col: int) ‑> bool</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Returns whether the given line and column is suitable for patch situation.</p>
+<p>Calls <code>self.matcher_func</code> internally, if supplied.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>line</code></strong></dt>
+<dd>The line to patch on</dd>
+<dt><strong><code>column</code></strong></dt>
+<dd>The column to patch on</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p><code>True</code> if <code>matcher_func</code> was not supplied or returns <code>True</code>, <code>False</code> otherwise</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def matches(self, line: int, col: int) -&gt; bool:
+    &#34;&#34;&#34;
+    Returns whether the given line and column is suitable for patch situation.
+
+    Calls `self.matcher_func` internally, if supplied.
+
+    Args:
+        line: The line to patch on
+        column: The column to patch on
+
+    Returns:
+        `True` if `matcher_func` was not supplied or returns `True`, `False` otherwise
+    &#34;&#34;&#34;
+    if self.matcher_func is None:
+        return True
+    return self.matcher_func(line, col)</code></pre>
+</details>
+</dd>
+<dt id="tourniquet.patch_lang.PatchTemplate.view"><code class="name flex">
+<span>def <span class="ident">view</span></span>(<span>self, db: <a title="tourniquet.models.DB" href="models.html#tourniquet.models.DB">DB</a>, location: <a title="tourniquet.location.Location" href="location.html#tourniquet.location.Location">Location</a>) ‑> str</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def view(self, db: models.DB, location: Location) -&gt; str:
+    return self.fix_pattern.view(db, location)</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="tourniquet.patch_lang.ReturnStmt"><code class="flex name class">
+<span>class <span class="ident">ReturnStmt</span></span>
+<span>(</span><span>expr: <a title="tourniquet.patch_lang.Expression" href="#tourniquet.patch_lang.Expression">Expression</a>)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Represents a <code>return ...;</code> statement.</p>
+<p>Creates a new <code><a title="tourniquet.patch_lang.ReturnStmt" href="#tourniquet.patch_lang.ReturnStmt">ReturnStmt</a></code>.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>expr</code></strong></dt>
+<dd>The expression to concretize for the <code>return</code></dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class ReturnStmt(Statement):
+    &#34;&#34;&#34;
+    Represents a `return ...;` statement.
+    &#34;&#34;&#34;
+
+    def __init__(self, expr: Expression):
+        &#34;&#34;&#34;
+        Creates a new `ReturnStmt`.
+
+        Args:
+            expr: The expression to concretize for the `return`
+        &#34;&#34;&#34;
+        self.expr = expr
+
+    def concretize(self, db: models.DB, location: Location) -&gt; Iterator[str]:
+        &#34;&#34;&#34;
+        Concretize this `ReturnStmt` into its possible statements.
+
+        Args:
+            db: The AST database to concretize against
+            location: The location to concretize at
+
+        Returns:
+            A generator of strings, each of which is an `return` statement
+        &#34;&#34;&#34;
+        expr_list = self.expr.concretize(db, location)
+        for exp in expr_list:
+            candidate_str = f&#34;return {exp};&#34;
+            yield candidate_str
+
+    def view(self, db: models.DB, location: Location):
+        return f&#34;return {self.expr.view(db, location)};&#34;</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="tourniquet.patch_lang.Statement" href="#tourniquet.patch_lang.Statement">Statement</a></li>
+<li>abc.ABC</li>
+</ul>
+<h3>Methods</h3>
+<dl>
+<dt id="tourniquet.patch_lang.ReturnStmt.concretize"><code class="name flex">
+<span>def <span class="ident">concretize</span></span>(<span>self, db: <a title="tourniquet.models.DB" href="models.html#tourniquet.models.DB">DB</a>, location: <a title="tourniquet.location.Location" href="location.html#tourniquet.location.Location">Location</a>) ‑> Iterator[str]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Concretize this <code><a title="tourniquet.patch_lang.ReturnStmt" href="#tourniquet.patch_lang.ReturnStmt">ReturnStmt</a></code> into its possible statements.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>db</code></strong></dt>
+<dd>The AST database to concretize against</dd>
+<dt><strong><code>location</code></strong></dt>
+<dd>The location to concretize at</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>A generator of strings, each of which is an <code>return</code> statement</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def concretize(self, db: models.DB, location: Location) -&gt; Iterator[str]:
+    &#34;&#34;&#34;
+    Concretize this `ReturnStmt` into its possible statements.
+
+    Args:
+        db: The AST database to concretize against
+        location: The location to concretize at
+
+    Returns:
+        A generator of strings, each of which is an `return` statement
+    &#34;&#34;&#34;
+    expr_list = self.expr.concretize(db, location)
+    for exp in expr_list:
+        candidate_str = f&#34;return {exp};&#34;
+        yield candidate_str</code></pre>
+</details>
+</dd>
+<dt id="tourniquet.patch_lang.ReturnStmt.view"><code class="name flex">
+<span>def <span class="ident">view</span></span>(<span>self, db: <a title="tourniquet.models.DB" href="models.html#tourniquet.models.DB">DB</a>, location: <a title="tourniquet.location.Location" href="location.html#tourniquet.location.Location">Location</a>)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def view(self, db: models.DB, location: Location):
+    return f&#34;return {self.expr.view(db, location)};&#34;</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="tourniquet.patch_lang.Statement"><code class="flex name class">
+<span>class <span class="ident">Statement</span></span>
+</code></dt>
+<dd>
+<div class="desc"><p>Represents an source "statement".</p>
+<p><code><a title="tourniquet.patch_lang.Statement" href="#tourniquet.patch_lang.Statement">Statement</a></code> is an abstract base whose interfaces should be consumed via specific
+derived classes.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Statement(ABC):
+    &#34;&#34;&#34;
+    Represents an source &#34;statement&#34;.
+
+    `Statement` is an abstract base whose interfaces should be consumed via specific
+    derived classes.
+    &#34;&#34;&#34;
+
+    @abstractmethod
+    def concretize(self, db: models.DB, location: Location) -&gt; Iterator[str]:
+        pass
+
+    @abstractmethod
+    def view(self, db: models.DB, location: Location):
+        pass</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>abc.ABC</li>
+</ul>
+<h3>Subclasses</h3>
+<ul class="hlist">
+<li><a title="tourniquet.patch_lang.ElseStmt" href="#tourniquet.patch_lang.ElseStmt">ElseStmt</a></li>
+<li><a title="tourniquet.patch_lang.IfStmt" href="#tourniquet.patch_lang.IfStmt">IfStmt</a></li>
+<li><a title="tourniquet.patch_lang.NodeStmt" href="#tourniquet.patch_lang.NodeStmt">NodeStmt</a></li>
+<li><a title="tourniquet.patch_lang.ReturnStmt" href="#tourniquet.patch_lang.ReturnStmt">ReturnStmt</a></li>
+</ul>
+<h3>Methods</h3>
+<dl>
+<dt id="tourniquet.patch_lang.Statement.concretize"><code class="name flex">
+<span>def <span class="ident">concretize</span></span>(<span>self, db: <a title="tourniquet.models.DB" href="models.html#tourniquet.models.DB">DB</a>, location: <a title="tourniquet.location.Location" href="location.html#tourniquet.location.Location">Location</a>) ‑> Iterator[str]</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@abstractmethod
+def concretize(self, db: models.DB, location: Location) -&gt; Iterator[str]:
+    pass</code></pre>
+</details>
+</dd>
+<dt id="tourniquet.patch_lang.Statement.view"><code class="name flex">
+<span>def <span class="ident">view</span></span>(<span>self, db: <a title="tourniquet.models.DB" href="models.html#tourniquet.models.DB">DB</a>, location: <a title="tourniquet.location.Location" href="location.html#tourniquet.location.Location">Location</a>)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@abstractmethod
+def view(self, db: models.DB, location: Location):
+    pass</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="tourniquet.patch_lang.StatementList"><code class="flex name class">
+<span>class <span class="ident">StatementList</span></span>
+<span>(</span><span>*args)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Represents a sequence of statements.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class StatementList:
+    &#34;&#34;&#34;
+    Represents a sequence of statements.
+    &#34;&#34;&#34;
+
+    def __init__(self, *args):
+        self.statements: List[Statement] = args
+
+    def concretize(self, db: models.DB, location: Location) -&gt; Iterator[str]:
+        &#34;&#34;&#34;
+        Concretize this `StatementList` into its possible statement seqences.
+
+        This involves concretizing each statement and taking their unique
+        product, such that every possible permutation of statements in the list
+        is produced.
+
+        Args:
+            db: The AST database to concretize against
+            locaton: The location to concretize at
+
+        Returns:
+            A generator of strings, each of which is a concreqte sequence of statements
+        &#34;&#34;&#34;
+        concretized = [stmt.concretize(db, location) for stmt in self.statements]
+        for items in set(itertools.product(*concretized)):
+            yield &#34;\n&#34;.join(items)
+
+    def view(self, db: models.DB, location: Location) -&gt; str:
+        final_str = &#34;&#34;
+        for stmt in self.statements:
+            final_str += stmt.view(db, location) + &#34;\n&#34;
+        return final_str</code></pre>
+</details>
+<h3>Methods</h3>
+<dl>
+<dt id="tourniquet.patch_lang.StatementList.concretize"><code class="name flex">
+<span>def <span class="ident">concretize</span></span>(<span>self, db: <a title="tourniquet.models.DB" href="models.html#tourniquet.models.DB">DB</a>, location: <a title="tourniquet.location.Location" href="location.html#tourniquet.location.Location">Location</a>) ‑> Iterator[str]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Concretize this <code><a title="tourniquet.patch_lang.StatementList" href="#tourniquet.patch_lang.StatementList">StatementList</a></code> into its possible statement seqences.</p>
+<p>This involves concretizing each statement and taking their unique
+product, such that every possible permutation of statements in the list
+is produced.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>db</code></strong></dt>
+<dd>The AST database to concretize against</dd>
+<dt><strong><code>locaton</code></strong></dt>
+<dd>The location to concretize at</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>A generator of strings, each of which is a concreqte sequence of statements</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def concretize(self, db: models.DB, location: Location) -&gt; Iterator[str]:
+    &#34;&#34;&#34;
+    Concretize this `StatementList` into its possible statement seqences.
+
+    This involves concretizing each statement and taking their unique
+    product, such that every possible permutation of statements in the list
+    is produced.
+
+    Args:
+        db: The AST database to concretize against
+        locaton: The location to concretize at
+
+    Returns:
+        A generator of strings, each of which is a concreqte sequence of statements
+    &#34;&#34;&#34;
+    concretized = [stmt.concretize(db, location) for stmt in self.statements]
+    for items in set(itertools.product(*concretized)):
+        yield &#34;\n&#34;.join(items)</code></pre>
+</details>
+</dd>
+<dt id="tourniquet.patch_lang.StatementList.view"><code class="name flex">
+<span>def <span class="ident">view</span></span>(<span>self, db: <a title="tourniquet.models.DB" href="models.html#tourniquet.models.DB">DB</a>, location: <a title="tourniquet.location.Location" href="location.html#tourniquet.location.Location">Location</a>) ‑> str</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def view(self, db: models.DB, location: Location) -&gt; str:
+    final_str = &#34;&#34;
+    for stmt in self.statements:
+        final_str += stmt.view(db, location) + &#34;\n&#34;
+    return final_str</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="tourniquet.patch_lang.StaticBufferSize"><code class="flex name class">
+<span>class <span class="ident">StaticBufferSize</span></span>
+</code></dt>
+<dd>
+<div class="desc"><p>Represents an abstract "sizeof(&hellip;)" expression.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class StaticBufferSize(Expression):
+    &#34;&#34;&#34;
+    Represents an abstract &#34;sizeof(...)&#34; expression.
+    &#34;&#34;&#34;
+
+    # Query for all static array types and return list of sizeof()..
+    def concretize(self, db: models.DB, location: Location) -&gt; Iterator[str]:
+        &#34;&#34;&#34;
+        Concretize this `StaticBufferSize` into its potential sizes.
+
+        Args:
+            db: The AST database to concretize against
+            location: The location to concretize at
+
+        Returns:
+            A generator of strings, each of which is a concrete `sizeof(...)` expression
+
+        Raises:
+            PatchConcretizationError: If the scope of the location is not a function
+        &#34;&#34;&#34;
+
+        # TODO(ww): We should also concretize with available globals.
+        function = db.function_at(location)
+
+        if function is None:
+            raise PatchConcretizationError(
+                f&#34;no function contains ({location.line}, {location.column})&#34;
+            )
+
+        for var_decl in function.var_decls:
+            if not var_decl.is_array:
+                continue
+            yield f&#34;sizeof({var_decl.name})&#34;
+
+    def view(self, _db, _location) -&gt; str:
+        return &#34;StaticBufferSize()&#34;</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="tourniquet.patch_lang.Expression" href="#tourniquet.patch_lang.Expression">Expression</a></li>
+<li>abc.ABC</li>
+</ul>
+<h3>Methods</h3>
+<dl>
+<dt id="tourniquet.patch_lang.StaticBufferSize.concretize"><code class="name flex">
+<span>def <span class="ident">concretize</span></span>(<span>self, db: <a title="tourniquet.models.DB" href="models.html#tourniquet.models.DB">DB</a>, location: <a title="tourniquet.location.Location" href="location.html#tourniquet.location.Location">Location</a>) ‑> Iterator[str]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Concretize this <code><a title="tourniquet.patch_lang.StaticBufferSize" href="#tourniquet.patch_lang.StaticBufferSize">StaticBufferSize</a></code> into its potential sizes.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>db</code></strong></dt>
+<dd>The AST database to concretize against</dd>
+<dt><strong><code>location</code></strong></dt>
+<dd>The location to concretize at</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>A generator of strings, each of which is a concrete <code>sizeof(&hellip;)</code> expression</p>
+<h2 id="raises">Raises</h2>
+<dl>
+<dt><code>PatchConcretizationError</code></dt>
+<dd>If the scope of the location is not a function</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def concretize(self, db: models.DB, location: Location) -&gt; Iterator[str]:
+    &#34;&#34;&#34;
+    Concretize this `StaticBufferSize` into its potential sizes.
+
+    Args:
+        db: The AST database to concretize against
+        location: The location to concretize at
+
+    Returns:
+        A generator of strings, each of which is a concrete `sizeof(...)` expression
+
+    Raises:
+        PatchConcretizationError: If the scope of the location is not a function
+    &#34;&#34;&#34;
+
+    # TODO(ww): We should also concretize with available globals.
+    function = db.function_at(location)
+
+    if function is None:
+        raise PatchConcretizationError(
+            f&#34;no function contains ({location.line}, {location.column})&#34;
+        )
+
+    for var_decl in function.var_decls:
+        if not var_decl.is_array:
+            continue
+        yield f&#34;sizeof({var_decl.name})&#34;</code></pre>
+</details>
+</dd>
+<dt id="tourniquet.patch_lang.StaticBufferSize.view"><code class="name flex">
+<span>def <span class="ident">view</span></span>(<span>self, _db, _location) ‑> str</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def view(self, _db, _location) -&gt; str:
+    return &#34;StaticBufferSize()&#34;</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="tourniquet.patch_lang.Variable"><code class="flex name class">
+<span>class <span class="ident">Variable</span></span>
+</code></dt>
+<dd>
+<div class="desc"><p>Represents an abstract source variable.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Variable(Expression):
+    &#34;&#34;&#34;
+    Represents an abstract source variable.
+    &#34;&#34;&#34;
+
+    # NOTE(ww): This is probably slightly unsound, in terms of concretizations
+    # produced: the set of variables in a function is not the set of variables
+    # guaranteed to be in scope at a line number.
+    def concretize(self, db: models.DB, location: Location) -&gt; Iterator[str]:
+        &#34;&#34;&#34;
+        Concretize this `Variable` into its potential names.
+
+        Args:
+            db: The AST database to concretize against
+            location: The location to concretize at
+
+        Returns:
+            A generator of strings, each of which is a concrete variable name
+
+        Raises:
+            PatchConcretizationError: If the scope of the variable can&#39;t be resolved
+        &#34;&#34;&#34;
+
+        # TODO(ww): We should also concretize with the available globals.
+        function = db.function_at(location)
+        if function is None:
+            raise PatchConcretizationError(
+                f&#34;no function contains ({location.line}, {location.column})&#34;
+            )
+
+        for var_decl in function.var_decls:
+            yield var_decl.name
+
+    def view(self, _db, _location) -&gt; str:
+        return &#34;Variable()&#34;</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="tourniquet.patch_lang.Expression" href="#tourniquet.patch_lang.Expression">Expression</a></li>
+<li>abc.ABC</li>
+</ul>
+<h3>Methods</h3>
+<dl>
+<dt id="tourniquet.patch_lang.Variable.concretize"><code class="name flex">
+<span>def <span class="ident">concretize</span></span>(<span>self, db: <a title="tourniquet.models.DB" href="models.html#tourniquet.models.DB">DB</a>, location: <a title="tourniquet.location.Location" href="location.html#tourniquet.location.Location">Location</a>) ‑> Iterator[str]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Concretize this <code><a title="tourniquet.patch_lang.Variable" href="#tourniquet.patch_lang.Variable">Variable</a></code> into its potential names.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>db</code></strong></dt>
+<dd>The AST database to concretize against</dd>
+<dt><strong><code>location</code></strong></dt>
+<dd>The location to concretize at</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>A generator of strings, each of which is a concrete variable name</p>
+<h2 id="raises">Raises</h2>
+<dl>
+<dt><code>PatchConcretizationError</code></dt>
+<dd>If the scope of the variable can't be resolved</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def concretize(self, db: models.DB, location: Location) -&gt; Iterator[str]:
+    &#34;&#34;&#34;
+    Concretize this `Variable` into its potential names.
+
+    Args:
+        db: The AST database to concretize against
+        location: The location to concretize at
+
+    Returns:
+        A generator of strings, each of which is a concrete variable name
+
+    Raises:
+        PatchConcretizationError: If the scope of the variable can&#39;t be resolved
+    &#34;&#34;&#34;
+
+    # TODO(ww): We should also concretize with the available globals.
+    function = db.function_at(location)
+    if function is None:
+        raise PatchConcretizationError(
+            f&#34;no function contains ({location.line}, {location.column})&#34;
+        )
+
+    for var_decl in function.var_decls:
+        yield var_decl.name</code></pre>
+</details>
+</dd>
+<dt id="tourniquet.patch_lang.Variable.view"><code class="name flex">
+<span>def <span class="ident">view</span></span>(<span>self, _db, _location) ‑> str</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def view(self, _db, _location) -&gt; str:
+    return &#34;Variable()&#34;</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+</dl>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="tourniquet" href="index.html">tourniquet</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-classes">Classes</a></h3>
+<ul>
+<li>
+<h4><code><a title="tourniquet.patch_lang.BinaryBoolOperator" href="#tourniquet.patch_lang.BinaryBoolOperator">BinaryBoolOperator</a></code></h4>
+<ul class="">
+<li><code><a title="tourniquet.patch_lang.BinaryBoolOperator.concretize" href="#tourniquet.patch_lang.BinaryBoolOperator.concretize">concretize</a></code></li>
+<li><code><a title="tourniquet.patch_lang.BinaryBoolOperator.view" href="#tourniquet.patch_lang.BinaryBoolOperator.view">view</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="tourniquet.patch_lang.BinaryMathOperator" href="#tourniquet.patch_lang.BinaryMathOperator">BinaryMathOperator</a></code></h4>
+<ul class="">
+<li><code><a title="tourniquet.patch_lang.BinaryMathOperator.concretize" href="#tourniquet.patch_lang.BinaryMathOperator.concretize">concretize</a></code></li>
+<li><code><a title="tourniquet.patch_lang.BinaryMathOperator.view" href="#tourniquet.patch_lang.BinaryMathOperator.view">view</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="tourniquet.patch_lang.ElseStmt" href="#tourniquet.patch_lang.ElseStmt">ElseStmt</a></code></h4>
+<ul class="">
+<li><code><a title="tourniquet.patch_lang.ElseStmt.concretize" href="#tourniquet.patch_lang.ElseStmt.concretize">concretize</a></code></li>
+<li><code><a title="tourniquet.patch_lang.ElseStmt.view" href="#tourniquet.patch_lang.ElseStmt.view">view</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="tourniquet.patch_lang.Expression" href="#tourniquet.patch_lang.Expression">Expression</a></code></h4>
+<ul class="">
+<li><code><a title="tourniquet.patch_lang.Expression.concretize" href="#tourniquet.patch_lang.Expression.concretize">concretize</a></code></li>
+<li><code><a title="tourniquet.patch_lang.Expression.view" href="#tourniquet.patch_lang.Expression.view">view</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="tourniquet.patch_lang.FixPattern" href="#tourniquet.patch_lang.FixPattern">FixPattern</a></code></h4>
+<ul class="">
+<li><code><a title="tourniquet.patch_lang.FixPattern.concretize" href="#tourniquet.patch_lang.FixPattern.concretize">concretize</a></code></li>
+<li><code><a title="tourniquet.patch_lang.FixPattern.view" href="#tourniquet.patch_lang.FixPattern.view">view</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="tourniquet.patch_lang.IfStmt" href="#tourniquet.patch_lang.IfStmt">IfStmt</a></code></h4>
+<ul class="">
+<li><code><a title="tourniquet.patch_lang.IfStmt.concretize" href="#tourniquet.patch_lang.IfStmt.concretize">concretize</a></code></li>
+<li><code><a title="tourniquet.patch_lang.IfStmt.view" href="#tourniquet.patch_lang.IfStmt.view">view</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="tourniquet.patch_lang.LessThanExpr" href="#tourniquet.patch_lang.LessThanExpr">LessThanExpr</a></code></h4>
+<ul class="">
+<li><code><a title="tourniquet.patch_lang.LessThanExpr.concretize" href="#tourniquet.patch_lang.LessThanExpr.concretize">concretize</a></code></li>
+<li><code><a title="tourniquet.patch_lang.LessThanExpr.view" href="#tourniquet.patch_lang.LessThanExpr.view">view</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="tourniquet.patch_lang.Lit" href="#tourniquet.patch_lang.Lit">Lit</a></code></h4>
+<ul class="">
+<li><code><a title="tourniquet.patch_lang.Lit.concretize" href="#tourniquet.patch_lang.Lit.concretize">concretize</a></code></li>
+<li><code><a title="tourniquet.patch_lang.Lit.view" href="#tourniquet.patch_lang.Lit.view">view</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="tourniquet.patch_lang.NodeStmt" href="#tourniquet.patch_lang.NodeStmt">NodeStmt</a></code></h4>
+<ul class="">
+<li><code><a title="tourniquet.patch_lang.NodeStmt.concretize" href="#tourniquet.patch_lang.NodeStmt.concretize">concretize</a></code></li>
+<li><code><a title="tourniquet.patch_lang.NodeStmt.fetch_node" href="#tourniquet.patch_lang.NodeStmt.fetch_node">fetch_node</a></code></li>
+<li><code><a title="tourniquet.patch_lang.NodeStmt.view" href="#tourniquet.patch_lang.NodeStmt.view">view</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="tourniquet.patch_lang.PatchTemplate" href="#tourniquet.patch_lang.PatchTemplate">PatchTemplate</a></code></h4>
+<ul class="">
+<li><code><a title="tourniquet.patch_lang.PatchTemplate.concretize" href="#tourniquet.patch_lang.PatchTemplate.concretize">concretize</a></code></li>
+<li><code><a title="tourniquet.patch_lang.PatchTemplate.matches" href="#tourniquet.patch_lang.PatchTemplate.matches">matches</a></code></li>
+<li><code><a title="tourniquet.patch_lang.PatchTemplate.view" href="#tourniquet.patch_lang.PatchTemplate.view">view</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="tourniquet.patch_lang.ReturnStmt" href="#tourniquet.patch_lang.ReturnStmt">ReturnStmt</a></code></h4>
+<ul class="">
+<li><code><a title="tourniquet.patch_lang.ReturnStmt.concretize" href="#tourniquet.patch_lang.ReturnStmt.concretize">concretize</a></code></li>
+<li><code><a title="tourniquet.patch_lang.ReturnStmt.view" href="#tourniquet.patch_lang.ReturnStmt.view">view</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="tourniquet.patch_lang.Statement" href="#tourniquet.patch_lang.Statement">Statement</a></code></h4>
+<ul class="">
+<li><code><a title="tourniquet.patch_lang.Statement.concretize" href="#tourniquet.patch_lang.Statement.concretize">concretize</a></code></li>
+<li><code><a title="tourniquet.patch_lang.Statement.view" href="#tourniquet.patch_lang.Statement.view">view</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="tourniquet.patch_lang.StatementList" href="#tourniquet.patch_lang.StatementList">StatementList</a></code></h4>
+<ul class="">
+<li><code><a title="tourniquet.patch_lang.StatementList.concretize" href="#tourniquet.patch_lang.StatementList.concretize">concretize</a></code></li>
+<li><code><a title="tourniquet.patch_lang.StatementList.view" href="#tourniquet.patch_lang.StatementList.view">view</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="tourniquet.patch_lang.StaticBufferSize" href="#tourniquet.patch_lang.StaticBufferSize">StaticBufferSize</a></code></h4>
+<ul class="">
+<li><code><a title="tourniquet.patch_lang.StaticBufferSize.concretize" href="#tourniquet.patch_lang.StaticBufferSize.concretize">concretize</a></code></li>
+<li><code><a title="tourniquet.patch_lang.StaticBufferSize.view" href="#tourniquet.patch_lang.StaticBufferSize.view">view</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="tourniquet.patch_lang.Variable" href="#tourniquet.patch_lang.Variable">Variable</a></code></h4>
+<ul class="">
+<li><code><a title="tourniquet.patch_lang.Variable.concretize" href="#tourniquet.patch_lang.Variable.concretize">concretize</a></code></li>
+<li><code><a title="tourniquet.patch_lang.Variable.view" href="#tourniquet.patch_lang.Variable.view">view</a></code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.10.0</a>.</p>
+</footer>
+</body>
+</html>
