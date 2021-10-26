@@ -89,6 +89,14 @@ class CMakeBuild(build_ext):
             cmake_args.append("-DCMAKE_VERBOSE_MAKEFILE=ON")
             build_type = "Debug"
 
+        llvm_dir = os.getenv("LLVM_DIR")
+        if llvm_dir is not None:
+            cmake_args.append(f"-DLLVM_DIR={llvm_dir}")
+
+        clang_dir = os.getenv("Clang_DIR")
+        if clang_dir is not None:
+            cmake_args.append(f"-DClang_DIR={clang_dir}")
+
         cmake_args += [
             f"-DCMAKE_BUILD_TYPE={build_type}",
             f"-DCMAKE_LIBRARY_OUTPUT_DIRECTORY={extdir}",

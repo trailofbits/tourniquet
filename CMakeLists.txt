@@ -21,7 +21,7 @@ include_directories(${Python3_INCLUDE_DIRS})
 link_directories(${Python3_LIBRARY_DIRS})
 add_link_options(${Python3_LINK_OPTIONS})
 
-find_package(LLVM REQUIRED CONFIG HINTS "${LLVM_DIR}")
+find_package(LLVM REQUIRED CONFIG HINTS "${LLVM_DIR}" ENV LLVM_DIR)
 message(STATUS "Found LLVM ${LLVM_PACKAGE_VERSION}")
 message(STATUS "Using LLVMConfig.cmake in: ${LLVM_DIR}")
 
@@ -34,7 +34,7 @@ include_directories(${LLVM_INCLUDE_DIRS})
 link_directories(${LLVM_LIBRARY_DIRS})
 add_definitions(${LLVM_DEFINITIONS})
 
-find_package(Clang REQUIRED CONFIG HINTS "${Clang_DIR}")
+find_package(Clang REQUIRED CONFIG HINTS "${Clang_DIR}" ENV Clang_DIR)
 message(STATUS "Using ClangConfig.cmake in: ${Clang_DIR}")
 
 include_directories(${CLANG_INCLUDE_DIRS})
